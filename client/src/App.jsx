@@ -8,6 +8,7 @@ import PostAds from "./pages/PostAds";
 import HelpCenter from "./pages/HelpCenter";
 import Footer from "./pages/Footer";
 import About from "./pages/About";
+import PostAdd from "./pages/Post";
 const App = () => {
   return (
     <>
@@ -17,7 +18,7 @@ const App = () => {
           <Route path="/" element={<HeroSection />} />
           <Route path="/signin" element={<Sign />} />
           <Route path="/categories" element={<EventCalendar />} />
-          <Route path="/postads" element={<PostAds />} />
+          <Route path="/postadd" element={<PostAdd />} />
           <Route path="/about" element={<About />} />
           <Route path="/contactUs" element={<HelpCenter />} />
           <Route path="/footer" element={<Footer />} />

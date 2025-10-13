@@ -28,7 +28,7 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              to="/postads"
+              to="/postadd"
               className="text-gray-700 hover:text-[#2F3A63] font-medium transition-colors duration-200 px-3 py-2 rounded-md hover:bg-blue-50"
             >
               Post Ads
