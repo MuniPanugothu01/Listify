@@ -122,10 +122,10 @@ export default function EventCalendar() {
     console.log(`Category clicked: ${label}`);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8 relative z-0">
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
         {/* Left - Calendar */}
-        <div className="w-full  h-fit lg:w-80 bg-white rounded-2xl shadow-lg p-6 transform hover:-translate-y-1 transition-all duration-200">
+        <div className="w-full h-fit lg:w-80 bg-white rounded-2xl shadow-lg p-6 transform hover:-translate-y-1 transition-all duration-200 relative">
           <h2 className="text-lg font-semibold text-[#2F3A63] mb-6 flex items-center gap-2">
             <div className="w-1 h-6 bg-gradient-to-b from-[#2F3A63] to-[#1e2a4a] rounded-full"></div>
             Event Calendar
@@ -169,7 +169,7 @@ export default function EventCalendar() {
 
           {/* Month Picker */}
           {showMonthPicker && (
-            <div className="absolute z-10 bg-white rounded-xl shadow-2xl p-4 mt-2 border border-gray-100 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
+            <div className="absolute top-20 left-4 right-4 z-40 bg-white rounded-xl shadow-2xl p-4 mt-2 border border-gray-100 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
               {monthNames.map((month, index) => (
                 <button
                   key={index}
@@ -188,7 +188,7 @@ export default function EventCalendar() {
 
           {/* Year Picker */}
           {showYearPicker && (
-            <div className="absolute z-10 bg-white rounded-xl shadow-2xl p-4 mt-2 border border-gray-100 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
+            <div className="absolute top-20 left-4 right-4 z-40 bg-white rounded-xl shadow-2xl p-4 mt-2 border border-gray-100 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
               {generateYears().map((year) => (
                 <button
                   key={year}
