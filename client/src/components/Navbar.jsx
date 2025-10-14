@@ -85,7 +85,7 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              to="/post-ads"
+              to="/postadd"
               className="text-gray-700 hover:text-[#2F3A63] font-medium transition-colors duration-200 px-3 py-2 rounded-md hover:bg-blue-50 block"
               onClick={() => setIsOpen(false)}
             >
@@ -106,7 +106,7 @@ export default function Navbar() {
               About
             </Link>
             <Link
-              to="/contact"
+              to="/contactUs"
               className="text-gray-700 hover:text-[#2F3A63] font-medium transition-colors duration-200 px-3 py-2 rounded-md hover:bg-blue-50 block"
               onClick={() => setIsOpen(false)}
             >

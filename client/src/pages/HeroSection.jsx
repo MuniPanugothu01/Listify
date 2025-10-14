@@ -116,7 +116,7 @@ const HeroSection = () => {
 
   return (
     <>
-      <div className="bg-f4f4f4 relative flex w-full flex-col lg:flex-row items-center justify-center overflow-hidden rounded-lg border px-4 sm:px-6 lg:px-10 pt-16 pb-80 md:pb-128 lg:pb-16 lg:h-[600px] z-10">
+      <div className="bg-transparent relative flex w-full flex-col lg:flex-row items-center justify-center overflow-hidden  px-4 sm:px-6 lg:px-10 pt-16  lg:pb-16 lg:h-[600px] z-10 max-w-7xl mx-auto">
         {/* Text Section - Left Side */}
         <div className="flex-1 w-full lg:w-1/2 order-2 lg:order-1 mb-8 lg:mb-0 px-4 lg:px-0">
           {/* Main Heading */}
@@ -226,7 +226,7 @@ const HeroSection = () => {
         </div>
 
         {/* Globe Section - Right Side */}
-        <div className="flex-1 w-full lg:w-1/2 order-1 lg:order-2 flex justify-center items-center h-64 lg:h-full relative">
+        <div className="hidden lg:block w-full lg:w-1/2 order-1 lg:order-2 flex justify-center items-center h-64 lg:h-full relative">
           <Globe className="w-full h-full max-w-md lg:max-w-lg" />
         </div>
 

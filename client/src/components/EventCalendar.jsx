@@ -122,7 +122,7 @@ export default function EventCalendar() {
     console.log(`Category clicked: ${label}`);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8 relative z-0">
+    <div className="min-h-screen  p-4 sm:p-6 lg:p-8 relative z-0 max-w-7xl mx-auto">
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
         {/* Left - Calendar */}
         <div className="w-full h-fit lg:w-80 bg-white rounded-2xl shadow-lg p-6 transform hover:-translate-y-1 transition-all duration-200 relative">
