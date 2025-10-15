@@ -9,6 +9,8 @@ import HelpCenter from "./pages/HelpCenter";
 import Footer from "./pages/Footer";
 import About from "./pages/About";
 import PostAdd from "./pages/Post";
+import HousesList from "./categories/HouseList";
+import HouseDetails from "./categories/HouseDetails";
 const App = () => {
   return (
     <>
@@ -22,6 +24,9 @@ const App = () => {
           <Route path="/about" element={<About />} />
           <Route path="/contactUs" element={<HelpCenter />} />
           <Route path="/footer" element={<Footer />} />
+          <Route path="/categories/houses" element={<HousesList />} />
+          <Route path="/categories/houses/:id" element={<HouseDetails />} />
+
         </Routes>
       </BrowserRouter>
     </>

@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function EventCalendar() {
+  const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState(new Date(2023, 9, 1));
   const [selectedDates, setSelectedDates] = useState([5, 17]);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
@@ -27,47 +29,55 @@ export default function EventCalendar() {
       imageUrl: "/Housing.jpg",
       label: "Housing",
       description: "Local happenings & festivals",
+      path: "/categories/houses",
     },
     {
       imageUrl:
         "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
       label: "Sales",
       description: "Great deals on items",
+      path: "categories/sales",
     },
     {
       imageUrl: "/community.jpg",
       label: "Community",
       description: "Connect with neighbors",
+      path: "categories/community",
     },
     {
       imageUrl:
         "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop",
       label: "Services",
       description: "Home & repair pros",
+      path: "categories/services",
     },
     {
       imageUrl:
         "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=300&fit=crop",
       label: "Gigs",
       description: "Music & entertainment",
+      path: "categories/gigs",
     },
     {
       imageUrl:
         "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop",
       label: "Jobs",
       description: "Career opportunities",
+      path: "categories/jobs",
     },
     {
       imageUrl:
         "https://images.unsplash.com/photo-1593642532973-d31b6557fa68?w=400&h=300&fit=crop",
       label: "Discussion Forums",
       description: "Join community discussions",
+      path: "categories/discussion-forums",
     },
     {
       imageUrl:
         "https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?w=400&h=300&fit=crop",
       label: "Resumes",
       description: "Find and share resumes",
+      path: "/resumes",
     },
   ];
 
@@ -118,8 +128,8 @@ export default function EventCalendar() {
     for (let i = currentYear - 50; i <= currentYear + 50; i++) years.push(i);
     return years;
   };
-  const handleCategoryClick = (label) =>
-    console.log(`Category clicked: ${label}`);
+  const handleCategoryClick = (label, path) =>
+    navigate(path);
 
   return (
     <div className="min-h-screen  p-4 sm:p-6 lg:p-8 relative z-0 max-w-7xl mx-auto">
@@ -251,7 +261,7 @@ export default function EventCalendar() {
               <div
                 key={idx}
                 className="bg-white rounded-2xl shadow-lg overflow-hidden cursor-pointer group transition-all duration-300 hover:shadow-xl hover:-translate-y-2"
-                onClick={() => handleCategoryClick(category.label)}
+                onClick={() => handleCategoryClick(category.label, category.path)}
               >
                 <div className="relative h-48 overflow-hidden">
                   <img
