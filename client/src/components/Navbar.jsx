@@ -21,12 +21,7 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex space-x-8 items-center">
-            <Link
-              to="/"
-              className="text-gray-700 hover:text-[#2F3A63] font-medium transition-colors duration-200 px-3 py-2 rounded-md hover:bg-blue-50"
-            >
-              Home
-            </Link>
+            
             <Link
               to="/postadd"
               className="text-gray-700 hover:text-[#2F3A63] font-medium transition-colors duration-200 px-3 py-2 rounded-md hover:bg-blue-50"
@@ -77,13 +72,7 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden bg-white border-t border-gray-200 shadow-md animate-fadeIn">
           <div className="flex flex-col space-y-1 px-4 py-4">
-            <Link
-              to="/"
-              className="text-gray-700 hover:text-[#2F3A63] font-medium transition-colors duration-200 px-3 py-2 rounded-md hover:bg-blue-50 block"
-              onClick={() => setIsOpen(false)}
-            >
-              Home
-            </Link>
+           
             <Link
               to="/postadd"
               className="text-gray-700 hover:text-[#2F3A63] font-medium transition-colors duration-200 px-3 py-2 rounded-md hover:bg-blue-50 block"

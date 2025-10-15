@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { MapPin, Bed, Search, DollarSign, ChevronDown } from "lucide-react";
+import { MapPin, Bed, Search, DollarSign, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 
 // Import your JSON data
 import data from "../data/data.json";
@@ -13,6 +13,14 @@ function HousesList() {
   const [maxPrice, setMaxPrice] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
   const [listingType, setListingType] = useState("all"); // For tabs: all, rent, sale
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const itemsPerPage = 20;
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [propertyTypeFilter, bedroomsFilter, maxPrice, locationFilter, listingType, searchTerm]);
 
   // Get unique locations for the location filter
   const uniqueLocations = [
@@ -65,6 +73,18 @@ function HousesList() {
     );
   });
 
+  const indexOfLastHouse = currentPage * itemsPerPage;
+  const indexOfFirstHouse = indexOfLastHouse - itemsPerPage;
+  const currentHouses = filteredHouses.slice(indexOfFirstHouse, indexOfLastHouse);
+  const totalPages = Math.ceil(filteredHouses.length / itemsPerPage);
+
+  const startIndex = indexOfFirstHouse + 1;
+  const endIndex = Math.min(indexOfLastHouse, filteredHouses.length);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="min-h-screen">
       {/* Hero Section with Background Wallpaper */}
@@ -75,14 +95,6 @@ function HousesList() {
         }}
       >
         <div className="absolute inset-0 bg-black/30 bg-opacity-40"></div>
-        <div className="absolute top-4 left-4 z-20 ">
-          <Link
-            to="/categories"
-            className=" bg-blue-500 text-white px-4 py-2 rounded-lg font-medium shadow-lg"
-          >
-            Back to Categories
-          </Link>
-        </div>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white px-4 z-10">
             <h1 className="text-4xl md:text-6xl font-bold mb-4">
@@ -223,23 +235,26 @@ function HousesList() {
       </div>
 
       {/* Main Content */}
-      <div className="bg-gray-50 pt-20 pb-8 min-h-screen">
+      <div className="bg-gray-50 lg:pt-20 max-md:pt-60 pt:  pb-8 min-h-screen">
         <div className="container mx-auto px-4">
+          {/* Back to Categories Button */}
+          <div className="mb-6">
+            <Link
+              to="/categories"
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium shadow-lg inline-block z-50 hover:bg-blue-600 transition-colors"
+            >
+              Back to Categories
+            </Link>
+          </div>
+
           {/* Results Count */}
-          <div className="mb-6 flex justify-between items-center">
+          <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4  lg:flex lg:items-center lg:justify-center">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">
+              <h2 className="text-4xl font-bold text-gray-900 mb-1  ">
                 Discover Our Featured Listings
               </h2>
-              <p className="text-gray-600 mt-1">
-                Showing {filteredHouses.length} of {houses.length} properties
-              </p>
             </div>
-            <div className="flex items-center space-x-2">
-              <Search className="w-5 h-5 text-gray-600" />
-              <span className="text-gray-600">Filters Applied</span>
             </div>
-          </div>
 
           {/* Houses Grid */}
           {filteredHouses.length === 0 ? (
@@ -264,83 +279,120 @@ function HousesList() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredHouses.map((house) => (
-                <div
-                  key={house.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-                >
-                  <div className="relative">
-                    <img
-                      src={house.images[0]}
-                      alt={house.title}
-                      className="w-full h-48 object-cover"
-                    />
-                    <div className="absolute top-3 right-3">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          house.type === "rent"
-                            ? "bg-blue-100 text-blue-800"
-                            : "bg-green-100 text-green-800"
-                        }`}
-                      >
-                        {house.type === "rent" ? "For Rent" : "For Sale"}
-                      </span>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                {currentHouses.map((house) => (
+                  <div
+                    key={house.id}
+                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                  >
+                    <div className="relative">
+                      <img
+                        src={house.images[0]}
+                        alt={house.title}
+                        className="w-full h-48 object-cover"
+                      />
+                      <div className="absolute top-3 right-3">
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            house.type === "rent"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-green-100 text-green-800"
+                          }`}
+                        >
+                          {house.type === "rent" ? "For Rent" : "For Sale"}
+                        </span>
+                      </div>
+                      <div className="absolute bottom-3 left-3">
+                        <span className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">
+                          {house.posted}
+                        </span>
+                      </div>
                     </div>
-                    <div className="absolute bottom-3 left-3">
-                      <span className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">
-                        {house.posted}
-                      </span>
+
+                    <div className="p-4">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
+                        {house.title}
+                      </h3>
+
+                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                        {house.description}
+                      </p>
+
+                      <div className="flex items-center text-gray-700 mb-3">
+                        <MapPin className="w-4 h-4 mr-2 text-blue-600" />
+                        <span className="text-sm">
+                          {house.location.split(",")[0]}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center text-gray-700 mb-4">
+                        <Bed className="w-4 h-4 mr-2 text-green-600" />
+                        <span className="text-sm">{house.bedrooms} beds</span>
+                      </div>
+
+                      <div className="flex justify-between items-center mb-4">
+                        <span className="text-xl font-bold text-green-600">
+                          {house.type === "rent"
+                            ? `$${house.price}/mo`
+                            : `$${house.price.toLocaleString()}`}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <Link
+                          to={`/categories/houses/${house.id}`}
+                          className="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                        >
+                          View Details
+                        </Link>
+                        <a
+                          href={`mailto:${house.contactEmail}?subject=Inquiry about ${house.title}`}
+                          className="flex-1 border border-blue-600 text-blue-600 text-center py-2 px-4 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+                        >
+                          Contact
+                        </a>
+                      </div>
                     </div>
                   </div>
+                ))}
+              </div>
 
-                  <div className="p-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
-                      {house.title}
-                    </h3>
-
-                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                      {house.description}
-                    </p>
-
-                    <div className="flex items-center text-gray-700 mb-3">
-                      <MapPin className="w-4 h-4 mr-2 text-blue-600" />
-                      <span className="text-sm">
-                        {house.location.split(",")[0]}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center text-gray-700 mb-4">
-                      <Bed className="w-4 h-4 mr-2 text-green-600" />
-                      <span className="text-sm">{house.bedrooms} beds</span>
-                    </div>
-
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="text-xl font-bold text-green-600">
-                        {house.type === "rent"
-                          ? `$${house.price}/mo`
-                          : `$${house.price.toLocaleString()}`}
-                      </span>
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Link
-                        to={`/categories/houses/${house.id}`}
-                        className="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                      >
-                        View Details
-                      </Link>
-                      <a
-                        href={`mailto:${house.contactEmail}?subject=Inquiry about ${house.title}`}
-                        className="flex-1 border border-blue-600 text-blue-600 text-center py-2 px-4 rounded-lg hover:bg-blue-50 transition-colors font-medium"
-                      >
-                        Contact
-                      </a>
-                    </div>
-                  </div>
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex flex-wrap justify-center items-center space-x-2 mt-8 gap-2">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-3 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors flex items-center"
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-1" />
+                    Prev
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => handlePageChange(page)}
+                      className={`px-3 py-2 rounded-lg transition-colors ${
+                        currentPage === page
+                          ? "bg-blue-600 text-white"
+                          : "border hover:bg-gray-100"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-3 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors flex items-center"
+                  >
+                    Next
+                    <ChevronRight className="w-4 h-4 ml-1" />
+                  </button>
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </div>

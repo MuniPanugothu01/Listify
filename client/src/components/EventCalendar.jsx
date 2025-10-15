@@ -36,48 +36,48 @@ export default function EventCalendar() {
         "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
       label: "Sales",
       description: "Great deals on items",
-      path: "categories/sales",
+      path: "/categories/sales",
     },
     {
       imageUrl: "/community.jpg",
       label: "Community",
       description: "Connect with neighbors",
-      path: "categories/community",
+      path: "/categories/community",
     },
     {
       imageUrl:
         "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop",
       label: "Services",
       description: "Home & repair pros",
-      path: "categories/services",
+      path: "/categories/services",
     },
     {
       imageUrl:
         "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=400&h=300&fit=crop",
       label: "Gigs",
       description: "Music & entertainment",
-      path: "categories/gigs",
+      path: "/categories/gigs",
     },
     {
       imageUrl:
         "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop",
       label: "Jobs",
       description: "Career opportunities",
-      path: "categories/jobs",
+      path: "/categories/jobs",
     },
     {
       imageUrl:
         "https://images.unsplash.com/photo-1593642532973-d31b6557fa68?w=400&h=300&fit=crop",
       label: "Discussion Forums",
       description: "Join community discussions",
-      path: "categories/discussion-forums",
+      path: "/categories/discussion",
     },
     {
       imageUrl:
         "https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?w=400&h=300&fit=crop",
       label: "Resumes",
       description: "Find and share resumes",
-      path: "/resumes",
+      path: "/categories/resumes",
     },
   ];
 

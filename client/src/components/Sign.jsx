@@ -1,19 +1,41 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // <-- import useNavigate
 
 const Sign = () => {
   const [isSignUpActive, setIsSignUpActive] = useState(false);
+  const navigate = useNavigate(); // <-- initialize navigate
+
+  // Example submit handlers
+  const handleSignIn = (e) => {
+    e.preventDefault();
+    // You can add actual authentication logic here
+
+    // Navigate to home page after sign in
+    navigate("/");
+  };
+
+  const handleSignUp = (e) => {
+    e.preventDefault();
+    // You can add actual registration logic here
+
+    // Navigate to home page after sign up
+    navigate("/");
+  };
 
   return (
     <div className="bg-[#F3F3F3] flex justify-center items-center flex-col min-h-screen font-sans p-5 pb-12">
       <div className="container bg-white rounded-lg shadow-[0_14px_28px_rgba(0,0,0,0.25),0_10px_10px_rgba(0,0,0,0.22)] relative overflow-hidden w-full max-w-3xl min-h-[600px] mx-auto transition-all duration-600 ease-in-out">
+        {/* Sign Up Container */}
         <div
           className={`form-container sign-up-container absolute top-1/2 sm:top-0 h-1/2 sm:h-full transition-all duration-600 ease-in-out left-0 w-full sm:w-1/2 ${
             isSignUpActive ? "opacity-100 z-[5]" : "opacity-0 z-[1]"
           } ${isSignUpActive ? "sm:translate-x-full" : ""}`}
         >
-          <form className="bg-white flex items-center justify-center flex-col px-4 sm:px-12 py-6 sm:py-12 h-full text-center">
+          <form
+            onSubmit={handleSignUp} // <-- handle sign up
+            className="bg-white flex items-center justify-center flex-col px-4 sm:px-12 py-6 sm:py-12 h-full text-center"
+          >
             <h1 className="font-bold m-0 text-2xl">Create Account</h1>
-
             <span className="text-xs">or use your email for registration</span>
             <input
               type="text"
@@ -30,19 +52,26 @@ const Sign = () => {
               placeholder="Password"
               className="bg-gray-200 border-none p-3 my-2 w-full rounded-md"
             />
-            <button className="rounded-full border bg-white text-black text-xs font-bold px-11 py-3 uppercase tracking-wider transition-transform duration-[80ms] ease-in active:scale-95 focus:outline-none mt-4">
+            <button
+              type="submit"
+              className="rounded-full border bg-white text-black text-xs font-bold px-11 py-3 uppercase tracking-wider transition-transform duration-[80ms] ease-in active:scale-95 focus:outline-none mt-4"
+            >
               Sign Up
             </button>
           </form>
         </div>
+
+        {/* Sign In Container */}
         <div
           className={`form-container sign-in-container absolute top-1/2 sm:top-0 h-1/2 sm:h-full transition-all duration-600 ease-in-out left-0 w-full sm:w-1/2 z-[2] ${
             isSignUpActive ? "sm:translate-x-full opacity-0" : ""
           }`}
         >
-          <form className="bg-white flex items-center justify-center flex-col px-4 sm:px-12 py-6 sm:py-12 h-full text-center">
+          <form
+            onSubmit={handleSignIn} // <-- handle sign in
+            className="bg-white flex items-center justify-center flex-col px-4 sm:px-12 py-6 sm:py-12 h-full text-center"
+          >
             <h1 className="font-bold m-0 text-2xl">Sign in</h1>
-
             <span className="text-xs">or use your account</span>
             <input
               type="email"
@@ -60,11 +89,16 @@ const Sign = () => {
             >
               Forgot your password?
             </a>
-            <button className="rounded-full border bg-white text-black  text-xs font-bold px-11 py-3 uppercase tracking-wider transition-transform duration-[80ms] ease-in active:scale-95 focus:outline-none">
+            <button
+              type="submit"
+              className="rounded-full border bg-white text-black text-xs font-bold px-11 py-3 uppercase tracking-wider transition-transform duration-[80ms] ease-in active:scale-95 focus:outline-none"
+            >
               Sign In
             </button>
           </form>
         </div>
+
+        {/* Overlay Panel (no changes needed) */}
         <div
           className={`overlay-container absolute top-0 left-0 sm:left-1/2 w-full sm:w-1/2 h-1/2 sm:h-full overflow-hidden transition-transform duration-600 ease-in-out z-[100] ${
             isSignUpActive ? "sm:-translate-x-full" : ""
@@ -97,6 +131,7 @@ const Sign = () => {
                 Sign In
               </button>
             </div>
+
             <div
               className={`overlay-panel overlay-right absolute flex items-center justify-center flex-col px-4 sm:px-10 py-8 sm:py-10 text-center top-0 h-full w-full sm:w-1/2 transition-transform duration-600 ease-in-out right-0 sm:right-0 ${
                 isSignUpActive
