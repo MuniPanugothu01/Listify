@@ -1,12 +1,6 @@
 import React, { useState } from "react";
 import Select from "react-select";
 import { Globe } from "../../src/components/ui/globe";
-import EventCalendar from "../components/EventCalendar";
-import PostAds from "./PostAds";
-import FeaturedListings from "./FeaturedListings";
-import Testimonials from "./Testimonials";
-import Review from "./Review";
-import Footer from "./Footer";
 
 const HeroSection = () => {
   const [selectedCountry, setSelectedCountry] = useState(null);
@@ -232,12 +226,6 @@ const HeroSection = () => {
 
         <div className="pointer-events-none absolute inset-0 h-full" />
       </div>
-      <EventCalendar />
-      <PostAds />
-      <FeaturedListings />
-      <Review />
-      <Testimonials />
-      <Footer />
     </>
   );
 };

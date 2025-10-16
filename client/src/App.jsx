@@ -25,6 +25,7 @@ import DiscussionForumsList from "./categories/DiscussionForumsList";
 import DiscussionForumsDetails from "./categories/DiscussionForumsDetails";
 import ResumesList from "./categories/ResumesList.jsx";
 import ResumesDetails from "./categories/ResumesDetails";
+import LandingPage from "./pages/LandingPage";
 
 
 
@@ -48,7 +49,7 @@ const App = () => {
       <BrowserRouter>
         <Layout>
         <Routes>
-          <Route path="/" element={<HeroSection />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/signin" element={<Sign />} />
           <Route path="/categories" element={<EventCalendar />} />
           <Route path="/postadd" element={<PostAdd />} />
