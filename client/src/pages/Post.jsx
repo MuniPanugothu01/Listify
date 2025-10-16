@@ -57,13 +57,14 @@ const PostAdd = ({ data, setData }) => {
     };
 
     const categoryMap = {
-      "house for sale": "houses",
-      "house for rent": "houses",
+      "houses": "houses",
+      "sales": "sales",
       "service offered": "services",
       "gigs": "gigs",
       "jobs": "jobs",
       "community event": "community",
-      "volunteer": "community",
+      "discussions-fourums": "forums",
+      "resumes": "resumes",
     };
 
     const category = categoryMap[formData.postType] || "houses";
@@ -98,13 +99,14 @@ const PostAdd = ({ data, setData }) => {
               className="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-500 outline-none"
             >
               <option value="">Select Post Type</option>
-              <option value="house for sale">House for Sale</option>
-              <option value="house for rent">House for Rent</option>
-              <option value="service offered">Service Offered</option>
+              <option value="houses">Houses</option>
+              <option value="sales">sales</option>
+              <option value="service">Service</option>
               <option value="gigs">Gigs</option>
               <option value="jobs">Jobs</option>
               <option value="community event">Community Event</option>
-              <option value="volunteer">Volunteer Opportunity</option>
+              <option value="discussions-forums">Discussions-forums</option>
+              <option value="resumes">Resumes</option>
             </select>
           </div>
 
@@ -118,7 +120,7 @@ const PostAdd = ({ data, setData }) => {
                 checked={formData.intent === "offering"}
                 onChange={handleInputChange}
               />
-              <span>Offering</span>
+              <span>Offering/Rent</span>
             </label>
             <label className="flex items-center gap-2">
               <input
@@ -128,7 +130,7 @@ const PostAdd = ({ data, setData }) => {
                 checked={formData.intent === "hiring"}
                 onChange={handleInputChange}
               />
-              <span>Hiring</span>
+              <span>Hiring/Sale</span>
             </label>
           </div>
 

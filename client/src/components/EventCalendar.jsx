@@ -132,10 +132,10 @@ export default function EventCalendar() {
     navigate(path);
 
   return (
-    <div className="min-h-screen  p-4 sm:p-6 lg:p-8 relative z-0 max-w-7xl mx-auto">
+    <div className="min-h-screen  p-4 sm:p-6 lg:p-8 relative z-0 ">
       <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
         {/* Left - Calendar */}
-        <div className="w-full h-fit lg:w-80 bg-white rounded-2xl shadow-lg p-6 transform hover:-translate-y-1 transition-all duration-200 relative">
+        <div className="w-full h-fit lg:w-80 md:h-100px md:w-100 sm:w-100  rounded-2xl shadow-lg p-6 transform hover:-translate-y-1 transition-all duration-200 relative">
           <h2 className="text-lg font-semibold text-[#2F3A63] mb-6 flex items-center gap-2">
             <div className="w-1 h-6 bg-gradient-to-b from-[#2F3A63] to-[#1e2a4a] rounded-full"></div>
             Event Calendar

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+import logo from "../assets/logo.jpg"; // Adjust the path as needed
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,11 +12,13 @@ export default function Navbar() {
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <div className="flex items-center">
-            <Link
-              to="/"
-              className="text-2xl font-bold text-[#2F3A63] hover:text-gray-500 transition-colors duration-200"
-            >
-              MyLogo
+            <Link to="/" className="flex items-center">
+              <img
+                src={logo}
+                alt="Logo"
+                className="h-12 w-auto"
+              />
+              <span className="ml-2 text-xl font-bold text-[#2F3A63] ">Listify</span>
             </Link>
           </div>
 

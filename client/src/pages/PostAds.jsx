@@ -2,7 +2,12 @@ import React from "react";
 import Lottie from "lottie-react";
 import travelerAnimation from "../components/lottie/Traveler.json"; // adjust path if needed
 
+import { useNavigate } from "react-router-dom";
+
+
 const PostAds = () => {
+
+  const navigate = useNavigate();
   return (
     <section
       className="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-[#F3F3F3]"
@@ -77,14 +82,15 @@ const PostAds = () => {
             </li>
           </ul>
           <div className="pt-4">
-            <button
-              className="group relative px-6 py-3 bg-[#2F3A63] text-white font-semibold text-base rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.15),0_4px_10px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.1)] transition-all duration-200 hover:bg-[#1e2a4a] focus:outline-none focus:ring-2 focus:ring-[#2F3A63] focus:ring-offset-2 transform hover:-translate-y-0.5"
-              aria-label="Post an ad now"
-            >
-              <span className="relative z-10">Post Ad Now</span>
-              <div className="absolute inset-0 bg-white/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-            </button>
-          </div>
+      <button
+        onClick={() => navigate("/postadd")}
+        className="group relative px-6 py-3 bg-[#2F3A63] text-white font-semibold text-base rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.15),0_4px_10px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.1)] transition-all duration-200 hover:bg-[#1e2a4a] focus:outline-none focus:ring-2 focus:ring-[#2F3A63] focus:ring-offset-2 transform hover:-translate-y-0.5"
+        aria-label="Post an ad now"
+      >
+        <span className="relative z-10">Post Ad Now</span>
+        <div className="absolute inset-0 bg-white/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+      </button>
+    </div>
         </div>
 
         {/* Right side: Lottie Animation */}
