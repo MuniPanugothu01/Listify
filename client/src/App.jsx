@@ -27,8 +27,6 @@ import ResumesList from "./categories/ResumesList.jsx";
 import ResumesDetails from "./categories/ResumesDetails";
 import LandingPage from "./pages/LandingPage";
 
-
-
 // A wrapper to conditionally render Navbar
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -42,38 +40,52 @@ const Layout = ({ children }) => {
   );
 };
 
-
 const App = () => {
   return (
     <>
       <BrowserRouter>
         <Layout>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/signin" element={<Sign />} />
-          <Route path="/categories" element={<EventCalendar />} />
-          <Route path="/postadd" element={<PostAdd />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contactUs" element={<HelpCenter />} />
-          <Route path="/footer" element={<Footer />} />
-          <Route path="/categories/houses" element={<HousesList />} />
-          <Route path="/categories/houses/:id" element={<HouseDetails />} />
-          <Route path="/categories/sales" element={<SalesList />} />
-          <Route path="/categories/sales/:id" element={<SalesDetails />} />
-          <Route path="/categories/services" element={<ServicesList />} />
-          <Route path="/categories/services/:id" element={<ServicesDetails />} />
-          <Route path="/categories/gigs" element={<GigsList />} />
-          <Route path="/categories/gigs/:id" element={<GigsDetails />} />
-          <Route path="/categories/jobs" element={<JobsList />} />
-          <Route path="/categories/jobs/:id" element={<JobsDetails />} />
-          <Route path="/categories/community" element={<CommunityList />} />
-          <Route path="/categories/community/:id" element={<CommunityDetails />} />
-          <Route path="/categories/discussion" element={<DiscussionForumsList />} />
-          <Route path="/categories/discussion/:id" element={<DiscussionForumsDetails />} />
-          <Route path="/categories/resumes" element={<ResumesList />} />
-          <Route path="/categories/resumes/:id" element={<ResumesDetails />} />
-        </Routes>
-      </Layout>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/signin" element={<Sign />} />
+            <Route path="/categories" element={<EventCalendar />} />
+            <Route path="/postadd" element={<PostAdd />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contactUs" element={<HelpCenter />} />
+            <Route path="/footer" element={<Footer />} />
+            <Route path="/categories/houses" element={<HousesList />} />
+            <Route path="/categories/houses/:id" element={<HouseDetails />} />
+            <Route path="/categories/sales" element={<SalesList />} />
+            <Route path="/categories/sales/:id" element={<SalesDetails />} />
+            <Route path="/categories/services" element={<ServicesList />} />
+            <Route
+              path="/categories/services/:id"
+              element={<ServicesDetails />}
+            />
+            <Route path="/categories/gigs" element={<GigsList />} />
+            <Route path="/categories/gigs/:id" element={<GigsDetails />} />
+            <Route path="/categories/jobs" element={<JobsList />} />
+            <Route path="/categories/jobs/:id" element={<JobsDetails />} />
+            <Route path="/categories/community" element={<CommunityList />} />
+            <Route
+              path="/categories/community/:id"
+              element={<CommunityDetails />}
+            />
+            <Route
+              path="/categories/discussion"
+              element={<DiscussionForumsList />}
+            />
+            <Route
+              path="/categories/discussion/:id"
+              element={<DiscussionForumsDetails />}
+            />
+            <Route path="/categories/resumes" element={<ResumesList />} />
+            <Route
+              path="/categories/resumes/:id"
+              element={<ResumesDetails />}
+            />
+          </Routes>
+        </Layout>
       </BrowserRouter>
     </>
   );

@@ -15,7 +15,8 @@ function SalesDetails() {
 
   useEffect(() => {
     try {
-      const foundSale = data.forSale.find((s) => s.id === parseInt(id));
+      // Changed from data.forSale to data.marketplace
+      const foundSale = data.marketplace.find((s) => s.id === parseInt(id));
       if (!foundSale) {
         setError("Item not found");
       } else {
@@ -37,13 +38,48 @@ function SalesDetails() {
     );
   }
 
-  if (!sale) {
+  if (error || !sale) {
     return (
       <div className="text-center text-gray-600 mt-10 text-xl">
-        Item not found
+        {error || "Item not found"}
       </div>
     );
   }
+
+  // Get type badge color and text
+  const getTypeInfo = (type) => {
+    switch (type) {
+      case "sale":
+        return { color: "bg-red-100 text-red-800", text: "For Sale" };
+      case "free":
+        return { color: "bg-green-100 text-green-800", text: "Free" };
+      case "wanted":
+        return { color: "bg-purple-100 text-purple-800", text: "Wanted" };
+      default:
+        return { color: "bg-gray-100 text-gray-800", text: type };
+    }
+  };
+
+  // Get condition badge color
+  const getConditionColor = (condition) => {
+    switch (condition) {
+      case "New":
+        return "bg-green-100 text-green-800";
+      case "Like New":
+        return "bg-blue-100 text-blue-800";
+      case "Good":
+        return "bg-emerald-100 text-emerald-800";
+      case "Fair":
+        return "bg-yellow-100 text-yellow-800";
+      case "Poor":
+        return "bg-orange-100 text-orange-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const typeInfo = getTypeInfo(sale.type);
+  const conditionColor = getConditionColor(sale.condition);
 
   const displayImages =
     sale.images.length < 4
@@ -71,7 +107,7 @@ function SalesDetails() {
               d="M15 19l-7-7 7-7"
             />
           </svg>
-          Back to Sales
+          Back to Marketplace
         </Link>
 
         <div className="bg-white rounded-lg shadow-md p-6 md:flex gap-8">
@@ -88,7 +124,9 @@ function SalesDetails() {
                   src={img}
                   alt={`${sale.title} - ${index + 1}`}
                   className={`w-20 h-20 object-cover border rounded cursor-pointer ${
-                    selectedImage === img ? "border-blue-500" : "border-gray-300"
+                    selectedImage === img
+                      ? "border-blue-500"
+                      : "border-gray-300"
                   }`}
                   onClick={() => setSelectedImage(img)}
                 />
@@ -97,23 +135,48 @@ function SalesDetails() {
           </div>
 
           <div className="md:w-1/2 mt-6 md:mt-0">
-            <div className="flex justify-between items-start">
-              <h1 className="text-2xl font-semibold text-gray-900">{sale.title}</h1>
-              <span className="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm font-medium">
-                {sale.condition}
-              </span>
+            <div className="flex justify-between items-start mb-4">
+              <h1 className="text-2xl font-semibold text-gray-900">
+                {sale.title}
+              </h1>
+              <div className="flex flex-col items-end gap-2">
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${typeInfo.color}`}
+                >
+                  {typeInfo.text}
+                </span>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${conditionColor}`}
+                >
+                  {sale.condition}
+                </span>
+              </div>
             </div>
-            
-            <p className="text-gray-600 text-lg mt-2">{sale.description}</p>
 
-            <div className="mt-4">
-              <span className="text-3xl font-bold text-green-600">
+            <p className="text-gray-600 text-lg mb-6">{sale.description}</p>
+
+            <div className="mb-6">
+              <span
+                className={`text-3xl font-bold ${
+                  sale.price === "Free"
+                    ? "text-green-600"
+                    : sale.price === "Negotiable"
+                    ? "text-blue-600"
+                    : "text-green-600"
+                }`}
+              >
                 {sale.price}
               </span>
-              <p className="text-sm text-gray-500 mt-1">Sale Price</p>
+              <p className="text-sm text-gray-500 mt-1">
+                {sale.type === "free"
+                  ? "Free Item"
+                  : sale.type === "wanted"
+                  ? "Price Negotiable"
+                  : "Sale Price"}
+              </p>
             </div>
 
-            <div className="mt-6 space-y-3">
+            <div className="mb-6 space-y-3">
               <p className="text-gray-700 flex items-center text-lg">
                 <MapPin className="w-5 h-5 mr-2 text-blue-600" />
                 <strong>Location:</strong> {sale.location}
@@ -123,9 +186,12 @@ function SalesDetails() {
               </p>
             </div>
 
-            <div className="mt-6">
+            <div className="mt-8">
               <div className="flex gap-4">
                 <button className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center font-medium">
+                  Contact Seller
+                </button>
+                <button className="border border-blue-600 text-blue-600 py-3 px-6 rounded-lg hover:bg-blue-50 transition-colors flex items-center font-medium">
                   Save Item
                 </button>
               </div>
@@ -134,7 +200,9 @@ function SalesDetails() {
         </div>
 
         <div className="bg-white rounded-lg shadow-md mt-6 p-6">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-900">📍 Location</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-gray-900">
+            📍 Location
+          </h2>
           <p className="text-gray-600 mb-4">{sale.location}</p>
           <div className="w-full h-[400px] rounded-lg overflow-hidden border">
             <iframe
@@ -144,7 +212,9 @@ function SalesDetails() {
               loading="lazy"
               allowFullScreen
               referrerPolicy="no-referrer-when-downgrade"
-              src={`https://www.google.com/maps?q=${encodeURIComponent(sale.location)}&output=embed`}
+              src={`https://www.google.com/maps?q=${encodeURIComponent(
+                sale.location
+              )}&output=embed`}
             ></iframe>
           </div>
         </div>
