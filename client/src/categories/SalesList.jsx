@@ -1,4 +1,3 @@
-// ForSaleList.jsx (Updated with View Details routing)
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -13,11 +12,13 @@ import {
   RefreshCw,
   Calendar,
   Tag,
+  Heart,
 } from "lucide-react";
 import data from "../data/data.json";
 
 function ForSaleList() {
   const forSaleItems = Array.isArray(data?.marketplace) ? data.marketplace : [];
+  const [savedItems, setSavedItems] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
@@ -40,6 +41,34 @@ function ForSaleList() {
     datePostedFilter,
     sortBy,
   ]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+    setSavedItems(saved);
+  }, []);
+
+  useEffect(() => {
+    const loadSaved = () => {
+      const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+      setSavedItems(saved);
+    };
+
+    window.addEventListener('savedItemsChanged', loadSaved);
+    return () => window.removeEventListener('savedItemsChanged', loadSaved);
+  }, []);
+
+  const toggleSave = (item) => {
+    let newSaved;
+    const isSaved = savedItems.some(i => i.id === item.id);
+    if (isSaved) {
+      newSaved = savedItems.filter(i => i.id !== item.id);
+    } else {
+      newSaved = [...savedItems, item];
+    }
+    setSavedItems(newSaved);
+    localStorage.setItem('savedItems', JSON.stringify(newSaved));
+    window.dispatchEvent(new CustomEvent('savedItemsChanged'));
+  };
 
   // Get unique values for filters
   const uniqueLocations = [
@@ -605,6 +634,7 @@ function ForSaleList() {
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
                     {currentItems.map((item) => {
                       const typeInfo = getTypeInfo(item.type);
+                      const isSaved = savedItems.some(i => i.id === item.id);
                       return (
                         <div
                           key={item.id}
@@ -637,6 +667,23 @@ function ForSaleList() {
                                 <Calendar className="w-3 h-3" />
                                 {item.posted || "Unknown"}
                               </span>
+                            </div>
+                            <div className="absolute bottom-2 right-2">
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleSave(item);
+                                }}
+                                className="p-1.5 rounded-full bg-white/90 hover:bg-white transition-colors shadow-sm"
+                              >
+                                <Heart 
+                                  className={`w-4 h-4 transition-colors ${
+                                    isSaved 
+                                      ? 'fill-red-600 text-red-600' 
+                                      : 'text-gray-400 hover:text-red-500'
+                                  }`} 
+                                />
+                              </button>
                             </div>
                           </div>
 

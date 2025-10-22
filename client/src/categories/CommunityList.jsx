@@ -13,6 +13,7 @@ import {
   Calendar,
   Users,
   Clock,
+  Heart,
 } from "lucide-react";
 
 // Import your JSON data
@@ -20,6 +21,7 @@ import data from "../data/data.json";
 
 function CommunityList() {
   const communityItems = Array.isArray(data?.community) ? data.community : [];
+  const [savedItems, setSavedItems] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [eventTypeFilter, setEventTypeFilter] = useState("all");
@@ -37,6 +39,34 @@ function CommunityList() {
   useEffect(() => {
     setCurrentPage(1);
   }, [eventTypeFilter, locationFilter, dateFilter, searchTerm, sortBy]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+    setSavedItems(saved);
+  }, []);
+
+  useEffect(() => {
+    const loadSaved = () => {
+      const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+      setSavedItems(saved);
+    };
+
+    window.addEventListener('savedItemsChanged', loadSaved);
+    return () => window.removeEventListener('savedItemsChanged', loadSaved);
+  }, []);
+
+  const toggleSave = (item) => {
+    let newSaved;
+    const isSaved = savedItems.some(i => i.id === item.id);
+    if (isSaved) {
+      newSaved = savedItems.filter(i => i.id !== item.id);
+    } else {
+      newSaved = [...savedItems, item];
+    }
+    setSavedItems(newSaved);
+    localStorage.setItem('savedItems', JSON.stringify(newSaved));
+    window.dispatchEvent(new CustomEvent('savedItemsChanged'));
+  };
 
   // Get unique values for filters
   const uniqueLocations = [
@@ -611,6 +641,7 @@ function CommunityList() {
                     {currentItems.map((item) => {
                       const eventType = getEventType(item);
                       const eventTypeColor = getEventTypeColor(eventType);
+                      const isSaved = savedItems.some(i => i.id === item.id);
 
                       return (
                         <div
@@ -636,6 +667,23 @@ function CommunityList() {
                                 <Calendar className="w-3 h-3" />
                                 {formatDate(item.date)}
                               </span>
+                            </div>
+                            <div className="absolute bottom-2 right-2">
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleSave(item);
+                                }}
+                                className="p-1.5 rounded-full bg-white/90 hover:bg-white transition-colors shadow-sm"
+                              >
+                                <Heart 
+                                  className={`w-4 h-4 transition-colors ${
+                                    isSaved 
+                                      ? 'fill-red-600 text-red-600' 
+                                      : 'text-gray-400 hover:text-red-500'
+                                  }`} 
+                                />
+                              </button>
                             </div>
                           </div>
 

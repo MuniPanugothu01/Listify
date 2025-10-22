@@ -15,6 +15,7 @@ import {
   Square,
   Home,
   Calendar,
+  Heart,
 } from "lucide-react";
 
 // Import your JSON data
@@ -30,6 +31,7 @@ function HousesList() {
   const [listingType, setListingType] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [savedHouses, setSavedHouses] = useState([]);
 
   // Enhanced filter states
   const [datePostedFilter, setDatePostedFilter] = useState("any");
@@ -59,6 +61,24 @@ function HousesList() {
     minSqft,
     maxSqft,
   ]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+    setSavedHouses(saved);
+  }, []);
+
+  const toggleSave = (house) => {
+    let newSaved;
+    const isSaved = savedHouses.some(h => h.id === house.id);
+    if (isSaved) {
+      newSaved = savedHouses.filter(h => h.id !== house.id);
+    } else {
+      newSaved = [...savedHouses, house];
+    }
+    setSavedHouses(newSaved);
+    localStorage.setItem('savedItems', JSON.stringify(newSaved));
+    window.dispatchEvent(new CustomEvent('savedItemsChanged'));
+  };
 
   // Get unique values for filters
   const uniqueLocations = [
@@ -707,6 +727,7 @@ function HousesList() {
                         1,
                         Math.floor(bedrooms / 2)
                       );
+                      const isSaved = savedHouses.some(h => h.id === house.id);
 
                       return (
                         <div
@@ -719,7 +740,7 @@ function HousesList() {
                               alt={house.title}
                               className="w-full h-36 object-cover  "
                             />
-                            <div className="absolute top-2 right-2">
+                            <div className="absolute top-2 left-2">
                               <span
                                 className={`px-2 py-1 rounded-full text-xs font-medium ${
                                   house.type === "rent"
@@ -731,6 +752,23 @@ function HousesList() {
                                   ? "For Rent"
                                   : "For Sale"}
                               </span>
+                            </div>
+                            <div className="absolute top-2 right-2">
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleSave(house);
+                                }}
+                                className="p-1.5 rounded-full bg-white/90 hover:bg-white transition-colors shadow-sm"
+                              >
+                                <Heart 
+                                  className={`w-4 h-4 transition-colors ${
+                                    isSaved 
+                                      ? 'fill-red-600 text-red-600' 
+                                      : 'text-gray-400 hover:text-red-500'
+                                  }`} 
+                                />
+                              </button>
                             </div>
                             <div className="absolute bottom-2 left-2">
                               <span className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">

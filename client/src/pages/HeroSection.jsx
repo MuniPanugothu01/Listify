@@ -115,7 +115,7 @@ const HeroSection = () => {
         <div className="flex-1 w-full lg:w-1/2 order-2 lg:order-1 mb-8 lg:mb-0 px-4 lg:px-0">
           {/* Main Heading */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-[#2F3A63] sm:mb-6 md:mb-8 drop-shadow-2xl">
-            Your Local Marketplace
+            Discover Local Buy Global
           </h1>
 
           {/* Subtext */}

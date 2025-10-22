@@ -26,6 +26,8 @@ import DiscussionForumsDetails from "./categories/DiscussionForumsDetails";
 import ResumesList from "./categories/ResumesList.jsx";
 import ResumesDetails from "./categories/ResumesDetails";
 import LandingPage from "./pages/LandingPage";
+import SavedItems from "./components/Saveditems";
+import Profile from "./components/Profile";
 
 // A wrapper to conditionally render Navbar
 const Layout = ({ children }) => {
@@ -58,6 +60,7 @@ const App = () => {
             <Route path="/categories/sales" element={<SalesList />} />
             <Route path="/categories/sales/:id" element={<SalesDetails />} />
             <Route path="/categories/services" element={<ServicesList />} />
+            <Route path="/profile" element={<Profile />} />
             <Route
               path="/categories/services/:id"
               element={<ServicesDetails />}
@@ -66,7 +69,10 @@ const App = () => {
             <Route path="/categories/gigs/:id" element={<GigsDetails />} />
             <Route path="/categories/jobs" element={<JobsList />} />
             <Route path="/categories/jobs/:id" element={<JobsDetails />} />
+            <Route path="/saved" element={<SavedItems />} />
+
             <Route path="/categories/community" element={<CommunityList />} />
+
             <Route
               path="/categories/community/:id"
               element={<CommunityDetails />}
@@ -84,6 +90,8 @@ const App = () => {
               path="/categories/resumes/:id"
               element={<ResumesDetails />}
             />
+
+            
           </Routes>
         </Layout>
       </BrowserRouter>

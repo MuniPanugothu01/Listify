@@ -1,7 +1,7 @@
 // CommunityDetails.js
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { MapPin, Calendar, Users, Clock } from "lucide-react";
+import { MapPin, Calendar, Users, Clock, Heart } from "lucide-react";
 
 // Import your JSON data
 import data from "../data/data.json";
@@ -12,6 +12,7 @@ function CommunityDetails() {
   const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [savedItems, setSavedItems] = useState([]);
 
   useEffect(() => {
     try {
@@ -29,6 +30,26 @@ function CommunityDetails() {
       setLoading(false);
     }
   }, [id]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+    setSavedItems(saved);
+  }, [id]);
+
+  const isSaved = savedItems.some(h => h.id === item?.id);
+
+  const toggleSave = () => {
+    if (!item) return;
+    let newSaved;
+    if (isSaved) {
+      newSaved = savedItems.filter(h => h.id !== item.id);
+    } else {
+      newSaved = [...savedItems, item];
+    }
+    setSavedItems(newSaved);
+    localStorage.setItem('savedItems', JSON.stringify(newSaved));
+    window.dispatchEvent(new CustomEvent('savedItemsChanged'));
+  };
 
   // Extract event type from title/description (same as CommunityList)
   const extractEventType = (item) => {
@@ -240,8 +261,16 @@ function CommunityDetails() {
                 <button className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center font-medium">
                   Join Event
                 </button>
-                <button className="flex-1 border border-blue-600 text-blue-600 py-3 px-6 rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center font-medium">
-                  Save Event
+                <button 
+                  onClick={toggleSave}
+                  className={`py-3 px-6 rounded-lg transition-colors font-medium flex items-center justify-center ${
+                    isSaved 
+                      ? 'bg-red-100 text-red-600 border border-red-600 hover:bg-red-200' 
+                      : 'border border-blue-600 text-blue-600 hover:bg-blue-50'
+                  }`}
+                >
+                  <Heart className={`w-5 h-5 mr-2 ${isSaved ? 'fill-red-600' : ''}`} />
+                  {isSaved ? 'Saved' : 'Save Event'}
                 </button>
               </div>
             </div>

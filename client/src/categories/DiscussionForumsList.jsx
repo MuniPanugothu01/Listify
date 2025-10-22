@@ -1,13 +1,14 @@
 // DiscussionForumsList.js (Fixed)
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Search, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ChevronDown, ChevronLeft, ChevronRight, Heart } from "lucide-react";
 
 // Import your JSON data
 import data from "../data/data.json";
 
 function DiscussionForumsList() {
   const forums = data.discussionForums || [];
+  const [savedItems, setSavedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [authorFilter, setAuthorFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,6 +19,34 @@ function DiscussionForumsList() {
   useEffect(() => {
     setCurrentPage(1);
   }, [authorFilter, searchTerm]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+    setSavedItems(saved);
+  }, []);
+
+  useEffect(() => {
+    const loadSaved = () => {
+      const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+      setSavedItems(saved);
+    };
+
+    window.addEventListener('savedItemsChanged', loadSaved);
+    return () => window.removeEventListener('savedItemsChanged', loadSaved);
+  }, []);
+
+  const toggleSave = (forum) => {
+    let newSaved;
+    const isSaved = savedItems.some(i => i.id === forum.id);
+    if (isSaved) {
+      newSaved = savedItems.filter(i => i.id !== forum.id);
+    } else {
+      newSaved = [...savedItems, forum];
+    }
+    setSavedItems(newSaved);
+    localStorage.setItem('savedItems', JSON.stringify(newSaved));
+    window.dispatchEvent(new CustomEvent('savedItemsChanged'));
+  };
 
   // Get unique authors for the author filter
   const uniqueAuthors = [...new Set((forums || []).map((forum) => forum?.author).filter(Boolean))];
@@ -160,53 +189,73 @@ function DiscussionForumsList() {
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-                {currentForums.map((forum) => (
-                  <div
-                    key={forum.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-                  >
-                    <div className="relative">
-                      <img
-                        src={forum.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image'}
-                        alt={forum.title || 'Untitled'}
-                        className="w-full h-48 object-cover"
-                      />
-                      <div className="absolute top-3 right-3">
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
-                          {forum.comments || 0} comments
-                        </span>
+                {currentForums.map((forum) => {
+                  const isSaved = savedItems.some(i => i.id === forum.id);
+                  return (
+                    <div
+                      key={forum.id}
+                      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                    >
+                      <div className="relative">
+                        <img
+                          src={forum.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image'}
+                          alt={forum.title || 'Untitled'}
+                          className="w-full h-48 object-cover"
+                        />
+                        <div className="absolute top-3 right-3">
+                          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
+                            {forum.comments || 0} comments
+                          </span>
+                        </div>
+                        <div className="absolute bottom-3 left-3">
+                          <span className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">
+                            {forum.posted || 'Unknown'}
+                          </span>
+                        </div>
+                        <div className="absolute bottom-3 right-3">
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleSave(forum);
+                            }}
+                            className="p-1.5 rounded-full bg-white/90 hover:bg-white transition-colors shadow-sm"
+                          >
+                            <Heart 
+                              className={`w-4 h-4 transition-colors ${
+                                isSaved 
+                                  ? 'fill-red-600 text-red-600' 
+                                  : 'text-gray-400 hover:text-red-500'
+                              }`} 
+                            />
+                          </button>
+                        </div>
                       </div>
-                      <div className="absolute bottom-3 left-3">
-                        <span className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">
-                          {forum.posted || 'Unknown'}
-                        </span>
+
+                      <div className="p-4">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
+                          {forum.title || 'Untitled Discussion'}
+                        </h3>
+
+                        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                          {forum.description || 'No description provided.'}
+                        </p>
+
+                        <div className="text-sm text-gray-500 mb-4">
+                          By {forum.author || 'Unknown'}
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Link
+                            to={`/categories/discussion-forums/${forum.id}`}
+                            className="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                          >
+                            View Discussion
+                          </Link>
+                        </div>
                       </div>
                     </div>
-
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
-                        {forum.title || 'Untitled Discussion'}
-                      </h3>
-
-                      <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-                        {forum.description || 'No description provided.'}
-                      </p>
-
-                      <div className="text-sm text-gray-500 mb-4">
-                        By {forum.author || 'Unknown'}
-                      </div>
-
-                      <div className="flex gap-2">
-                        <Link
-                          to={`/categories/discussion-forums/${forum.id}`}
-                          className="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                        >
-                          View Discussion
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Pagination */}

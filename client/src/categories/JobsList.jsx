@@ -16,11 +16,13 @@ import {
   Building,
   Briefcase,
   Calendar,
+  Heart,
 } from "lucide-react";
 import data from "../data/data.json";
 
 function JobsList() {
   const jobs = data.jobs || [];
+  const [savedItems, setSavedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [jobTypeFilter, setJobTypeFilter] = useState("all");
   const [maxSalary, setMaxSalary] = useState("");
@@ -50,6 +52,34 @@ function JobsList() {
     sortBy,
     companyFilter,
   ]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+    setSavedItems(saved);
+  }, []);
+
+  useEffect(() => {
+    const loadSaved = () => {
+      const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+      setSavedItems(saved);
+    };
+
+    window.addEventListener('savedItemsChanged', loadSaved);
+    return () => window.removeEventListener('savedItemsChanged', loadSaved);
+  }, []);
+
+  const toggleSave = (job) => {
+    let newSaved;
+    const isSaved = savedItems.some(i => i.id === job.id);
+    if (isSaved) {
+      newSaved = savedItems.filter(i => i.id !== job.id);
+    } else {
+      newSaved = [...savedItems, job];
+    }
+    setSavedItems(newSaved);
+    localStorage.setItem('savedItems', JSON.stringify(newSaved));
+    window.dispatchEvent(new CustomEvent('savedItemsChanged'));
+  };
 
   // Get unique values for filters
   const uniqueLocations = [...new Set(jobs.map((job) => job.location))];
@@ -584,6 +614,7 @@ function JobsList() {
                     {currentJobs.map((job) => {
                       const rating = getRandomRating(job.id);
                       const reviewCount = getRandomReviewCount(job.id);
+                      const isSaved = savedItems.some(i => i.id === job.id);
 
                       return (
                         <div
@@ -611,6 +642,23 @@ function JobsList() {
                               <span className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">
                                 {new Date(job.posted).toLocaleDateString()}
                               </span>
+                            </div>
+                            <div className="absolute bottom-2 right-2">
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleSave(job);
+                                }}
+                                className="p-1.5 rounded-full bg-white/90 hover:bg-white transition-colors shadow-sm"
+                              >
+                                <Heart 
+                                  className={`w-4 h-4 transition-colors ${
+                                    isSaved 
+                                      ? 'fill-red-600 text-red-600' 
+                                      : 'text-gray-400 hover:text-red-500'
+                                  }`} 
+                                />
+                              </button>
                             </div>
                           </div>
 

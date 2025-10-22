@@ -14,11 +14,13 @@ import {
   Clock,
   Star,
   User,
+  Heart,
 } from "lucide-react";
 import data from "../data/data.json";
 
 function ServicesList() {
   const services = data.services || [];
+  const [savedItems, setSavedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [serviceTypeFilter, setServiceTypeFilter] = useState("all");
   const [maxPrice, setMaxPrice] = useState("");
@@ -48,6 +50,34 @@ function ServicesList() {
     sortBy,
     ratingFilter,
   ]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+    setSavedItems(saved);
+  }, []);
+
+  useEffect(() => {
+    const loadSaved = () => {
+      const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+      setSavedItems(saved);
+    };
+
+    window.addEventListener('savedItemsChanged', loadSaved);
+    return () => window.removeEventListener('savedItemsChanged', loadSaved);
+  }, []);
+
+  const toggleSave = (service) => {
+    let newSaved;
+    const isSaved = savedItems.some(i => i.id === service.id);
+    if (isSaved) {
+      newSaved = savedItems.filter(i => i.id !== service.id);
+    } else {
+      newSaved = [...savedItems, service];
+    }
+    setSavedItems(newSaved);
+    localStorage.setItem('savedItems', JSON.stringify(newSaved));
+    window.dispatchEvent(new CustomEvent('savedItemsChanged'));
+  };
 
   // Get unique values for filters
   const uniqueLocations = [...new Set(services.map((service) => service.location))];
@@ -627,6 +657,7 @@ function ServicesList() {
                       const serviceType = getServiceType(service);
                       const rating = getRandomRating(service.id);
                       const reviewCount = getRandomReviewCount(service.id);
+                      const isSaved = savedItems.some(i => i.id === service.id);
 
                       return (
                         <div
@@ -639,10 +670,27 @@ function ServicesList() {
                               alt={service.title}
                               className="w-full h-36 object-cover"
                             />
-                            <div className="absolute top-2 right-2">
+                            <div className="absolute top-2 left-2">
                               <span className="bg-[#2F3A63] text-white px-2 py-1 rounded-full text-xs font-medium capitalize">
                                 {serviceType}
                               </span>
+                            </div>
+                            <div className="absolute top-2 right-2">
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleSave(service);
+                                }}
+                                className="p-1.5 rounded-full bg-white/90 hover:bg-white transition-colors shadow-sm"
+                              >
+                                <Heart 
+                                  className={`w-4 h-4 transition-colors ${
+                                    isSaved 
+                                      ? 'fill-red-600 text-red-600' 
+                                      : 'text-gray-400 hover:text-red-500'
+                                  }`} 
+                                />
+                              </button>
                             </div>
                             <div className="absolute bottom-2 left-2">
                               <span className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">

@@ -1,24 +1,39 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // <-- import useNavigate
+import { useNavigate } from "react-router-dom";
 
 const Sign = () => {
   const [isSignUpActive, setIsSignUpActive] = useState(false);
-  const navigate = useNavigate(); // <-- initialize navigate
+  const [signInEmail, setSignInEmail] = useState("");
+  const [signInPassword, setSignInPassword] = useState("");
+  const [signUpName, setSignUpName] = useState("");
+  const [signUpEmail, setSignUpEmail] = useState("");
+  const [signUpPassword, setSignUpPassword] = useState("");
+  const navigate = useNavigate();
 
   // Example submit handlers
   const handleSignIn = (e) => {
     e.preventDefault();
-    // You can add actual authentication logic here
-
-    // Navigate to home page after sign in
+    // Simulate authentication - in real app, validate and auth
+    if (signInEmail && signInPassword) {
+      localStorage.setItem('user', JSON.stringify({ 
+        name: 'User', // Default or fetch from auth
+        email: signInEmail, 
+        isLoggedIn: true 
+      }));
+    }
     navigate("/");
   };
 
   const handleSignUp = (e) => {
     e.preventDefault();
-    // You can add actual registration logic here
-
-    // Navigate to home page after sign up
+    // Simulate registration - in real app, validate and register
+    if (signUpName && signUpEmail && signUpPassword) {
+      localStorage.setItem('user', JSON.stringify({ 
+        name: signUpName, 
+        email: signUpEmail, 
+        isLoggedIn: true 
+      }));
+    }
     navigate("/");
   };
 
@@ -32,7 +47,7 @@ const Sign = () => {
           } ${isSignUpActive ? "sm:translate-x-full" : ""}`}
         >
           <form
-            onSubmit={handleSignUp} // <-- handle sign up
+            onSubmit={handleSignUp}
             className="bg-white flex items-center justify-center flex-col px-4 sm:px-12 py-6 sm:py-12 h-full text-center"
           >
             <h1 className="font-bold m-0 text-2xl">Create Account</h1>
@@ -40,16 +55,22 @@ const Sign = () => {
             <input
               type="text"
               placeholder="Name"
+              value={signUpName}
+              onChange={(e) => setSignUpName(e.target.value)}
               className="bg-gray-200 border-none p-3 my-2 w-full rounded-md"
             />
             <input
               type="email"
               placeholder="Email"
+              value={signUpEmail}
+              onChange={(e) => setSignUpEmail(e.target.value)}
               className="bg-gray-200 border-none p-3 my-2 w-full rounded-md"
             />
             <input
               type="password"
               placeholder="Password"
+              value={signUpPassword}
+              onChange={(e) => setSignUpPassword(e.target.value)}
               className="bg-gray-200 border-none p-3 my-2 w-full rounded-md"
             />
             <button
@@ -68,7 +89,7 @@ const Sign = () => {
           }`}
         >
           <form
-            onSubmit={handleSignIn} // <-- handle sign in
+            onSubmit={handleSignIn}
             className="bg-white flex items-center justify-center flex-col px-4 sm:px-12 py-6 sm:py-12 h-full text-center"
           >
             <h1 className="font-bold m-0 text-2xl">Sign in</h1>
@@ -76,11 +97,15 @@ const Sign = () => {
             <input
               type="email"
               placeholder="Email"
+              value={signInEmail}
+              onChange={(e) => setSignInEmail(e.target.value)}
               className="bg-gray-200 border-none p-3 my-2 w-full rounded-md"
             />
             <input
               type="password"
               placeholder="Password"
+              value={signInPassword}
+              onChange={(e) => setSignInPassword(e.target.value)}
               className="bg-gray-200 border-none p-3 my-2 w-full rounded-md"
             />
             <a

@@ -1,13 +1,14 @@
 // ResumesList.js
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { MapPin, Search, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, Search, ChevronDown, ChevronLeft, ChevronRight, Heart } from "lucide-react";
 
 // Import your JSON data
 import data from "../data/data.json";
 
 function ResumesList() {
   const resumes = data.resumes;
+  const [savedItems, setSavedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [skillsFilter, setSkillsFilter] = useState("all");
   const [locationFilter, setLocationFilter] = useState("");
@@ -19,6 +20,34 @@ function ResumesList() {
   useEffect(() => {
     setCurrentPage(1);
   }, [skillsFilter, locationFilter, searchTerm]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+    setSavedItems(saved);
+  }, []);
+
+  useEffect(() => {
+    const loadSaved = () => {
+      const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+      setSavedItems(saved);
+    };
+
+    window.addEventListener('savedItemsChanged', loadSaved);
+    return () => window.removeEventListener('savedItemsChanged', loadSaved);
+  }, []);
+
+  const toggleSave = (resume) => {
+    let newSaved;
+    const isSaved = savedItems.some(i => i.id === resume.id);
+    if (isSaved) {
+      newSaved = savedItems.filter(i => i.id !== resume.id);
+    } else {
+      newSaved = [...savedItems, resume];
+    }
+    setSavedItems(newSaved);
+    localStorage.setItem('savedItems', JSON.stringify(newSaved));
+    window.dispatchEvent(new CustomEvent('savedItemsChanged'));
+  };
 
   // Get unique locations for the location filter
   const uniqueLocations = [...new Set(resumes.map((resume) => resume.location))];
@@ -187,57 +216,77 @@ function ResumesList() {
           ) : (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-                {currentResumes.map((resume) => (
-                  <div
-                    key={resume.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
-                  >
-                    <div className="relative">
-                      <img
-                        src={resume.images[0]}
-                        alt={resume.name}
-                        className="w-full h-48 object-cover"
-                      />
-                      <div className="absolute bottom-3 left-3">
-                        <span className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">
-                          {resume.posted}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="p-4">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
-                        {resume.name}
-                      </h3>
-
-                      <p className="text-gray-600 text-sm mb-2">
-                        {resume.experience}
-                      </p>
-
-                      <div className="flex flex-wrap gap-1 mb-3">
-                        {resume.skills.slice(0, 3).map((skill, index) => (
-                          <span key={index} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                            {skill}
+                {currentResumes.map((resume) => {
+                  const isSaved = savedItems.some(i => i.id === resume.id);
+                  return (
+                    <div
+                      key={resume.id}
+                      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                    >
+                      <div className="relative">
+                        <img
+                          src={resume.images[0]}
+                          alt={resume.name}
+                          className="w-full h-48 object-cover"
+                        />
+                        <div className="absolute bottom-3 left-3">
+                          <span className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">
+                            {resume.posted}
                           </span>
-                        ))}
+                        </div>
+                        <div className="absolute bottom-3 right-3">
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleSave(resume);
+                            }}
+                            className="p-1.5 rounded-full bg-white/90 hover:bg-white transition-colors shadow-sm"
+                          >
+                            <Heart 
+                              className={`w-4 h-4 transition-colors ${
+                                isSaved 
+                                  ? 'fill-red-600 text-red-600' 
+                                  : 'text-gray-400 hover:text-red-500'
+                              }`} 
+                            />
+                          </button>
+                        </div>
                       </div>
 
-                      <div className="flex items-center text-gray-700 mb-4">
-                        <MapPin className="w-4 h-4 mr-2 text-blue-600" />
-                        <span className="text-sm">{resume.location}</span>
-                      </div>
+                      <div className="p-4">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
+                          {resume.name}
+                        </h3>
 
-                      <div className="flex gap-2">
-                        <Link
-                          to={`/categories/resumes/${resume.id}`}
-                          className="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                        >
-                          View Profile
-                        </Link>
+                        <p className="text-gray-600 text-sm mb-2">
+                          {resume.experience}
+                        </p>
+
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {resume.skills.slice(0, 3).map((skill, index) => (
+                            <span key={index} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center text-gray-700 mb-4">
+                          <MapPin className="w-4 h-4 mr-2 text-blue-600" />
+                          <span className="text-sm">{resume.location}</span>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Link
+                            to={`/categories/resumes/${resume.id}`}
+                            className="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                          >
+                            View Profile
+                          </Link>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {/* Pagination */}

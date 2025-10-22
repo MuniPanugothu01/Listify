@@ -17,11 +17,13 @@ import {
   Music,
   Calendar,
   Image,
+  Heart,
 } from "lucide-react";
 import data from "../data/data.json";
 
 function GigsList() {
   const gigs = data.gigs || [];
+  const [savedItems, setSavedItems] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [gigTypeFilter, setGigTypeFilter] = useState("all");
   const [maxPrice, setMaxPrice] = useState("");
@@ -51,6 +53,34 @@ function GigsList() {
     sortBy,
     ratingFilter,
   ]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+    setSavedItems(saved);
+  }, []);
+
+  useEffect(() => {
+    const loadSaved = () => {
+      const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+      setSavedItems(saved);
+    };
+
+    window.addEventListener('savedItemsChanged', loadSaved);
+    return () => window.removeEventListener('savedItemsChanged', loadSaved);
+  }, []);
+
+  const toggleSave = (gig) => {
+    let newSaved;
+    const isSaved = savedItems.some(i => i.id === gig.id);
+    if (isSaved) {
+      newSaved = savedItems.filter(i => i.id !== gig.id);
+    } else {
+      newSaved = [...savedItems, gig];
+    }
+    setSavedItems(newSaved);
+    localStorage.setItem('savedItems', JSON.stringify(newSaved));
+    window.dispatchEvent(new CustomEvent('savedItemsChanged'));
+  };
 
   // Get unique values for filters
   const uniqueLocations = [...new Set(gigs.map((gig) => gig.location))];
@@ -139,8 +169,8 @@ function GigsList() {
       ],
       labor: [
         "https://images.unsplash.com/photo-1504307651254-35680f356dfd?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-        "https://images.unsplash.com/photo-1507679799987-c73779587ccf?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-        "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
       ],
       professional: [
         "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
@@ -745,6 +775,7 @@ function GigsList() {
                       const rating = getRandomRating(gig.id);
                       const reviewCount = getRandomReviewCount(gig.id);
                       const gigImage = getCategoryImage(gigType, gig.id);
+                      const isSaved = savedItems.some(i => i.id === gig.id);
 
                       return (
                         <div
@@ -769,6 +800,23 @@ function GigsList() {
                               <span className="bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs">
                                 {gig.posted || "Recently"}
                               </span>
+                            </div>
+                            <div className="absolute bottom-2 right-2">
+                              <button 
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  toggleSave(gig);
+                                }}
+                                className="p-1.5 rounded-full bg-white/90 hover:bg-white transition-colors shadow-sm"
+                              >
+                                <Heart 
+                                  className={`w-4 h-4 transition-colors ${
+                                    isSaved 
+                                      ? 'fill-red-600 text-red-600' 
+                                      : 'text-gray-400 hover:text-red-500'
+                                  }`} 
+                                />
+                              </button>
                             </div>
                           </div>
 

@@ -1,7 +1,7 @@
 // ResumesDetails.js
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { MapPin, ChevronDown } from "lucide-react";
+import { MapPin, ChevronDown, Heart } from "lucide-react";
 
 // Import your JSON data
 import data from "../data/data.json";
@@ -12,6 +12,7 @@ function ResumesDetails() {
   const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [savedItems, setSavedItems] = useState([]);
 
   useEffect(() => {
     try {
@@ -28,6 +29,26 @@ function ResumesDetails() {
       setLoading(false);
     }
   }, [id]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+    setSavedItems(saved);
+  }, [id]);
+
+  const isSaved = savedItems.some(h => h.id === resume?.id);
+
+  const toggleSave = () => {
+    if (!resume) return;
+    let newSaved;
+    if (isSaved) {
+      newSaved = savedItems.filter(h => h.id !== resume.id);
+    } else {
+      newSaved = [...savedItems, resume];
+    }
+    setSavedItems(newSaved);
+    localStorage.setItem('savedItems', JSON.stringify(newSaved));
+    window.dispatchEvent(new CustomEvent('savedItemsChanged'));
+  };
 
   if (loading) {
     return (
@@ -127,8 +148,16 @@ function ResumesDetails() {
                 <button className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center font-medium">
                   Contact Candidate
                 </button>
-                <button className="border border-blue-600 text-blue-600 py-3 px-6 rounded-lg hover:bg-blue-50 transition-colors font-medium">
-                  Save Resume
+                <button 
+                  onClick={toggleSave}
+                  className={`py-3 px-6 rounded-lg transition-colors font-medium flex items-center ${
+                    isSaved 
+                      ? 'bg-red-100 text-red-600 border border-red-600 hover:bg-red-200' 
+                      : 'border border-blue-600 text-blue-600 hover:bg-blue-50'
+                  }`}
+                >
+                  <Heart className={`w-5 h-5 mr-2 ${isSaved ? 'fill-red-600' : ''}`} />
+                  {isSaved ? 'Saved' : 'Save Resume'}
                 </button>
               </div>
             </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { MapPin, Mail, Bed, Square } from "lucide-react";
+import { MapPin, Mail, Bed, Square, Heart } from "lucide-react";
 
 // Import your JSON data
 import data from "../data/data.json";
@@ -12,6 +12,7 @@ function HouseDetails() {
   const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [savedHouses, setSavedHouses] = useState([]);
 
 useEffect(() => {
   try {
@@ -28,6 +29,27 @@ useEffect(() => {
     setLoading(false);
   }
 }, [id]);
+
+useEffect(() => {
+  const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+  setSavedHouses(saved);
+}, [id]);
+
+const isSaved = savedHouses.some(h => h.id === house?.id);
+
+const toggleSave = () => {
+  if (!house) return;
+  let newSaved;
+  if (isSaved) {
+    newSaved = savedHouses.filter(h => h.id !== house.id);
+  } else {
+    newSaved = [...savedHouses, house];
+  }
+  setSavedHouses(newSaved);
+  localStorage.setItem('savedItems', JSON.stringify(newSaved));
+  window.dispatchEvent(new CustomEvent('savedItemsChanged'));
+};
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -153,8 +175,16 @@ useEffect(() => {
                   <Mail className="w-5 h-5 mr-2" />
                   Contact Owner
                 </a>
-                <button className="border border-blue-600 text-blue-600 py-3 px-6 rounded-lg hover:bg-blue-50 transition-colors font-medium">
-                  Save Property
+                <button 
+                  onClick={toggleSave}
+                  className={`py-3 px-6 rounded-lg transition-colors font-medium flex items-center ${
+                    isSaved 
+                      ? 'bg-red-100 text-red-600 border border-red-600 hover:bg-red-200' 
+                      : 'border border-blue-600 text-blue-600 hover:bg-blue-50'
+                  }`}
+                >
+                  <Heart className={`w-5 h-5 mr-2 ${isSaved ? 'fill-red-600' : ''}`} />
+                  {isSaved ? 'Saved' : 'Save Property'}
                 </button>
               </div>
             </div>
