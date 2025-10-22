@@ -71,6 +71,7 @@ const App = () => {
             <Route path="/categories/jobs/:id" element={<JobsDetails />} />
             <Route path="/saved" element={<SavedItems />} />
 
+
             <Route path="/categories/community" element={<CommunityList />} />
 
             <Route
