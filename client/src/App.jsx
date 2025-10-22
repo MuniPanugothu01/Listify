@@ -26,7 +26,7 @@ import DiscussionForumsDetails from "./categories/DiscussionForumsDetails";
 import ResumesList from "./categories/ResumesList.jsx";
 import ResumesDetails from "./categories/ResumesDetails";
 import LandingPage from "./pages/LandingPage";
-import SavedItems from "./components/Saveditems";
+import SavedItems from "./components/SavedItems";
 import Profile from "./components/Profile";
 
 // A wrapper to conditionally render Navbar
