@@ -1,4 +1,3 @@
-// server/middlewares/rateLimiter.middleware.js
 const redis = require("../config/redis");
 
 /**
@@ -58,6 +57,14 @@ const loginLimiterIP = createRateLimiter({
   limit: 5,
   windowMs: 5 * 60 * 1000,
   message: "Too many login attempts. Please wait before retrying.",
+});
+
+// Register rate limiter
+const registerLimiterIP = createRateLimiter({
+  keyPrefix: "register",
+  limit: 3,
+  windowMs: 60 * 60 * 1000, // 1 hour
+  message: "Too many registration attempts. Please try again after an hour.",
 });
 
 // User-specific sliding window using ZSET
@@ -136,6 +143,7 @@ const isAccountLockedRedis = async (userId) => {
 module.exports = {
   globalLimiter,
   loginLimiterIP,
+  registerLimiterIP,
   userSlidingWindow,
   incrFailedAttempt,
   resetFailedAttempts,
