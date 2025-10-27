@@ -37,10 +37,10 @@ function DiscussionForumsDetails() {
     );
   }
 
-  if (!forum) {
+  if (error || !forum) {
     return (
       <div className="text-center text-gray-600 mt-10 text-xl">
-        Forum not found
+        {error || "Forum not found"}
       </div>
     );
   }
@@ -55,7 +55,7 @@ function DiscussionForumsDetails() {
       <div className="container mx-auto px-4">
         <Link
           to="/categories/discussion-forums"
-          className="inline-flex items-center mb-6 text-blue-600 hover:text-blue-800 font-medium"
+          className="inline-flex items-center mb-6 text-[#2F3A63] font-medium"
         >
           <svg
             className="w-5 h-5 mr-2"
@@ -88,7 +88,7 @@ function DiscussionForumsDetails() {
                   src={img}
                   alt={`${forum.title} - ${index + 1}`}
                   className={`w-20 h-20 object-cover border rounded cursor-pointer ${
-                    selectedImage === img ? "border-blue-500" : "border-gray-300"
+                    selectedImage === img ? "border-[#2F3A63]" : "border-gray-300"
                   }`}
                   onClick={() => setSelectedImage(img)}
                 />
@@ -99,7 +99,7 @@ function DiscussionForumsDetails() {
           <div className="md:w-1/2 mt-6 md:mt-0">
             <div className="flex justify-between items-start">
               <h1 className="text-2xl font-semibold text-gray-900">{forum.title}</h1>
-              <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+              <span className="bg-[#2F3A63]/10 text-[#2F3A63] px-3 py-1 rounded-full text-sm font-medium">
                 {forum.comments} comments
               </span>
             </div>
@@ -117,10 +117,10 @@ function DiscussionForumsDetails() {
 
             <div className="mt-6">
               <div className="flex gap-4">
-                <button className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center font-medium">
+                <button className="bg-[#2F3A63] text-white py-3 px-6 rounded-lg hover:bg-[#2F3A63]/90 transition-colors flex items-center font-medium">
                   Join Discussion
                 </button>
-                <button className="border border-blue-600 text-blue-600 py-3 px-6 rounded-lg hover:bg-blue-50 transition-colors font-medium">
+                <button className="border border-[#2F3A63] text-[#2F3A63] py-3 px-6 rounded-lg hover:bg-[#2F3A63]/5 transition-colors font-medium">
                   Save Topic
                 </button>
               </div>

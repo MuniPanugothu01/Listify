@@ -117,7 +117,7 @@ function GigsDetails() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="text-center">
-          <Loader className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
+          <Loader className="w-12 h-12 text-[#2F3A63] animate-spin mx-auto mb-4" />
           <p className="text-gray-600">Loading gig details...</p>
         </div>
       </div>
@@ -131,7 +131,7 @@ function GigsDetails() {
           <p className="text-xl text-gray-600 mb-4">Gig not found</p>
           <Link
             to="/categories/gigs"
-            className="text-blue-600 hover:text-blue-700"
+            className="text-[#2F3A63] hover:text-[#2F3A63]/80"
           >
             Back to Gigs
           </Link>
@@ -148,20 +148,20 @@ function GigsDetails() {
           <div className="flex items-center justify-between">
             <Link
               to="/categories/gigs"
-              className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+              className="flex items-center text-[#2F3A63] hover:text-[#2F3A63]/80 transition-colors font-medium"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
-              <span className="font-medium">Back to Gigs</span>
+              <span>Back to Gigs</span>
             </Link>
 
             <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-400 hover:text-gray-600 transition-colors">
+              <button className="p-2 text-[#2F3A63]/70 hover:text-[#2F3A63] transition-colors">
                 <Share2 className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setSaved(!saved)}
                 className={`p-2 transition-colors ${
-                  saved ? "text-red-500" : "text-gray-400 hover:text-gray-600"
+                  saved ? "text-red-500" : "text-[#2F3A63]/70 hover:text-[#2F3A63]"
                 }`}
               >
                 <Heart className={`w-5 h-5 ${saved ? "fill-current" : ""}`} />
@@ -180,7 +180,7 @@ function GigsDetails() {
             <div className="relative aspect-[4/3] bg-gray-200">
               {imageLoading && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Loader className="w-8 h-8 text-blue-600 animate-spin" />
+                  <Loader className="w-8 h-8 text-[#2F3A63] animate-spin" />
                 </div>
               )}
               <img
@@ -197,7 +197,7 @@ function GigsDetails() {
           {/* Basic Info */}
           <div className="bg-white rounded-lg shadow-sm p-6">
             <div className="flex items-center space-x-2 mb-3">
-              <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full capitalize">
+              <span className="bg-[#2F3A63]/10 text-[#2F3A63] text-sm px-3 py-1 rounded-full capitalize">
                 {gig.type}
               </span>
               <span className="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full">
@@ -219,7 +219,7 @@ function GigsDetails() {
             </div>
 
             <div className="flex items-center space-x-2 text-gray-600 mb-4">
-              <MapPin className="w-4 h-4" />
+              <MapPin className="w-4 h-4 text-[#2F3A63]" />
               <span>{gig.location}</span>
             </div>
 
@@ -228,7 +228,7 @@ function GigsDetails() {
             </p>
 
             {/* Price & Apply */}
-            <div className="bg-blue-50 rounded-lg p-4 mb-6">
+            <div className="bg-[#2F3A63]/5 rounded-lg p-4 mb-6">
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-3xl font-bold text-gray-900">
@@ -236,7 +236,7 @@ function GigsDetails() {
                   </span>
                   <p className="text-gray-600 text-sm">Gig rate</p>
                 </div>
-                <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                <button className="bg-[#2F3A63] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#2F3A63]/90 transition-colors">
                   Apply Now
                 </button>
               </div>
@@ -249,11 +249,11 @@ function GigsDetails() {
               </h3>
               <div className="space-y-2">
                 <div className="flex items-center space-x-3 text-gray-600">
-                  <Phone className="w-4 h-4" />
+                  <Phone className="w-4 h-4 text-[#2F3A63]" />
                   <span>{gig.contact.phone}</span>
                 </div>
                 <div className="flex items-center space-x-3 text-gray-600">
-                  <Mail className="w-4 h-4" />
+                  <Mail className="w-4 h-4 text-[#2F3A63]" />
                   <span>{gig.contact.email}</span>
                 </div>
               </div>
@@ -288,7 +288,7 @@ function GigsDetails() {
                   key={index}
                   className="flex items-start space-x-3 text-gray-700"
                 >
-                  <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></span>
+                  <span className="w-2 h-2 bg-[#2F3A63] rounded-full mt-2 flex-shrink-0"></span>
                   <span>{req}</span>
                 </li>
               ))}
@@ -323,7 +323,7 @@ function GigsDetails() {
               <div className="relative aspect-[16/9] bg-gray-200">
                 {imageLoading && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <Loader className="w-8 h-8 text-blue-600 animate-spin" />
+                    <Loader className="w-8 h-8 text-[#2F3A63] animate-spin" />
                   </div>
                 )}
                 <img
@@ -357,7 +357,7 @@ function GigsDetails() {
                     key={index}
                     className="flex items-start space-x-3 text-gray-700"
                   >
-                    <span className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></span>
+                    <span className="w-2 h-2 bg-[#2F3A63] rounded-full mt-2 flex-shrink-0"></span>
                     <span>{req}</span>
                   </li>
                 ))}
@@ -388,7 +388,7 @@ function GigsDetails() {
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
               {/* Category & Date */}
               <div className="flex items-center space-x-2 mb-4">
-                <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full capitalize">
+                <span className="bg-[#2F3A63]/10 text-[#2F3A63] text-sm px-3 py-1 rounded-full capitalize">
                   {gig.type}
                 </span>
                 <span className="bg-green-100 text-green-800 text-sm px-3 py-1 rounded-full">
@@ -415,19 +415,19 @@ function GigsDetails() {
                 </div>
 
                 <div className="flex items-center space-x-2 text-gray-600">
-                  <MapPin className="w-4 h-4" />
+                  <MapPin className="w-4 h-4 text-[#2F3A63]" />
                   <span>{gig.location}</span>
                 </div>
               </div>
 
               {/* Price & Apply */}
-              <div className="bg-blue-50 rounded-lg p-4 mb-6">
+              <div className="bg-[#2F3A63]/5 rounded-lg p-4 mb-6">
                 <div className="text-center">
                   <span className="text-3xl font-bold text-gray-900 block mb-1">
                     {gig.pay}
                   </span>
                   <p className="text-gray-600 text-sm mb-4">Gig rate</p>
-                  <button className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                  <button className="w-full bg-[#2F3A63] text-white py-3 px-6 rounded-lg font-semibold hover:bg-[#2F3A63]/90 transition-colors">
                     Apply Now
                   </button>
                 </div>
@@ -440,11 +440,11 @@ function GigsDetails() {
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3 text-gray-600">
-                    <Phone className="w-4 h-4" />
+                    <Phone className="w-4 h-4 text-[#2F3A63]" />
                     <span>{gig.contact.phone}</span>
                   </div>
                   <div className="flex items-center space-x-3 text-gray-600">
-                    <Mail className="w-4 h-4" />
+                    <Mail className="w-4 h-4 text-[#2F3A63]" />
                     <span>{gig.contact.email}</span>
                   </div>
                 </div>
@@ -479,7 +479,7 @@ function GigsDetails() {
             </span>
             <span className="text-gray-600 text-sm">Apply now</span>
           </div>
-          <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+          <button className="bg-[#2F3A63] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#2F3A63]/90 transition-colors">
             Apply
           </button>
         </div>

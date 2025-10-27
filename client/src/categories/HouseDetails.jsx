@@ -76,7 +76,7 @@ const toggleSave = () => {
       <div className="container mx-auto px-4">
         <Link
           to="/categories/houses"
-          className="inline-flex items-center mb-6 text-blue-600 hover:text-blue-800 font-medium"
+          className="inline-flex items-center mb-6 text-[#2F3A63] font-medium"
         >
           <svg
             className="w-5 h-5 mr-2"
@@ -140,7 +140,7 @@ const toggleSave = () => {
 
             <div className="mt-6 grid grid-cols-2 gap-4">
               <div className="flex items-center text-gray-700">
-                <Square className="w-5 h-5 mr-2 text-blue-600" />
+                <Square className="w-5 h-5 mr-2 text-[#2F3A63]" />
                 <span><strong>{house.sqft} sqft</strong></span>
               </div>
               {/* Removed bedrooms since it's not in your data */}
@@ -148,15 +148,15 @@ const toggleSave = () => {
 
             <div className="mt-6 space-y-3">
               <p className="text-gray-700 flex items-center text-lg">
-                <MapPin className="w-5 h-5 mr-2 text-blue-600" />
+                <MapPin className="w-5 h-5 mr-2 text-[#2F3A63]" />
                 <strong>Location:</strong> {house.location}
               </p>
               <p className="text-gray-700 flex items-center text-lg">
-                <Mail className="w-5 h-5 mr-2 text-blue-600" />
+                <Mail className="w-5 h-5 mr-2 text-[#2F3A63]" />
                 <strong>Contact:</strong>{" "}
                 <a
                   href={`mailto:${house.contactEmail}`}
-                  className="text-blue-600 hover:underline ml-1"
+                  className="text-[#2F3A63] hover:underline ml-1"
                 >
                   {house.contactEmail}
                 </a>
@@ -170,7 +170,7 @@ const toggleSave = () => {
               <div className="flex gap-4">
                 <a
                   href={`mailto:${house.contactEmail}?subject=Inquiry about ${house.title}`}
-                  className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center font-medium"
+                  className="bg-[#2F3A63] text-white py-3 px-6 rounded-lg  transition-colors flex items-center font-medium"
                 >
                   <Mail className="w-5 h-5 mr-2" />
                   Contact Owner
@@ -180,7 +180,7 @@ const toggleSave = () => {
                   className={`py-3 px-6 rounded-lg transition-colors font-medium flex items-center ${
                     isSaved 
                       ? 'bg-red-100 text-red-600 border border-red-600 hover:bg-red-200' 
-                      : 'border border-blue-600 text-blue-600 hover:bg-blue-50'
+                      : 'border border-[#2F3A63]'
                   }`}
                 >
                   <Heart className={`w-5 h-5 mr-2 ${isSaved ? 'fill-red-600' : ''}`} />

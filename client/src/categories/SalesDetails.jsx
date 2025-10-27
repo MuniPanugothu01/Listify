@@ -71,9 +71,9 @@ function SalesDetails() {
   const getTypeInfo = (type) => {
     switch (type) {
       case "sale":
-        return { color: "bg-red-100 text-red-800", text: "For Sale" };
+        return { color: "bg-green-100 text-green-800", text: "For Sale" };
       case "free":
-        return { color: "bg-green-100 text-green-800", text: "Free" };
+        return { color: "bg-blue-100 text-blue-800", text: "Free" };
       case "wanted":
         return { color: "bg-purple-100 text-purple-800", text: "Wanted" };
       default:
@@ -112,7 +112,7 @@ function SalesDetails() {
       <div className="container mx-auto px-4">
         <Link
           to="/categories/sales"
-          className="inline-flex items-center mb-6 text-blue-600 hover:text-blue-800 font-medium"
+          className="inline-flex items-center mb-6 text-[#2F3A63] font-medium"
         >
           <svg
             className="w-5 h-5 mr-2"
@@ -146,7 +146,7 @@ function SalesDetails() {
                   alt={`${sale.title} - ${index + 1}`}
                   className={`w-20 h-20 object-cover border rounded cursor-pointer ${
                     selectedImage === img
-                      ? "border-blue-500"
+                      ? "border-[#2F3A63]"
                       : "border-gray-300"
                   }`}
                   onClick={() => setSelectedImage(img)}
@@ -199,7 +199,7 @@ function SalesDetails() {
 
             <div className="mb-6 space-y-3">
               <p className="text-gray-700 flex items-center text-lg">
-                <MapPin className="w-5 h-5 mr-2 text-blue-600" />
+                <MapPin className="w-5 h-5 mr-2 text-[#2F3A63]" />
                 <strong>Location:</strong> {sale.location}
               </p>
               <p className="text-gray-700 text-lg">
@@ -209,7 +209,7 @@ function SalesDetails() {
 
             <div className="mt-8">
               <div className="flex gap-4">
-                <button className="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center font-medium">
+                <button className="bg-[#2F3A63] text-white py-3 px-6 rounded-lg hover:bg-[#2F3A63]/90 transition-colors flex items-center font-medium">
                   Contact Seller
                 </button>
                 <button 
@@ -217,7 +217,7 @@ function SalesDetails() {
                   className={`py-3 px-6 rounded-lg transition-colors font-medium flex items-center ${
                     isSaved 
                       ? 'bg-red-100 text-red-600 border border-red-600 hover:bg-red-200' 
-                      : 'border border-blue-600 text-blue-600 hover:bg-blue-50'
+                      : 'border border-[#2F3A63] text-[#2F3A63] hover:bg-[#2F3A63]/5'
                   }`}
                 >
                   <Heart className={`w-5 h-5 mr-2 ${isSaved ? 'fill-red-600' : ''}`} />

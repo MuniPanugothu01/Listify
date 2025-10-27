@@ -116,7 +116,7 @@ function ResumesList() {
                     <select
                       value={skillsFilter}
                       onChange={(e) => setSkillsFilter(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2F3A63] focus:border-[#2F3A63] appearance-none"
                     >
                       <option value="all">All Skills</option>
                       {uniqueSkills.map((skill, index) => (
@@ -138,7 +138,7 @@ function ResumesList() {
                     <select
                       value={locationFilter}
                       onChange={(e) => setLocationFilter(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2F3A63] focus:border-[#2F3A63] appearance-none"
                     >
                       <option value="">All Locations</option>
                       {uniqueLocations.map((location, index) => (
@@ -154,7 +154,7 @@ function ResumesList() {
 
                 {/* Search Button */}
                 <div>
-                  <button className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center justify-center">
+                  <button className="w-full bg-[#2F3A63] text-white py-3 px-6 rounded-lg hover:bg-[#2F3A63]/90 transition-colors font-medium flex items-center justify-center">
                     <Search className="w-4 h-4 mr-2" />
                     Search
                   </button>
@@ -172,7 +172,7 @@ function ResumesList() {
           <div className="mb-6">
             <Link
               to="/categories"
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg font-medium shadow-lg inline-block hover:bg-blue-600 transition-colors w-full sm:w-auto text-center sm:text-left"
+              className="bg-[#2F3A63] text-white px-4 py-2 rounded-lg font-medium shadow-lg inline-block hover:bg-[#2F3A63]/90 transition-colors w-full sm:w-auto text-center sm:text-left"
             >
               Back to Categories
             </Link>
@@ -208,7 +208,7 @@ function ResumesList() {
                   setLocationFilter("");
                   setSearchTerm("");
                 }}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="bg-[#2F3A63] text-white px-6 py-2 rounded-lg hover:bg-[#2F3A63]/90 transition-colors"
               >
                 Clear All Filters
               </button>
@@ -264,21 +264,21 @@ function ResumesList() {
 
                         <div className="flex flex-wrap gap-1 mb-3">
                           {resume.skills.slice(0, 3).map((skill, index) => (
-                            <span key={index} className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                            <span key={index} className="text-xs bg-[#2F3A63]/10 text-[#2F3A63] px-2 py-1 rounded">
                               {skill}
                             </span>
                           ))}
                         </div>
 
                         <div className="flex items-center text-gray-700 mb-4">
-                          <MapPin className="w-4 h-4 mr-2 text-blue-600" />
+                          <MapPin className="w-4 h-4 mr-2 text-[#2F3A63]" />
                           <span className="text-sm">{resume.location}</span>
                         </div>
 
                         <div className="flex gap-2">
                           <Link
                             to={`/categories/resumes/${resume.id}`}
-                            className="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                            className="flex-1 bg-[#2F3A63] text-white text-center py-2 px-4 rounded-lg hover:bg-[#2F3A63]/90 transition-colors font-medium"
                           >
                             View Profile
                           </Link>
@@ -295,7 +295,7 @@ function ResumesList() {
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="px-3 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors flex items-center"
+                    className="px-3 py-2 border border-[#2F3A63] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#2F3A63]/5 transition-colors flex items-center"
                   >
                     <ChevronLeft className="w-4 h-4 mr-1" />
                     Prev
@@ -306,8 +306,8 @@ function ResumesList() {
                       onClick={() => handlePageChange(page)}
                       className={`px-3 py-2 rounded-lg transition-colors ${
                         currentPage === page
-                          ? "bg-blue-600 text-white"
-                          : "border hover:bg-gray-100"
+                          ? "bg-[#2F3A63] text-white"
+                          : "border border-[#2F3A63] hover:bg-[#2F3A63]/5"
                       }`}
                     >
                       {page}
@@ -316,7 +316,7 @@ function ResumesList() {
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="px-3 py-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-colors flex items-center"
+                    className="px-3 py-2 border border-[#2F3A63] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#2F3A63]/5 transition-colors flex items-center"
                   >
                     Next
                     <ChevronRight className="w-4 h-4 ml-1" />

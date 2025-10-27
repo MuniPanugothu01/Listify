@@ -205,7 +205,7 @@ const Footer = () => {
         </div>
 
         {/* Popular Categories & Cities */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 py-8 border-y border-gray-200">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 py-8 border-y border-gray-200">
           <div>
             <h4 className="text-[#2F3A63] font-bold mb-4 text-sm uppercase tracking-wider">
               Popular Categories
@@ -238,7 +238,7 @@ const Footer = () => {
               ))}
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 pt-8 border-t border-gray-200">
