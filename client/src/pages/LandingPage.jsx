@@ -6,6 +6,7 @@ import FeaturedListings from "./FeaturedListings";
 import Testimonials from "./Testimonials";
 import Review from "./Review";
 import Footer from "./Footer";
+import FAQ from "./FAQ";
 const LandingPage = () => {
   return (
     <div className="">
@@ -15,6 +16,7 @@ const LandingPage = () => {
       <FeaturedListings />
       <Review />
       <Testimonials />
+      <FAQ />
     </div>
   );
 };
