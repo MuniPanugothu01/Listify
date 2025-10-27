@@ -1,7 +1,15 @@
 // components/ChatBot.jsx
 import React, { useState, useRef, useEffect } from "react";
 import Lottie from "lottie-react";
-import { X, Send, Minimize2, MessageCircle, Bot } from "lucide-react";
+import {
+  X,
+  Send,
+  Minimize2,
+  MessageCircle,
+  Bot,
+  User,
+  Clock,
+} from "lucide-react";
 import chatIconAnimation from "../components/lottie/Chatbot.json";
 
 const ChatBot = () => {
@@ -10,7 +18,7 @@ const ChatBot = () => {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: "👋 Hello! I'm your friendly assistant. I can help you with questions about our platform, guide you through features, or connect you with human support. What can I help you with today?",
+      text: "Hello! I'm your friendly assistant. I can help you with questions about our platform, guide you through features, or connect you with human support. What can I help you with today?",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -18,58 +26,125 @@ const ChatBot = () => {
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const lottieRef = useRef();
+  const chatContainerRef = useRef(null);
 
-  // Enhanced dummy responses with more personality
-  const botResponses = [
-    "That's a great question! Let me help you with that. Our platform makes it easy to connect with local buyers and sellers.",
-    "I understand what you're looking for! Many users find our verification system really helpful for safe transactions.",
-    "Thanks for asking! We've designed this feature to be super user-friendly. Would you like me to walk you through it step by step?",
-    "I'd be happy to help with that! Our community guidelines ensure everyone has a positive experience.",
-    "That's a common question! Let me share some best practices that other successful users follow.",
-    "I can definitely assist with that! Our support team is also available if you need more detailed help.",
-    "Great question! We're constantly improving based on user feedback. Your experience matters to us!",
-    "I understand your concern. Let me show you how our safety features protect both buyers and sellers.",
-  ];
+  // Enhanced responses with contextual awareness
+  const botResponses = {
+    general: [
+      "I'd be happy to help with that! Our platform is designed to make buying and selling seamless and secure.",
+      "That's a great question! Let me provide you with the most accurate information.",
+      "I understand what you're looking for. Many users find this feature particularly helpful.",
+    ],
+    technical: [
+      "For technical issues, I recommend checking our help center first. Would you like me to guide you through troubleshooting?",
+      "I can help with basic technical questions. For complex issues, our support team is available 24/7.",
+    ],
+    account: [
+      "Account-related questions are common. Let me help you manage your account settings effectively.",
+      "I can assist with account management. Your security and privacy are our top priorities.",
+    ],
+    safety: [
+      "Safety is our top concern. We have multiple verification systems in place to protect all users.",
+      "I'm glad you asked about safety. We use advanced encryption and verification processes.",
+    ],
+  };
 
-  // Quick reply suggestions
+  // Smart quick replies based on context
   const quickReplies = [
     "How do I post an ad?",
-    "Is it safe to buy/sell here?",
+    "Is it safe to transact here?",
     "What are the fees?",
-    "How to contact support?",
-    "Tips for successful sales",
+    "How to verify my account?",
+    "Contact human support",
   ];
 
+  // Auto-responses based on keywords
+  const keywordResponses = {
+    "post ad": "posting",
+    "create listing": "posting",
+    "sell item": "posting",
+    safety: "safety",
+    secure: "safety",
+    verify: "account",
+    account: "account",
+    login: "account",
+    technical: "technical",
+    error: "technical",
+    bug: "technical",
+  };
+
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isTyping]);
 
   useEffect(() => {
-    // Continuous animation for the floating icon
-    if (lottieRef.current && !isOpen) {
+    if (lottieRef.current) {
       lottieRef.current.play();
     }
-  }, [isOpen]);
+  }, []);
 
   useEffect(() => {
-    // Focus input when chat opens
     if (isOpen && !isMinimized) {
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         inputRef.current?.focus();
-      }, 300);
+      }, 400);
+      return () => clearTimeout(timeoutId);
     }
   }, [isOpen, isMinimized]);
+
+  // Close chat when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        chatContainerRef.current &&
+        !chatContainerRef.current.contains(event.target) &&
+        isOpen &&
+        !isMinimized
+      ) {
+        handleMinimize();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, isMinimized]);
+
+  const getResponseByContext = (userMessage) => {
+    const lowerMessage = userMessage.toLowerCase();
+
+    // Check for keywords
+    for (const [keyword, category] of Object.entries(keywordResponses)) {
+      if (lowerMessage.includes(keyword)) {
+        const responses = botResponses[category];
+        return responses[Math.floor(Math.random() * responses.length)];
+      }
+    }
+
+    // Default response
+    const generalResponses = botResponses.general;
+    return generalResponses[
+      Math.floor(Math.random() * generalResponses.length)
+    ];
+  };
 
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!inputMessage.trim()) return;
+
+    setHasInteracted(true);
 
     // Add user message
     const userMessage = {
@@ -84,31 +159,33 @@ const ChatBot = () => {
     setIsTyping(true);
 
     // Simulate bot response after delay
+    const responseDelay = 1000 + Math.random() * 1500;
+
     setTimeout(() => {
-      const randomResponse =
-        botResponses[Math.floor(Math.random() * botResponses.length)];
+      const botResponse = getResponseByContext(inputMessage);
       const botMessage = {
         id: Date.now() + 1,
-        text: randomResponse,
+        text: botResponse,
         sender: "bot",
         timestamp: new Date(),
       };
+
       setMessages((prev) => [...prev, botMessage]);
       setIsTyping(false);
 
-      // Reset unread count when user gets response
       if (isMinimized) {
         setUnreadCount((prev) => prev + 1);
       }
-    }, 1500 + Math.random() * 1000); // Random delay for more natural feel
+    }, responseDelay);
   };
 
   const handleQuickReply = (reply) => {
     setInputMessage(reply);
-    // Auto-send after a brief moment
+    setHasInteracted(true);
+
     setTimeout(() => {
       handleSendMessage({ preventDefault: () => {} });
-    }, 100);
+    }, 150);
   };
 
   const handleToggleChat = () => {
@@ -118,9 +195,6 @@ const ChatBot = () => {
       setIsOpen(true);
       setIsMinimized(false);
       setUnreadCount(0);
-    }
-    if (lottieRef.current) {
-      lottieRef.current.play();
     }
   };
 
@@ -138,111 +212,118 @@ const ChatBot = () => {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
-  return (
-    <>
-      {/* Enhanced Floating Chat Icon - Always Visible */}
-      <div className="fixed bottom-6 right-6 z-50">
-        {/* Chat Window */}
-        {isOpen && (
-          <div
-            className={`bg-white rounded-2xl shadow-2xl border border-gray-200 mb-4 transition-all duration-300 transform ${
-              isMinimized
-                ? "w-80 h-16 opacity-90 scale-95"
-                : "w-80 h-[28rem] opacity-100 scale-100"
-            }`}
-            style={{
-              boxShadow:
-                "0 20px 60px rgba(0, 0, 0, 0.15), 0 0 40px rgba(59, 130, 246, 0.1)",
-            }}
-          >
-            {/* Enhanced Header */}
-            <div
-              className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-t-2xl p-4 text-white relative overflow-hidden"
-              style={{
-                background:
-                  "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
-              }}
-            >
-              {/* Animated background elements */}
-              <div className="absolute top-0 left-0 w-full h-full opacity-10">
-                <div className="absolute top-2 left-4 w-8 h-8 bg-white rounded-full"></div>
-                <div className="absolute bottom-2 right-4 w-6 h-6 bg-white rounded-full"></div>
-              </div>
+  const getWelcomeMessage = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning!";
+    if (hour < 18) return "Good afternoon!";
+    return "Good evening!";
+  };
 
-              <div className="flex justify-between items-center relative z-10">
-                <div className="flex items-center space-x-3">
-                  <div className="relative">
-                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                      <Bot className="w-5 h-5 text-white" />
-                    </div>
-                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+  return (
+    <div className="fixed bottom-6 right-6 z-50" ref={chatContainerRef}>
+      {/* Chat Window */}
+      {isOpen && (
+        <div
+          className={`bg-white rounded-2xl shadow-2xl border border-gray-100 mb-4 transition-all duration-300 transform ${
+            isMinimized ? "w-80 h-16 opacity-95" : "w-96 h-[32rem] opacity-100"
+          }`}
+          style={{
+            boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+          }}
+        >
+          {/* Header with Brand Colors */}
+          <div className="bg-[#2F3A63] rounded-t-2xl p-4 text-white">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-3">
+                <div className="relative">
+                  <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20">
+                    <Bot className="w-5 h-5 text-white" />
                   </div>
-                  <div>
-                    <h3 className="font-bold text-sm">Support Assistant</h3>
-                    <p className="text-xs opacity-90 flex items-center">
-                      <span className="w-2 h-2 bg-green-400 rounded-full mr-1 animate-pulse"></span>
-                      Online now
-                    </p>
-                  </div>
+                  <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-[#2F3A63]"></div>
                 </div>
-                <div className="flex space-x-1">
-                  <button
-                    onClick={handleMinimize}
-                    className="p-1.5 hover:bg-white/20 rounded-lg transition-all duration-200 hover:scale-110"
-                    aria-label="Minimize chat"
-                  >
-                    <Minimize2 size={14} />
-                  </button>
-                  <button
-                    onClick={handleCloseChat}
-                    className="p-1.5 hover:bg-white/20 rounded-lg transition-all duration-200 hover:scale-110"
-                    aria-label="Close chat"
-                  >
-                    <X size={14} />
-                  </button>
+                <div>
+                  <h3 className="font-semibold text-sm">Support Assistant</h3>
+                  <p className="text-xs text-gray-300 flex items-center">
+                    <span className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></span>
+                    Online • {getWelcomeMessage()}
+                  </p>
                 </div>
+              </div>
+              <div className="flex space-x-1">
+                <button
+                  onClick={handleMinimize}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200"
+                  aria-label="Minimize chat"
+                >
+                  <Minimize2 size={16} />
+                </button>
+                <button
+                  onClick={handleCloseChat}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-all duration-200"
+                  aria-label="Close chat"
+                >
+                  <X size={16} />
+                </button>
               </div>
             </div>
+          </div>
 
-            {/* Messages Area */}
-            {!isMinimized && (
-              <>
-                <div className="h-64 overflow-y-auto p-4 space-y-3 bg-gradient-to-b from-gray-50 to-white">
-                  {messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex ${
-                        message.sender === "user"
-                          ? "justify-end"
-                          : "justify-start"
-                      }`}
-                    >
+          {/* Messages Area */}
+          {!isMinimized && (
+            <>
+              <div className="h-72 overflow-y-auto p-4 space-y-4 bg-gray-50/50">
+                {messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${
+                      message.sender === "user"
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
+                  >
+                    <div className="flex items-end space-x-2 max-w-[85%]">
+                      {message.sender === "bot" && (
+                        <div className="w-6 h-6 bg-[#2F3A63] rounded-full flex items-center justify-center flex-shrink-0 mb-1">
+                          <Bot className="w-3 h-3 text-white" />
+                        </div>
+                      )}
                       <div
-                        className={`max-w-xs rounded-2xl px-4 py-3 transition-all duration-200 ${
+                        className={`rounded-2xl px-4 py-3 transition-all duration-200 ${
                           message.sender === "user"
-                            ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-br-none shadow-lg"
-                            : "bg-white text-gray-800 rounded-bl-none border border-gray-100 shadow-md"
+                            ? "bg-[#2F3A63] text-white rounded-br-none"
+                            : "bg-white text-gray-900 rounded-bl-none border border-gray-200"
                         }`}
                       >
                         <p className="text-sm leading-relaxed">
                           {message.text}
                         </p>
-                        <p
-                          className={`text-xs mt-2 ${
+                        <div
+                          className={`flex items-center mt-2 text-xs ${
                             message.sender === "user"
                               ? "text-blue-100"
                               : "text-gray-500"
                           }`}
                         >
+                          <Clock size={12} className="mr-1" />
                           {formatTime(message.timestamp)}
-                        </p>
+                        </div>
                       </div>
+                      {message.sender === "user" && (
+                        <div className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center flex-shrink-0 mb-1">
+                          <User className="w-3 h-3 text-white" />
+                        </div>
+                      )}
                     </div>
-                  ))}
+                  </div>
+                ))}
 
-                  {isTyping && (
-                    <div className="flex justify-start">
-                      <div className="bg-white border border-gray-100 text-gray-800 rounded-2xl rounded-bl-none px-4 py-3 shadow-md">
+                {isTyping && (
+                  <div className="flex justify-start">
+                    <div className="flex items-end space-x-2">
+                      <div className="w-6 h-6 bg-[#2F3A63] rounded-full flex items-center justify-center">
+                        <Bot className="w-3 h-3 text-white" />
+                      </div>
+                      <div className="bg-white border border-gray-200 text-gray-900 rounded-2xl rounded-bl-none px-4 py-3">
                         <div className="flex items-center space-x-2">
                           <div className="flex space-x-1">
                             <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
@@ -255,151 +336,160 @@ const ChatBot = () => {
                               style={{ animationDelay: "0.2s" }}
                             ></div>
                           </div>
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-gray-600">
                             Assistant is typing...
                           </span>
                         </div>
                       </div>
                     </div>
-                  )}
-
-                  {/* Quick Replies */}
-                  {messages.length === 1 && !isTyping && (
-                    <div className="space-y-2">
-                      <p className="text-xs text-gray-500 text-center">
-                        Quick questions:
-                      </p>
-                      <div className="flex flex-wrap gap-2 justify-center">
-                        {quickReplies.map((reply, index) => (
-                          <button
-                            key={index}
-                            onClick={() => handleQuickReply(reply)}
-                            className="text-xs bg-white border border-gray-200 text-gray-700 px-3 py-2 rounded-full hover:bg-blue-50 hover:border-blue-200 hover:text-blue-600 transition-all duration-200 shadow-sm"
-                          >
-                            {reply}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div ref={messagesEndRef} />
-                </div>
-
-                {/* Enhanced Input Area */}
-                <form
-                  onSubmit={handleSendMessage}
-                  className="p-4 border-t border-gray-100 bg-white rounded-b-2xl"
-                >
-                  <div className="flex space-x-2">
-                    <div className="flex-1 relative">
-                      <input
-                        ref={inputRef}
-                        type="text"
-                        value={inputMessage}
-                        onChange={(e) => setInputMessage(e.target.value)}
-                        placeholder="Type your message here..."
-                        className="w-full border border-gray-200 rounded-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 transition-all duration-200"
-                        disabled={isTyping}
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      disabled={!inputMessage.trim() || isTyping}
-                      className="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full p-3 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100"
-                    >
-                      <Send size={16} />
-                    </button>
                   </div>
-                  <p className="text-xs text-gray-400 text-center mt-2">
-                    💬 We typically reply within seconds
-                  </p>
-                </form>
-              </>
-            )}
+                )}
 
-            {/* Enhanced Minimized State */}
-            {isMinimized && (
-              <div
-                className="flex items-center justify-between p-4 cursor-pointer bg-white hover:bg-gray-50 transition-colors duration-200 rounded-b-2xl"
-                onClick={() => {
-                  setIsMinimized(false);
-                  setUnreadCount(0);
-                }}
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="relative">
-                    <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <MessageCircle className="w-4 h-4 text-white" />
+                {/* Quick Replies - Show only on first interaction */}
+                {messages.length === 1 && !isTyping && !hasInteracted && (
+                  <div className="space-y-3">
+                    <p className="text-xs text-gray-600 text-center font-medium">
+                      QUICK QUESTIONS
+                    </p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {quickReplies.map((reply, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleQuickReply(reply)}
+                          className="text-xs bg-white border border-gray-300 text-gray-700 px-3 py-2 rounded-full hover:bg-[#2F3A63] hover:text-white hover:border-[#2F3A63] transition-all duration-200 shadow-sm hover:shadow-md"
+                        >
+                          {reply}
+                        </button>
+                      ))}
                     </div>
-                    {unreadCount > 0 && (
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-xs flex items-center justify-center animate-pulse">
-                        {unreadCount}
+                  </div>
+                )}
+
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Enhanced Input Area */}
+              <form
+                onSubmit={handleSendMessage}
+                className="p-4 border-t border-gray-200 bg-white rounded-b-2xl"
+              >
+                <div className="flex space-x-3">
+                  <div className="flex-1 relative">
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      value={inputMessage}
+                      onChange={(e) => setInputMessage(e.target.value)}
+                      placeholder="Type your message..."
+                      className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#2F3A63] focus:border-transparent bg-white transition-all duration-200 placeholder-gray-500"
+                      disabled={isTyping}
+                      maxLength={500}
+                    />
+                    {inputMessage.length > 0 && (
+                      <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <span className="text-xs text-gray-400">
+                          {inputMessage.length}/500
+                        </span>
                       </div>
                     )}
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      Live Chat
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {unreadCount > 0
-                        ? `${unreadCount} new message${
-                            unreadCount > 1 ? "s" : ""
-                          }`
-                        : "Click to open"}
-                    </p>
-                  </div>
+                  <button
+                    type="submit"
+                    disabled={!inputMessage.trim() || isTyping}
+                    className="bg-[#2F3A63] text-white rounded-xl p-3 hover:bg-[#1e2a4a] disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100 flex items-center justify-center"
+                  >
+                    <Send size={18} />
+                  </button>
                 </div>
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              </div>
-            )}
-          </div>
-        )}
+                <p className="text-xs text-gray-500 text-center mt-3 flex items-center justify-center">
+                  <Clock size={12} className="mr-1" />
+                  Typically replies in seconds
+                </p>
+              </form>
+            </>
+          )}
 
-        {/* Enhanced Floating Icon - Always Visible */}
-        <div
-          className="cursor-pointer transform hover:scale-110 transition-all duration-300 relative group"
-          onClick={handleToggleChat}
-          style={{
-            filter: "drop-shadow(0 10px 30px rgba(59, 130, 246, 0.3))",
-          }}
-        >
-          <div className="relative">
-            {/* Main Lottie Animation */}
+          {/* Minimized State */}
+          {isMinimized && (
+            <div
+              className="flex items-center justify-between p-4 cursor-pointer bg-white hover:bg-gray-50 transition-colors duration-200 rounded-b-2xl border-t border-gray-200"
+              onClick={() => {
+                setIsMinimized(false);
+                setUnreadCount(0);
+              }}
+            >
+              <div className="flex items-center space-x-3">
+                <div className="relative">
+                  <div className="w-8 h-8 bg-[#2F3A63] rounded-full flex items-center justify-center">
+                    <MessageCircle className="w-4 h-4 text-white" />
+                  </div>
+                  {unreadCount > 0 && (
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center font-bold animate-pulse border-2 border-white">
+                      {unreadCount}
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">
+                    Live Support
+                  </p>
+                  <p className="text-xs text-gray-600">
+                    {unreadCount > 0
+                      ? `${unreadCount} new message${
+                          unreadCount > 1 ? "s" : ""
+                        }`
+                      : "Click to continue chatting"}
+                  </p>
+                </div>
+              </div>
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Enhanced Floating Icon */}
+      <div
+        className="cursor-pointer transform hover:scale-105 transition-all duration-300 relative group"
+        onClick={handleToggleChat}
+      >
+        <div className="relative">
+          {/* Main Lottie Animation */}
+          <div className="relative bg-white w-fit rounded-full shadow-2xl border border-gray-200 p-2">
             <Lottie
               lottieRef={lottieRef}
               animationData={chatIconAnimation}
               loop={true}
               autoplay={true}
               style={{
-                width: 70,
-                height: 70,
-                filter: "drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2))",
+                width: 56,
+                height: 56,
               }}
             />
+          </div>
 
-            {/* Pulsing Effect */}
-            {/* <div className="absolute inset-0 rounded-full bg-blue-500 animate-ping opacity-20"></div> */}
+          {/* Notification Badge */}
+          {unreadCount > 0 && (
+            <div className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full text-xs flex items-center justify-center font-bold animate-bounce border-2 border-white shadow-lg">
+              {unreadCount}
+            </div>
+          )}
 
-            {/* Notification Badge */}
-            {unreadCount > 0 && (
-              <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center font-bold animate-bounce">
-                {unreadCount}
+          {/* Enhanced Tooltip */}
+          <div className="absolute bottom-full right-0 mb-3 hidden group-hover:block animate-in fade-in-0 zoom-in-95">
+            <div className="bg-[#2F3A63] text-white text-sm rounded-lg py-2 px-3 whitespace-nowrap shadow-xl">
+              <div className="flex items-center space-x-2">
+                <MessageCircle size={14} />
+                <span>
+                  {isOpen ? "Minimize chat" : "Need help? Chat with us!"}
+                </span>
               </div>
-            )}
-
-            {/* Tooltip */}
-            <div className="absolute bottom-full right-0 mb-2 hidden group-hover:block">
-              <div className="bg-gray-900 text-white text-xs rounded-lg py-1 px-2 whitespace-nowrap">
-                {isOpen ? "Minimize chat" : "Chat with us!"}
-                <div className="absolute top-full right-2 w-2 h-2 bg-gray-900 transform rotate-45"></div>
-              </div>
+              <div className="absolute top-full right-4 w-3 h-3 bg-[#2F3A63] transform rotate-45"></div>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
