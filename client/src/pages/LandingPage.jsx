@@ -15,7 +15,6 @@ const LandingPage = () => {
       <FeaturedListings />
       <Review />
       <Testimonials />
-      <Footer />
     </div>
   );
 };
