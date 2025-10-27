@@ -221,14 +221,18 @@ const ChatBot = () => {
 
   return (
     <div className="fixed bottom-6 right-6 z-50" ref={chatContainerRef}>
-      {/* Chat Window */}
+      {/* Chat Window - Fixed positioning to stay on right */}
       {isOpen && (
         <div
-          className={`bg-white rounded-2xl shadow-2xl border border-gray-100 mb-4 transition-all duration-300 transform ${
+          className={`bg-white rounded-2xl shadow-2xl border border-gray-100 transition-all duration-300 ${
             isMinimized ? "w-80 h-16 opacity-95" : "w-96 h-[32rem] opacity-100"
           }`}
           style={{
             boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+            position: "absolute",
+            bottom: "100%",
+            right: "0",
+            marginBottom: "1rem",
           }}
         >
           {/* Header with Brand Colors */}
@@ -455,7 +459,7 @@ const ChatBot = () => {
       >
         <div className="relative">
           {/* Main Lottie Animation */}
-          <div className="relative bg-white w-fit rounded-full shadow-2xl border border-gray-200 p-2">
+          <div className="relative bg-white rounded-full shadow-2xl border border-gray-200 p-2">
             <Lottie
               lottieRef={lottieRef}
               animationData={chatIconAnimation}
@@ -476,7 +480,7 @@ const ChatBot = () => {
           )}
 
           {/* Enhanced Tooltip */}
-          <div className="absolute bottom-full right-0 mb-3 hidden group-hover:block animate-in fade-in-0 zoom-in-95">
+          <div className="absolute bottom-full right-0 mb-3 hidden group-hover:block">
             <div className="bg-[#2F3A63] text-white text-sm rounded-lg py-2 px-3 whitespace-nowrap shadow-xl">
               <div className="flex items-center space-x-2">
                 <MessageCircle size={14} />
