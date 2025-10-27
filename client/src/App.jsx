@@ -1,3 +1,4 @@
+// // App.js
 import React from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -28,6 +29,7 @@ import ResumesList from "./categories/ResumesList.jsx";
 import ResumesDetails from "./categories/ResumesDetails";
 import SavedItems from "./components/SavedItems";
 import Profile from "./components/Profile";
+import ChatBot from "./components/ChatBot"; // Import the ChatBot
 
 // ✅ Layout wrapper that hides Navbar & Footer on /signin
 const Layout = ({ children }) => {
@@ -39,6 +41,9 @@ const Layout = ({ children }) => {
       {!hideNavAndFooter && <Navbar />}
       <main className="flex-grow">{children}</main>
       {!hideNavAndFooter && <Footer />}
+
+      {/* ChatBot is visible on all pages except signin */}
+      {!hideNavAndFooter && <ChatBot />}
     </div>
   );
 };
