@@ -12,7 +12,6 @@ const FAQSection = () => {
       id: "account",
       title: "Account Management",
       icon: "👤",
-      color: "from-blue-500 to-cyan-500",
       items: [
         {
           question: "How do I create an account?",
@@ -35,7 +34,6 @@ const FAQSection = () => {
       id: "posting",
       title: "Posting & Listings",
       icon: "📝",
-      color: "from-green-500 to-emerald-500",
       items: [
         {
           question: "How do I post a new ad?",
@@ -58,7 +56,6 @@ const FAQSection = () => {
       id: "pricing",
       title: "Pricing & Payments",
       icon: "💰",
-      color: "from-amber-500 to-orange-500",
       items: [
         {
           question: "Are there any fees for posting?",
@@ -81,7 +78,6 @@ const FAQSection = () => {
       id: "safety",
       title: "Safety & Security",
       icon: "🛡️",
-      color: "from-purple-500 to-pink-500",
       items: [
         {
           question: "How do I report a suspicious user?",
@@ -104,7 +100,6 @@ const FAQSection = () => {
       id: "technical",
       title: "Technical Support",
       icon: "🔧",
-      color: "from-gray-500 to-slate-500",
       items: [
         {
           question: "Why isn't my ad showing up?",

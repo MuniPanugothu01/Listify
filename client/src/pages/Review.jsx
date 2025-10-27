@@ -77,7 +77,7 @@ function Review() {
             return (
               <div
                 key={principle.title}
-                className="group relative bg-white rounded-3xl overflow-hidden border border-gray-200/50 shadow-sm hover:shadow-2xl transition-all duration-500"
+                className="group relative bg-white rounded-3xl overflow-hidden border border-gray-200/50 shadow-sm transition-all duration-500"
               >
                 <div className="flex flex-col lg:flex-row h-full">
                   {/* Image Section */}

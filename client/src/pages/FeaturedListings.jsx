@@ -29,12 +29,6 @@ const FeaturedListings = ({ featuredListings = data.featuredListings }) => {
     });
   };
 
-  const filters = [
-    { id: "all", label: "All Items", icon: Zap },
-    { id: "trending", label: "Trending", icon: TrendingUp },
-    { id: "new", label: "New Today", icon: Clock },
-    { id: "verified", label: "Verified", icon: Shield }
-  ];
 
   return (
     <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-[#F3F3F3] overflow-hidden">
@@ -59,7 +53,7 @@ const FeaturedListings = ({ featuredListings = data.featuredListings }) => {
             {featuredListings.map((item, index) => (
               <article
                 key={item.id || index}
-                className="group bg-white rounded-3xl overflow-hidden hover:shadow-2xl transition-all duration-500  border border-gray-200/50 relative"
+                className="group bg-white rounded-3xl overflow-hidden  transition-all duration-500  border border-gray-200/50 relative"
                 role="article"
                 aria-labelledby={`listing-title-${index}`}
               >
@@ -85,7 +79,6 @@ const FeaturedListings = ({ featuredListings = data.featuredListings }) => {
                   />
 
                   {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
 
                 {/* Content */}
@@ -142,8 +135,7 @@ const FeaturedListings = ({ featuredListings = data.featuredListings }) => {
                   </div>
                 </div>
 
-                {/* Hover Effect Border */}
-                <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#2F3A63]/20 rounded-3xl transition-all duration-500 pointer-events-none" />
+            
               </article>
             ))}
           </div>
