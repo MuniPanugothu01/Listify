@@ -94,9 +94,13 @@ const App = () => {
 
           {/* 🚫 Sign-in (No Navbar or Footer) */}
           <Route path="/signin" element={<Sign />} />
+
         </Routes>
+
       </Layout>
+
     </BrowserRouter>
+
   );
 };
 
