@@ -28,22 +28,23 @@ import DiscussionForumsDetails from "./categories/DiscussionForumsDetails";
 import ResumesList from "./categories/ResumesList.jsx";
 import ResumesDetails from "./categories/ResumesDetails";
 import SavedItems from "./components/SavedItems";
-import Profile from "./components/Profile";
+import Profile from "./components/UserProfile/Profile";
 import ChatBot from "./components/ChatBot"; // Import the ChatBot
 
-// ✅ Layout wrapper that hides Navbar & Footer on /signin
+// ✅ Layout wrapper that hides Navbar & Footer on /signin and /profile
 const Layout = ({ children }) => {
   const location = useLocation();
-  const hideNavAndFooter = location.pathname === "/signin";
+  const isSignin = location.pathname === "/signin";
+  const isProfile = location.pathname === "/profile";
 
   return (
     <div className="flex flex-col min-h-screen">
-      {!hideNavAndFooter && <Navbar />}
+      {!isSignin && !isProfile && <Navbar />}
       <main className="flex-grow">{children}</main>
-      {!hideNavAndFooter && <Footer />}
+      {!isSignin && !isProfile && <Footer />}
 
       {/* ChatBot is visible on all pages except signin */}
-      {!hideNavAndFooter && <ChatBot />}
+      {!isSignin && <ChatBot />}
     </div>
   );
 };

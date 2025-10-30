@@ -80,12 +80,12 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative w-full bg-transparent flex flex-col-reverse lg:flex-row items-center justify-between px-4 sm:px-8 md:px-12 lg:px-16 lg:pt-16 pb-12 lg:pb-20 lg:min-h-[600px] min-h-[560px] z-10">
+    <section className="relative w-full bg-transparent flex flex-col-reverse lg:flex-row items-center justify-between px-4 sm:px-8 md:px-12 lg:px-16 lg:pt-16 pb-12 lg:pb-20 lg:min-h-[680px]  z-10">
       {/* LEFT SIDE */}
-      <div className="w-full  lg:w-1/2 text-center lg:text-left  lg:mt-0 z-20 flex flex-col justify-center">
+      <div className="w-full  lg:w-1/2 text-center lg:text-left  lg:mb-20 z-20 flex flex-col justify-center">
     
-         <h1 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-[#2F3A63] leading-tight drop-shadow-2xl">
-          Connect. Discover. Buy More.
+         <h1 className="text-5xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-[#2F3A63] leading-tight drop-shadow-2xl">
+          Connect Discover Buy More.
         </h1>
 
         <p className="mt-6 text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed drop-shadow-md">
@@ -141,7 +141,7 @@ const HeroSection = () => {
           w-full lg:w-1/2 
           flex justify-center lg:justify-end 
           items-center 
-         z-10
+          z-10
         "
       >
         <Globe

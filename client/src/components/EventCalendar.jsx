@@ -200,7 +200,7 @@ export default function MarketplaceDiscovery() {
       <div className=" relative z-10">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Calendar Section */}
-          <div className="w-full lg:w-96 bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-6 transform hover:-translate-y-1 transition-all duration-300 border border-gray-200/50 relative">
+          <div className="w-full lg:w-96 h-[550px] bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-6 transform hover:-translate-y-1 transition-all duration-300 border border-gray-200/50 relative">
             <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
               <div className="w-2 h-8 bg-gradient-to-b from-[#2F3A63] to-blue-600 rounded-full"></div>
               Event Calendar
