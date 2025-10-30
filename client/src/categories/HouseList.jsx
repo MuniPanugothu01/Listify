@@ -754,19 +754,19 @@ function HousesList() {
                               </span>
                             </div>
                             <div className="absolute top-2 right-2">
-                              <button 
+                              <button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   toggleSave(house);
                                 }}
                                 className="p-1.5 rounded-full bg-white/90 hover:bg-white transition-colors shadow-sm"
                               >
-                                <Heart 
+                                <Heart
                                   className={`w-4 h-4 transition-colors ${
-                                    isSaved 
-                                      ? 'fill-red-600 text-red-600' 
+                                    isSaved
+                                      ? 'fill-red-600 text-red-600'
                                       : 'text-gray-400 hover:text-red-500'
-                                  }`} 
+                                  }`}
                                 />
                               </button>
                             </div>
