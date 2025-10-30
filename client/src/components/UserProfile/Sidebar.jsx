@@ -14,6 +14,9 @@ import {
   X
 } from "lucide-react";
 
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Sidebar = ({ activeSection, setActiveSection, counts, isMobileMenuOpen, setIsMobileMenuOpen }) => {
   const menuItems = [
     { id: "home", label: "Home", icon: Home },
@@ -75,7 +78,10 @@ const Sidebar = ({ activeSection, setActiveSection, counts, isMobileMenuOpen, se
           <button
             onClick={() => {
               localStorage.removeItem('user');
-              window.location.href = '/';
+              toast.success("Logged out successfully.");
+              setTimeout(() => {
+                window.location.href = '/';
+              }, 500);
             }}
             className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all mt-4"
           >
@@ -84,6 +90,22 @@ const Sidebar = ({ activeSection, setActiveSection, counts, isMobileMenuOpen, se
           </button>
         </nav>
       </div>
+
+      {/* Toast Container */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        limit={1}
+        style={{ zIndex: 9999 }}
+      />
     </>
   );
 };

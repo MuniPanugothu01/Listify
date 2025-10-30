@@ -10,7 +10,7 @@ const HomeSection = ({ savedHouses, myPosts, myAlerts, messages, agendaEvents, o
   <>
     {/* Welcome */}
     <div className="mb-6">
-      <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Welcome back, John!</h1>
+      <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Welcome back, User!</h1>
       <p className="text-sm text-gray-600 mt-1">Easily manage your listings and track your activity</p>
     </div>
 
