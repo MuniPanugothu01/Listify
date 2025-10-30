@@ -1,4 +1,4 @@
-// // App.js
+// App.js
 import React from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -29,7 +29,8 @@ import ResumesList from "./categories/ResumesList.jsx";
 import ResumesDetails from "./categories/ResumesDetails";
 import SavedItems from "./components/SavedItems";
 import Profile from "./components/UserProfile/Profile";
-import ChatBot from "./components/ChatBot"; // Import the ChatBot
+import ChatBot from "./components/ChatBot";
+import ScrollToTop from "./components/ScrollToTop"; // Import ScrollToTop
 
 // ✅ Layout wrapper that hides Navbar & Footer on /signin and /profile
 const Layout = ({ children }) => {
@@ -53,6 +54,7 @@ const Layout = ({ children }) => {
 const App = () => {
   return (
     <BrowserRouter>
+      <ScrollToTop /> {/* Add ScrollToTop here */}
       <Layout>
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -95,13 +97,9 @@ const App = () => {
 
           {/* 🚫 Sign-in (No Navbar or Footer) */}
           <Route path="/signin" element={<Sign />} />
-
         </Routes>
-
       </Layout>
-
     </BrowserRouter>
-
   );
 };
 

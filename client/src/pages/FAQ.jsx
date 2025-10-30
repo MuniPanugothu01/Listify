@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Search, X, ChevronDown, HelpCircle, Sparkles, MessageCircle, BookOpen } from "lucide-react";
+import { FaSearch, FaTimes, FaChevronDown, FaQuestionCircle, FaRegCommentDots, FaBookOpen, FaMagic } from "react-icons/fa";
 
 const FAQSection = () => {
   const [expandedSections, setExpandedSections] = useState({});
@@ -254,7 +254,7 @@ const FAQSection = () => {
                       </p>
                     </div>
                   </div>
-                  <ChevronDown
+                  <FaChevronDown
                     className={`w-6 h-6 text-gray-400 transition-transform duration-300 ${
                       expandedSections[section.id] ? "rotate-180 text-[#2F3A63]" : "group-hover:text-[#2F3A63]"
                     }`}
@@ -303,7 +303,7 @@ const FAQSection = () => {
                 Can't find the answer you're looking for? Our support team is here to help.
               </p>
               <button className="bg-[#2F3A63] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#1e2a4a] transition-colors duration-200 inline-flex items-center gap-2">
-                <MessageCircle className="w-4 h-4" />
+                <FaRegCommentDots className="w-4 h-4" />
                 Contact Support
               </button>
             </div>
