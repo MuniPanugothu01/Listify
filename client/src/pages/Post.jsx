@@ -43,9 +43,9 @@ const PostAdd = ({ data, setData }) => {
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
 
-  // Color Scheme
+  // Color Scheme - Using only primary color for everything
   const colors = {
-    primary: "#2F3A63",     // Deep navy blue
+    primary: "#2F3A63",     // Deep navy blue - main color for everything
     secondary: "#4A5FC1",   // Bright blue for accents
     accent: "#FF6B35",      // Coral orange for CTAs
     success: "#10B981",     // Emerald green for success
@@ -70,56 +70,48 @@ const PostAdd = ({ data, setData }) => {
       label: "Real Estate",
       icon: FaHome,
       desc: "Properties & rentals",
-      color: colors.primary,
     },
     {
       value: "sales",
       label: "For Sale",
       icon: FaShoppingCart,
       desc: "Items & merchandise",
-      color: colors.secondary,
     },
     {
       value: "services",
       label: "Services",
       icon: FaTools,
       desc: "Professional services",
-      color: colors.accent,
     },
     {
       value: "gigs",
       label: "Gigs",
       icon: FaBriefcase,
       desc: "Short-term work",
-      color: colors.success,
     },
     {
       value: "jobs",
       label: "Jobs",
       icon: FaUserTie,
       desc: "Employment opportunities",
-      color: colors.warning,
     },
     {
       value: "community",
       label: "Events",
       icon: FaCalendarAlt,
       desc: "Community events",
-      color: colors.error,
     },
     {
       value: "forums",
       label: "Discussion",
       icon: FaComments,
       desc: "Forums & talks",
-      color: colors.primary,
     },
     {
       value: "resumes",
       label: "Resumes",
       icon: FaFileAlt,
       desc: "Job seekers",
-      color: colors.secondary,
     },
   ];
 
@@ -286,7 +278,7 @@ const PostAdd = ({ data, setData }) => {
             </p>
           </div>
 
-          {/* Category Selection Grid */}
+          {/* Category Selection Grid - Using only primary color */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {categoryOptions.map((item, index) => (
               <div
@@ -302,23 +294,24 @@ const PostAdd = ({ data, setData }) => {
                       : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"
                   }`}
                   style={{
-                    borderColor: formData.postType === item.value ? item.color : undefined,
-                    backgroundColor: formData.postType === item.value ? `${item.color}10` : undefined,
-                    ringColor: formData.postType === item.value ? item.color : undefined,
+                    borderColor: formData.postType === item.value ? colors.primary : undefined,
+                    backgroundColor: formData.postType === item.value ? `${colors.primary}10` : undefined,
+                    ringColor: formData.postType === item.value ? colors.primary : undefined,
                   }}
                 >
                   {/* Checkmark Badge */}
                   {formData.postType === item.value && (
                     <div 
                       className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-bounce-in z-10"
-                      style={{ backgroundColor: item.color }}
+                      style={{ backgroundColor: colors.primary }}
                     >
                       <FaCheck className="text-white text-xs font-bold" />
                     </div>
                   )}
 
                   {/* Hover Effect */}
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white to-gray-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white to-gray-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10">
+                  </div>
 
                   <item.icon
                     className={`text-2xl mb-3 transition-all duration-500 transform  ${
@@ -326,11 +319,11 @@ const PostAdd = ({ data, setData }) => {
                         ? "text-current animate-pulse-slow"
                         : "text-gray-500 group-hover:text-gray-700"
                     }`}
-                    style={{ color: formData.postType === item.value ? item.color : undefined }}
+                    style={{ color: formData.postType === item.value ? colors.primary : undefined }}
                   />
                   <div 
                     className="font-semibold text-sm mb-1 transition-colors duration-300"
-                    style={{ color: formData.postType === item.value ? item.color : colors.primary }}
+                    style={{ color: formData.postType === item.value ? colors.primary : colors.primary }}
                   >
                     {item.label}
                   </div>
@@ -343,7 +336,7 @@ const PostAdd = ({ data, setData }) => {
                 {formData.postType === item.value && (
                   <div 
                     className="absolute inset-0 rounded-xl animate-pulse-gentle opacity-20 -z-10"
-                    style={{ backgroundColor: item.color }}
+                    style={{ backgroundColor: colors.primary }}
                   ></div>
                 )}
               </div>
@@ -427,16 +420,16 @@ const PostAdd = ({ data, setData }) => {
                       : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"
                   }`}
                   style={{
-                    borderColor: formData.intent === "hiring" ? colors.secondary : undefined,
-                    backgroundColor: formData.intent === "hiring" ? `${colors.secondary}10` : undefined,
-                    ringColor: formData.intent === "hiring" ? colors.secondary : undefined,
+                    borderColor: formData.intent === "hiring" ? colors.primary : undefined,
+                    backgroundColor: formData.intent === "hiring" ? `${colors.primary}10` : undefined,
+                    ringColor: formData.intent === "hiring" ? colors.primary : undefined,
                   }}
                 >
                   {/* Checkmark Badge */}
                   {formData.intent === "hiring" && (
                     <div 
                       className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-bounce-in"
-                      style={{ backgroundColor: colors.secondary }}
+                      style={{ backgroundColor: colors.primary }}
                     >
                       <FaCheck className="text-white text-xs font-bold" />
                     </div>
@@ -446,8 +439,8 @@ const PostAdd = ({ data, setData }) => {
                     <div 
                       className="p-2 rounded-lg mr-3 transition-all duration-300 transform "
                       style={{ 
-                        backgroundColor: `${colors.secondary}20`,
-                        color: colors.secondary
+                        backgroundColor: `${colors.primary}20`,
+                        color: colors.primary
                       }}
                     >
                       <FaBriefcase className="text-sm" />
@@ -474,6 +467,7 @@ const PostAdd = ({ data, setData }) => {
         </div>
       ),
 
+      // ... rest of the step content remains the same (steps 2, 3, 4)
       2: (
         <div className="space-y-6 animate-fade-in-up">
           <div className="text-center mb-8">
@@ -722,8 +716,8 @@ const PostAdd = ({ data, setData }) => {
           <div 
             className="border rounded-lg p-5 mt-6 animate-stagger-item"
             style={{ 
-              borderColor: `${colors.success}30`,
-              backgroundColor: `${colors.success}10`,
+              borderColor: `${colors.primary}30`,
+              backgroundColor: `${colors.primary}10`,
               animationDelay: '300ms'
             }}
           >
@@ -731,17 +725,17 @@ const PostAdd = ({ data, setData }) => {
               <div 
                 className="p-2 rounded-lg mt-1 transition-all duration-300 transform hover:"
                 style={{ 
-                  backgroundColor: `${colors.success}20`,
-                  color: colors.success
+                  backgroundColor: `${colors.primary}20`,
+                  color: colors.primary
                 }}
               >
                 <FaCheck className="text-lg" />
               </div>
               <div>
-                <h4 className="font-medium mb-1 animate-fade-in" style={{ color: colors.success }}>
+                <h4 className="font-medium mb-1 animate-fade-in" style={{ color: colors.primary }}>
                   Ready to Publish
                 </h4>
-                <p className="text-sm animate-fade-in delay-100" style={{ color: colors.success }}>
+                <p className="text-sm animate-fade-in delay-100" style={{ color: colors.primary }}>
                   Review your information carefully. Once published, your
                   listing will be visible to other users.
                 </p>
@@ -836,7 +830,7 @@ const PostAdd = ({ data, setData }) => {
                             : "bg-gray-300 text-gray-600"
                         }`}
                         style={{
-                          backgroundColor: currentStep >= step.number ? colors.secondary : undefined,
+                          backgroundColor: currentStep >= step.number ? colors.primary : undefined,
                         }}
                       >
                         {step.number}
@@ -939,7 +933,7 @@ const PostAdd = ({ data, setData }) => {
                     type="submit"
                     disabled={isSubmitting}
                     className="px-6 py-3 text-white rounded-lg transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:shadow-lg transform hover: active:scale-95"
-                    style={{ backgroundColor: colors.accent }}
+                    style={{ backgroundColor: colors.primary }}
                   >
                     {isSubmitting ? (
                       <>
@@ -961,6 +955,7 @@ const PostAdd = ({ data, setData }) => {
       </div>
 
       <style jsx>{`
+        /* ... (all your existing CSS animations remain the same) */
         @keyframes slideInFromRight {
           from {
             opacity: 0;
