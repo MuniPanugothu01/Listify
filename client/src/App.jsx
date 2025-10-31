@@ -83,11 +83,11 @@ const App = () => {
             element={<CommunityDetails />}
           />
           <Route
-            path="/categories/discussion"
+            path="/categories/discussion-forums"
             element={<DiscussionForumsList />}
           />
           <Route
-            path="/categories/discussion/:id"
+            path="/categories/discussion-forums/:id"
             element={<DiscussionForumsDetails />}
           />
           <Route path="/categories/resumes" element={<ResumesList />} />

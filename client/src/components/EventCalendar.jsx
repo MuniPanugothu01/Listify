@@ -101,7 +101,7 @@ export default function MarketplaceDiscovery() {
         "https://images.unsplash.com/photo-1593642532973-d31b6557fa68?w=400&h=300&fit=crop",
       label: "Discussion Forums",
       description: "Join community discussions • Share insights",
-      path: "/categories/discussion",
+      path: "/categories/discussion-forums",
       icon: MessageCircle,
       gradient: "from-teal-500 to-cyan-500",
     },
