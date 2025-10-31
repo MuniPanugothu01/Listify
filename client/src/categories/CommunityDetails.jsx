@@ -627,7 +627,7 @@ function CommunityDetails() {
 
               <div className="flex items-center gap-4 mb-6">
                 <img
-                  src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687"
+                  src="https://www.shutterstock.com/image-photo/confident-smiling-middle-aged-business-260nw-2451544833.jpg"
                   alt={item.sellerName}
                   className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
                 />
