@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ChevronLeft,
@@ -24,6 +24,12 @@ export default function MarketplaceDiscovery() {
   const [selectedDate, setSelectedDate] = useState(5);
   const [showMonthPicker, setShowMonthPicker] = useState(false);
   const [showYearPicker, setShowYearPicker] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Animation on component mount
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   const marketplaceStats = [
     { value: "50K+", label: "Active Users", icon: Users },
@@ -159,26 +165,28 @@ export default function MarketplaceDiscovery() {
   const handleCategoryClick = (label, path) => navigate(path);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 p-4 sm:p-6 lg:p-8 relative overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50/30 p-4 sm:p-6 lg:p-8 relative overflow-hidden transition-all duration-1000 ${
+      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+    }`}>
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="flex flex-col xl:flex-row gap-10">
           {/* Calendar Section */}
-          <div className="w-full sm:max-w-md xl:w-96 bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-6 border border-gray-200/50 flex-shrink-0">
-            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-              <div className="w-2 h-8 bg-gradient-to-b from-[#2F3A63] to-blue-600 rounded-full"></div>
+          <div className="w-full sm:max-w-md xl:w-96 bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl p-6 border border-gray-200/50 flex-shrink-0 animate-slide-in-left">
+            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3 animate-fade-in">
+              <div className="w-2 h-8 bg-gradient-to-b from-[#2F3A63] to-blue-600 rounded-full animate-pulse-slow"></div>
               Event Calendar
-              <span className="text-sm font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+              <span className="text-sm font-normal text-gray-500 bg-gray-100 px-2 py-1 rounded-full animate-bounce-in">
                 {selectedDate ? "1 selected" : "0 selected"}
               </span>
             </h2>
 
             {/* Calendar Navigation */}
-            <div className="flex items-center justify-between mb-6 px-2 relative">
+            <div className="flex items-center justify-between mb-6 px-2 relative animate-fade-in-up">
               <button
                 onClick={previousMonth}
-                className="p-2 text-gray-500 hover:text-[#2F3A63] rounded-lg transition-colors duration-200 hover:bg-gray-100"
+                className="p-2 text-gray-500 hover:text-[#2F3A63] rounded-lg transition-all duration-300 transform hover:scale-110 hover:bg-gray-100"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-5 h-5 transition-transform duration-300 hover:-translate-x-1" />
               </button>
               <div className="flex gap-2">
                 <button
@@ -186,7 +194,7 @@ export default function MarketplaceDiscovery() {
                     setShowMonthPicker(!showMonthPicker);
                     setShowYearPicker(false);
                   }}
-                  className="px-3 py-1 text-base font-medium rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                  className="px-3 py-1 text-base font-medium rounded-lg hover:bg-gray-50 transition-all duration-300 transform hover:scale-105"
                 >
                   {monthNames[currentDate.getMonth()]}
                 </button>
@@ -195,27 +203,27 @@ export default function MarketplaceDiscovery() {
                     setShowYearPicker(!showYearPicker);
                     setShowMonthPicker(false);
                   }}
-                  className="px-3 py-1 text-base font-medium rounded-lg hover:bg-gray-50 transition-colors duration-200"
+                  className="px-3 py-1 text-base font-medium rounded-lg hover:bg-gray-50 transition-all duration-300 transform hover:scale-105"
                 >
                   {currentDate.getFullYear()}
                 </button>
               </div>
               <button
                 onClick={nextMonth}
-                className="p-2 text-gray-500 hover:text-[#2F3A63] rounded-lg transition-colors duration-200 hover:bg-gray-100"
+                className="p-2 text-gray-500 hover:text-[#2F3A63] rounded-lg transition-all duration-300 transform hover:scale-110 hover:bg-gray-100"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-5 h-5 transition-transform duration-300 hover:translate-x-1" />
               </button>
             </div>
 
             {/* Month Picker */}
             {showMonthPicker && (
-              <div className="absolute top-28 left-0 right-0 mx-auto z-40 bg-white rounded-xl shadow-2xl p-4 mt-2 border border-gray-100 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
+              <div className="absolute top-28 left-0 right-0 mx-auto z-40 bg-white rounded-xl shadow-2xl p-4 mt-2 border border-gray-100 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto animate-bounce-in">
                 {monthNames.map((month, index) => (
                   <button
                     key={index}
                     onClick={() => selectMonth(index)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
                       currentDate.getMonth() === index
                         ? "bg-gradient-to-r from-[#2F3A63] to-[#1e2a4a] text-white shadow-md"
                         : "bg-gray-50 text-gray-500 hover:bg-gray-100"
@@ -229,12 +237,12 @@ export default function MarketplaceDiscovery() {
 
             {/* Year Picker */}
             {showYearPicker && (
-              <div className="absolute top-28 left-0 right-0 mx-auto z-40 bg-white rounded-xl shadow-2xl p-4 mt-2 border border-gray-100 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto">
+              <div className="absolute top-28 left-0 right-0 mx-auto z-40 bg-white rounded-xl shadow-2xl p-4 mt-2 border border-gray-100 grid grid-cols-3 gap-2 max-h-64 overflow-y-auto animate-bounce-in">
                 {generateYears().map((year) => (
                   <button
                     key={year}
                     onClick={() => selectYear(year)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
                       currentDate.getFullYear() === year
                         ? "bg-gradient-to-r from-[#2F3A63] to-[#1e2a4a] text-white shadow-md"
                         : "bg-gray-50 text-gray-500 hover:bg-gray-100"
@@ -247,12 +255,12 @@ export default function MarketplaceDiscovery() {
             )}
 
             {/* Calendar Grid */}
-            <div className="space-y-1">
+            <div className="space-y-1 animate-fade-in-up">
               <div className="grid grid-cols-7 gap-1 mb-2">
                 {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
                   <div
                     key={i}
-                    className="text-center text-xs font-semibold text-gray-500 py-2"
+                    className="text-center text-xs font-semibold text-gray-500 py-2 transition-all duration-300 hover:text-[#2F3A63]"
                   >
                     {day}
                   </div>
@@ -267,9 +275,9 @@ export default function MarketplaceDiscovery() {
                       <button
                         key={dayIndex}
                         onClick={() => selectDate(day)}
-                        className={`aspect-square flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-200 ${
+                        className={`aspect-square flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-110 ${
                           selectedDate === day
-                            ? "bg-gradient-to-br from-[#2F3A63] to-[#1e2a4a] text-white shadow-lg transform scale-105"
+                            ? "bg-gradient-to-br from-[#2F3A63] to-[#1e2a4a] text-white shadow-lg scale-105 animate-pulse-slow"
                             : "text-gray-500 hover:bg-gray-100 hover:shadow-sm"
                         }`}
                       >
@@ -281,7 +289,7 @@ export default function MarketplaceDiscovery() {
               ))}
             </div>
 
-            <div className="mt-6 p-4 bg-gradient-to-r from-[#2F3A63]/5 to-blue-500/5 rounded-xl border border-[#2F3A63]/10">
+            <div className="mt-6 p-4 bg-gradient-to-r from-[#2F3A63]/5 to-blue-500/5 rounded-xl border border-[#2F3A63]/10 animate-fade-in-up">
               <p className="text-sm text-gray-600 text-center">
                 {selectedDate ? (
                   <>
@@ -303,9 +311,9 @@ export default function MarketplaceDiscovery() {
           </div>
 
           {/* Categories Section */}
-          <div className="flex-1">
+          <div className="flex-1 animate-slide-in-right">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
-              <div>
+              <div className="animate-fade-in-up">
                 <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
                   Browse Categories
                 </h2>
@@ -322,7 +330,8 @@ export default function MarketplaceDiscovery() {
                   <div
                     key={idx}
                     onClick={() => handleCategoryClick(category.label, category.path)}
-                    className="group bg-white rounded-3xl shadow-lg overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-2xl border border-gray-200/50"
+                    className="group bg-white rounded-3xl shadow-lg overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-2xl border border-gray-200/50 transform hover:scale-105 animate-stagger-item"
+                    style={{ animationDelay: `${idx * 100}ms` }}
                   >
                     <div className="relative h-48 overflow-hidden">
                       <img
@@ -331,16 +340,16 @@ export default function MarketplaceDiscovery() {
                         loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                      <div className="absolute top-4 right-4">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent transition-all duration-500 group-hover:from-black/50" />
+                      <div className="absolute top-4 right-4 transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-12">
                         <div
                           className={`p-2 rounded-xl bg-gradient-to-br ${category.gradient} text-white shadow-lg`}
                         >
                           <IconComponent className="w-5 h-5" />
                         </div>
                       </div>
-                      <div className="absolute bottom-4 left-4 text-white">
-                        <h3 className="text-xl font-bold mb-1">
+                      <div className="absolute bottom-4 left-4 text-white transform transition-all duration-500 group-hover:translate-y-1">
+                        <h3 className="text-xl font-bold mb-1 transform transition-all duration-300 group-hover:scale-105">
                           {category.label}
                         </h3>
                         <p className="text-sm opacity-90 mb-2">
@@ -355,6 +364,97 @@ export default function MarketplaceDiscovery() {
           </div>
         </div>
       </div>
+
+      {/* Animation Styles */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        @keyframes slideInRight {
+          from {
+            opacity: 0;
+            transform: translateX(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes bounceIn {
+          0% {
+            opacity: 0;
+            transform: scale(0.3);
+          }
+          50% {
+            opacity: 1;
+            transform: scale(1.05);
+          }
+          70% {
+            transform: scale(0.9);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        @keyframes pulseSlow {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.8; }
+        }
+        @keyframes staggerItem {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fade-in {
+          animation: fadeIn 0.6s ease-out;
+        }
+        .animate-slide-in-left {
+          animation: slideInLeft 0.7s ease-out;
+        }
+        .animate-slide-in-right {
+          animation: slideInRight 0.7s ease-out;
+        }
+        .animate-fade-in-up {
+          animation: fadeInUp 0.6s ease-out;
+        }
+        .animate-bounce-in {
+          animation: bounceIn 0.5s ease-out;
+        }
+        .animate-pulse-slow {
+          animation: pulseSlow 2s ease-in-out infinite;
+        }
+        .animate-stagger-item {
+          animation: staggerItem 0.6s ease-out forwards;
+          opacity: 0;
+        }
+      `}</style>
     </div>
   );
 }

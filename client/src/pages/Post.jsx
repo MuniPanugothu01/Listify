@@ -40,6 +40,7 @@ const PostAdd = ({ data, setData }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [stepDirection, setStepDirection] = useState("forward");
   const [errors, setErrors] = useState({});
+  const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
 
   // Color Scheme
@@ -55,7 +56,13 @@ const PostAdd = ({ data, setData }) => {
   // Scroll to top when step changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
+    setIsVisible(true);
   }, [currentStep]);
+
+  // Initial page load animation
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   const categoryOptions = [
     {
@@ -269,29 +276,30 @@ const PostAdd = ({ data, setData }) => {
   const getStepContent = () => {
     const stepContent = {
       1: (
-        <div className="space-y-8">
+        <div className="space-y-8 animate-fade-in-up">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold" style={{ color: colors.primary }}>
+            <h2 className="text-2xl font-semibold animate-slide-down" style={{ color: colors.primary }}>
               Select Category
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-600 animate-slide-down delay-100">
               Choose the most relevant category for your post
             </p>
           </div>
 
           {/* Category Selection Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {categoryOptions.map((item) => (
+            {categoryOptions.map((item, index) => (
               <div
                 key={item.value}
                 onClick={() => handleCategorySelect(item.value)}
-                className="relative cursor-pointer group transition-all duration-300"
+                className="relative cursor-pointer group transition-all duration-500 animate-stagger-item"
+                style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div
-                  className={`p-5 rounded-xl border-2 text-center h-full flex flex-col items-center justify-center transition-all duration-300 ${
+                  className={`p-5 rounded-xl border-2 text-center h-full flex flex-col items-center justify-center transition-all duration-500 transform hover:scale-105 ${
                     formData.postType === item.value
-                      ? "border-current bg-opacity-10 shadow-md ring-2 ring-opacity-20"
-                      : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                      ? "border-current bg-opacity-10 shadow-lg ring-2 ring-opacity-20 scale-105"
+                      : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"
                   }`}
                   style={{
                     borderColor: formData.postType === item.value ? item.color : undefined,
@@ -302,59 +310,71 @@ const PostAdd = ({ data, setData }) => {
                   {/* Checkmark Badge */}
                   {formData.postType === item.value && (
                     <div 
-                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-bounceIn"
+                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-bounce-in z-10"
                       style={{ backgroundColor: item.color }}
                     >
                       <FaCheck className="text-white text-xs font-bold" />
                     </div>
                   )}
 
+                  {/* Hover Effect */}
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white to-gray-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+
                   <item.icon
-                    className={`text-2xl mb-3 transition-colors duration-300 ${
+                    className={`text-2xl mb-3 transition-all duration-500 transform group-hover:scale-110 ${
                       formData.postType === item.value
-                        ? "text-current"
+                        ? "text-current animate-pulse-slow"
                         : "text-gray-500 group-hover:text-gray-700"
                     }`}
                     style={{ color: formData.postType === item.value ? item.color : undefined }}
                   />
                   <div 
-                    className="font-semibold text-sm mb-1"
+                    className="font-semibold text-sm mb-1 transition-colors duration-300"
                     style={{ color: formData.postType === item.value ? item.color : colors.primary }}
                   >
                     {item.label}
                   </div>
-                  <div className="text-xs text-gray-500 leading-tight">
+                  <div className="text-xs text-gray-500 leading-tight transition-colors duration-300 group-hover:text-gray-700">
                     {item.desc}
                   </div>
                 </div>
+
+                {/* Subtle glow effect when selected */}
+                {formData.postType === item.value && (
+                  <div 
+                    className="absolute inset-0 rounded-xl animate-pulse-gentle opacity-20 -z-10"
+                    style={{ backgroundColor: item.color }}
+                  ></div>
+                )}
               </div>
             ))}
           </div>
 
           {errors.postType && (
-            <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 px-4 py-3 rounded-lg border border-red-200">
-              <FaExclamationTriangle className="flex-shrink-0" />
+            <div className="flex items-center gap-2 text-red-600 text-sm bg-red-50 px-4 py-3 rounded-lg border border-red-200 animate-shake">
+              <FaExclamationTriangle className="flex-shrink-0 animate-pulse" />
               {errors.postType}
             </div>
           )}
 
           {/* Post Type Selection */}
-          <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm">
-            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: colors.primary }}>
-              <FaGlobeAmericas style={{ color: colors.primary }} />
+          <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm animate-slide-up">
+            <h3 className="font-semibold mb-4 flex items-center gap-2 animate-slide-right" style={{ color: colors.primary }}>
+              <FaGlobeAmericas className="animate-spin-slow" style={{ color: colors.primary }} />
               Post Type
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Offering Option */}
               <div
                 onClick={() => handleIntentSelect("offering")}
-                className="relative cursor-pointer transition-all duration-300"
+                className="relative cursor-pointer transition-all duration-500 animate-stagger-item"
+                style={{ animationDelay: '400ms' }}
               >
                 <div
-                  className={`p-4 rounded-xl border-2 transition-all duration-300 ${
+                  className={`p-4 rounded-xl border-2 transition-all duration-500 transform hover:scale-105 ${
                     formData.intent === "offering"
-                      ? "border-current bg-opacity-10 shadow-md ring-2 ring-opacity-20"
-                      : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                      ? "border-current bg-opacity-10 shadow-lg ring-2 ring-opacity-20 scale-105"
+                      : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"
                   }`}
                   style={{
                     borderColor: formData.intent === "offering" ? colors.primary : undefined,
@@ -365,7 +385,7 @@ const PostAdd = ({ data, setData }) => {
                   {/* Checkmark Badge */}
                   {formData.intent === "offering" && (
                     <div 
-                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-bounceIn"
+                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-bounce-in"
                       style={{ backgroundColor: colors.primary }}
                     >
                       <FaCheck className="text-white text-xs font-bold" />
@@ -374,7 +394,7 @@ const PostAdd = ({ data, setData }) => {
 
                   <div className="flex items-center">
                     <div 
-                      className="p-2 rounded-lg mr-3"
+                      className="p-2 rounded-lg mr-3 transition-all duration-300 transform group-hover:scale-110"
                       style={{ 
                         backgroundColor: `${colors.primary}20`,
                         color: colors.primary
@@ -383,10 +403,10 @@ const PostAdd = ({ data, setData }) => {
                       <FaShoppingCart className="text-sm" />
                     </div>
                     <div>
-                      <div className="font-semibold" style={{ color: colors.primary }}>
+                      <div className="font-semibold transition-colors duration-300" style={{ color: colors.primary }}>
                         Offering
                       </div>
-                      <div className="text-sm text-gray-600 mt-1">
+                      <div className="text-sm text-gray-600 mt-1 transition-colors duration-300 group-hover:text-gray-700">
                         Selling items, providing services, renting
                       </div>
                     </div>
@@ -397,13 +417,14 @@ const PostAdd = ({ data, setData }) => {
               {/* Seeking Option */}
               <div
                 onClick={() => handleIntentSelect("hiring")}
-                className="relative cursor-pointer transition-all duration-300"
+                className="relative cursor-pointer transition-all duration-500 animate-stagger-item"
+                style={{ animationDelay: '500ms' }}
               >
                 <div
-                  className={`p-4 rounded-xl border-2 transition-all duration-300 ${
+                  className={`p-4 rounded-xl border-2 transition-all duration-500 transform hover:scale-105 ${
                     formData.intent === "hiring"
-                      ? "border-current bg-opacity-10 shadow-md ring-2 ring-opacity-20"
-                      : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
+                      ? "border-current bg-opacity-10 shadow-lg ring-2 ring-opacity-20 scale-105"
+                      : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"
                   }`}
                   style={{
                     borderColor: formData.intent === "hiring" ? colors.secondary : undefined,
@@ -414,7 +435,7 @@ const PostAdd = ({ data, setData }) => {
                   {/* Checkmark Badge */}
                   {formData.intent === "hiring" && (
                     <div 
-                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-bounceIn"
+                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-bounce-in"
                       style={{ backgroundColor: colors.secondary }}
                     >
                       <FaCheck className="text-white text-xs font-bold" />
@@ -423,7 +444,7 @@ const PostAdd = ({ data, setData }) => {
 
                   <div className="flex items-center">
                     <div 
-                      className="p-2 rounded-lg mr-3"
+                      className="p-2 rounded-lg mr-3 transition-all duration-300 transform group-hover:scale-110"
                       style={{ 
                         backgroundColor: `${colors.secondary}20`,
                         color: colors.secondary
@@ -432,10 +453,10 @@ const PostAdd = ({ data, setData }) => {
                       <FaBriefcase className="text-sm" />
                     </div>
                     <div>
-                      <div className="font-semibold" style={{ color: colors.primary }}>
+                      <div className="font-semibold transition-colors duration-300" style={{ color: colors.primary }}>
                         Seeking
                       </div>
-                      <div className="text-sm text-gray-600 mt-1">
+                      <div className="text-sm text-gray-600 mt-1 transition-colors duration-300 group-hover:text-gray-700">
                         Looking to hire, buy, or find services
                       </div>
                     </div>
@@ -444,8 +465,8 @@ const PostAdd = ({ data, setData }) => {
               </div>
             </div>
             {errors.intent && (
-              <div className="flex items-center gap-2 text-red-600 text-sm mt-3 bg-red-50 px-4 py-2 rounded-lg">
-                <FaExclamationTriangle className="flex-shrink-0" />
+              <div className="flex items-center gap-2 text-red-600 text-sm mt-3 bg-red-50 px-4 py-2 rounded-lg animate-shake">
+                <FaExclamationTriangle className="flex-shrink-0 animate-pulse" />
                 {errors.intent}
               </div>
             )}
@@ -454,19 +475,19 @@ const PostAdd = ({ data, setData }) => {
       ),
 
       2: (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in-up">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold" style={{ color: colors.primary }}>
+            <h2 className="text-2xl font-semibold animate-slide-down" style={{ color: colors.primary }}>
               Post Details
             </h2>
-            <p className="text-gray-600">
+            <p className="text-gray-600 animate-slide-down delay-100">
               Provide detailed information about your listing
             </p>
           </div>
 
           <div className="space-y-6">
-            <div>
-              <label className="block font-medium mb-3" style={{ color: colors.primary }}>
+            <div className="animate-stagger-item" style={{ animationDelay: '100ms' }}>
+              <label className="block font-medium mb-3 animate-fade-in" style={{ color: colors.primary }}>
                 Title *
               </label>
               <input
@@ -474,24 +495,24 @@ const PostAdd = ({ data, setData }) => {
                 placeholder="e.g., Professional web development services"
                 value={formData.title}
                 onChange={handleInputChange}
-                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-colors ${
+                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover:scale-105 ${
                   errors.title
-                    ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20"
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-100 animate-shake"
+                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20 hover:border-gray-400"
                 }`}
                 required
               />
               {errors.title && (
-                <p className="text-red-600 text-sm mt-2 flex items-center gap-2">
-                  <FaExclamationTriangle className="flex-shrink-0" />
+                <p className="text-red-600 text-sm mt-2 flex items-center gap-2 animate-fade-in">
+                  <FaExclamationTriangle className="flex-shrink-0 animate-pulse" />
                   {errors.title}
                 </p>
               )}
             </div>
 
-            <div>
-              <label className="block font-medium mb-3 flex items-center gap-2" style={{ color: colors.primary }}>
-                <FaDollarSign className="text-gray-500" />
+            <div className="animate-stagger-item" style={{ animationDelay: '200ms' }}>
+              <label className="block font-medium mb-3 flex items-center gap-2 animate-fade-in" style={{ color: colors.primary }}>
+                <FaDollarSign className="text-gray-500 animate-bounce-slow" />
                 Price (Optional)
               </label>
               <input
@@ -500,12 +521,12 @@ const PostAdd = ({ data, setData }) => {
                 placeholder="Enter amount in USD"
                 value={formData.price}
                 onChange={handleInputChange}
-                className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-[#2F3A63] focus:ring-2 focus:ring-[#2F3A63]/20 outline-none transition-colors"
+                className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-[#2F3A63] focus:ring-2 focus:ring-[#2F3A63]/20 outline-none transition-all duration-500 transform hover:scale-105 hover:border-gray-400"
               />
             </div>
 
-            <div>
-              <label className="block font-medium mb-3" style={{ color: colors.primary }}>
+            <div className="animate-stagger-item" style={{ animationDelay: '300ms' }}>
+              <label className="block font-medium mb-3 animate-fade-in" style={{ color: colors.primary }}>
                 Description *
               </label>
               <textarea
@@ -514,25 +535,25 @@ const PostAdd = ({ data, setData }) => {
                 value={formData.description}
                 onChange={handleInputChange}
                 rows="6"
-                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-colors resize-none ${
+                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover:scale-105 resize-none ${
                   errors.description
-                    ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20"
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-100 animate-shake"
+                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20 hover:border-gray-400"
                 }`}
                 required
               />
               <div className="flex justify-between items-center mt-2">
                 <div>
                   {errors.description ? (
-                    <span className="text-red-600 text-sm flex items-center gap-2">
-                      <FaExclamationTriangle className="flex-shrink-0" />
+                    <span className="text-red-600 text-sm flex items-center gap-2 animate-fade-in">
+                      <FaExclamationTriangle className="flex-shrink-0 animate-pulse" />
                       {errors.description}
                     </span>
                   ) : (
                     <span
-                      className={`text-sm ${
+                      className={`text-sm transition-colors duration-300 ${
                         formData.description.length > 450
-                          ? "text-amber-600"
+                          ? "text-amber-600 animate-pulse"
                           : "text-gray-500"
                       }`}
                     >
@@ -541,7 +562,7 @@ const PostAdd = ({ data, setData }) => {
                   )}
                 </div>
                 {formData.description.length > 450 && !errors.description && (
-                  <span className="text-amber-600 text-sm flex items-center gap-2">
+                  <span className="text-amber-600 text-sm flex items-center gap-2 animate-pulse">
                     <FaExclamationTriangle className="flex-shrink-0" />
                     Approaching character limit
                   </span>
@@ -553,17 +574,17 @@ const PostAdd = ({ data, setData }) => {
       ),
 
       3: (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in-up">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold" style={{ color: colors.primary }}>
+            <h2 className="text-2xl font-semibold animate-slide-down" style={{ color: colors.primary }}>
               Location Information
             </h2>
-            <p className="text-gray-600">Where is this located?</p>
+            <p className="text-gray-600 animate-slide-down delay-100">Where is this located?</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block font-medium mb-3" style={{ color: colors.primary }}>
+            <div className="animate-stagger-item" style={{ animationDelay: '100ms' }}>
+              <label className="block font-medium mb-3 animate-fade-in" style={{ color: colors.primary }}>
                 City *
               </label>
               <input
@@ -571,22 +592,22 @@ const PostAdd = ({ data, setData }) => {
                 placeholder="Enter city name"
                 value={formData.city}
                 onChange={handleInputChange}
-                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-colors ${
+                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover:scale-105 ${
                   errors.city
-                    ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20"
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-100 animate-shake"
+                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20 hover:border-gray-400"
                 }`}
                 required
               />
               {errors.city && (
-                <p className="text-red-600 text-sm mt-2 flex items-center gap-2">
-                  <FaExclamationTriangle className="flex-shrink-0" />
+                <p className="text-red-600 text-sm mt-2 flex items-center gap-2 animate-fade-in">
+                  <FaExclamationTriangle className="flex-shrink-0 animate-pulse" />
                   {errors.city}
                 </p>
               )}
             </div>
-            <div>
-              <label className="block font-medium mb-3" style={{ color: colors.primary }}>
+            <div className="animate-stagger-item" style={{ animationDelay: '200ms' }}>
+              <label className="block font-medium mb-3 animate-fade-in" style={{ color: colors.primary }}>
                 ZIP Code *
               </label>
               <input
@@ -594,26 +615,26 @@ const PostAdd = ({ data, setData }) => {
                 placeholder="Enter ZIP code"
                 value={formData.zipcode}
                 onChange={handleInputChange}
-                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-colors ${
+                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover:scale-105 ${
                   errors.zipcode
-                    ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20"
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-100 animate-shake"
+                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20 hover:border-gray-400"
                 }`}
                 required
               />
               {errors.zipcode && (
-                <p className="text-red-600 text-sm mt-2 flex items-center gap-2">
-                  <FaExclamationTriangle className="flex-shrink-0" />
+                <p className="text-red-600 text-sm mt-2 flex items-center gap-2 animate-fade-in">
+                  <FaExclamationTriangle className="flex-shrink-0 animate-pulse" />
                   {errors.zipcode}
                 </p>
               )}
             </div>
           </div>
 
-          <div className="border border-gray-200 rounded-lg p-5 bg-gray-50 mt-6">
+          <div className="border border-gray-200 rounded-lg p-5 bg-gray-50 mt-6 animate-stagger-item" style={{ animationDelay: '300ms' }}>
             <div className="flex items-start gap-4">
               <div 
-                className="p-2 rounded-lg mt-1"
+                className="p-2 rounded-lg mt-1 transition-all duration-300 transform hover:rotate-12"
                 style={{ 
                   backgroundColor: `${colors.primary}20`,
                   color: colors.primary
@@ -622,10 +643,10 @@ const PostAdd = ({ data, setData }) => {
                 <FaShieldAlt className="text-lg" />
               </div>
               <div>
-                <h4 className="font-medium mb-1" style={{ color: colors.primary }}>
+                <h4 className="font-medium mb-1 animate-fade-in" style={{ color: colors.primary }}>
                   Your Privacy Matters
                 </h4>
-                <p className="text-gray-600 text-sm">
+                <p className="text-gray-600 text-sm animate-fade-in delay-100">
                   Only the city and ZIP code will be visible to other users.
                   Your exact address remains private and secure.
                 </p>
@@ -636,18 +657,18 @@ const PostAdd = ({ data, setData }) => {
       ),
 
       4: (
-        <div className="space-y-6">
+        <div className="space-y-6 animate-fade-in-up">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold" style={{ color: colors.primary }}>
+            <h2 className="text-2xl font-semibold animate-slide-down" style={{ color: colors.primary }}>
               Contact Details
             </h2>
-            <p className="text-gray-600">How should people contact you?</p>
+            <p className="text-gray-600 animate-slide-down delay-100">How should people contact you?</p>
           </div>
 
           <div className="space-y-6">
-            <div>
-              <label className="block font-medium mb-3 flex items-center gap-2" style={{ color: colors.primary }}>
-                <FaEnvelope className="text-gray-500" />
+            <div className="animate-stagger-item" style={{ animationDelay: '100ms' }}>
+              <label className="block font-medium mb-3 flex items-center gap-2 animate-fade-in" style={{ color: colors.primary }}>
+                <FaEnvelope className="text-gray-500 animate-bounce-slow" />
                 Email Address *
               </label>
               <input
@@ -656,24 +677,24 @@ const PostAdd = ({ data, setData }) => {
                 placeholder="your.email@example.com"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-colors ${
+                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover:scale-105 ${
                   errors.email
-                    ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20"
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-100 animate-shake"
+                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20 hover:border-gray-400"
                 }`}
                 required
               />
               {errors.email && (
-                <p className="text-red-600 text-sm mt-2 flex items-center gap-2">
-                  <FaExclamationTriangle className="flex-shrink-0" />
+                <p className="text-red-600 text-sm mt-2 flex items-center gap-2 animate-fade-in">
+                  <FaExclamationTriangle className="flex-shrink-0 animate-pulse" />
                   {errors.email}
                 </p>
               )}
             </div>
 
-            <div>
-              <label className="block font-medium mb-3 flex items-center gap-2" style={{ color: colors.primary }}>
-                <FaPhone className="text-gray-500" />
+            <div className="animate-stagger-item" style={{ animationDelay: '200ms' }}>
+              <label className="block font-medium mb-3 flex items-center gap-2 animate-fade-in" style={{ color: colors.primary }}>
+                <FaPhone className="text-gray-500 animate-bounce-slow" />
                 Phone Number *
               </label>
               <input
@@ -682,16 +703,16 @@ const PostAdd = ({ data, setData }) => {
                 placeholder="+1 (555) 123-4567"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-colors ${
+                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover:scale-105 ${
                   errors.phone
-                    ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20"
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-100 animate-shake"
+                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20 hover:border-gray-400"
                 }`}
                 required
               />
               {errors.phone && (
-                <p className="text-red-600 text-sm mt-2 flex items-center gap-2">
-                  <FaExclamationTriangle className="flex-shrink-0" />
+                <p className="text-red-600 text-sm mt-2 flex items-center gap-2 animate-fade-in">
+                  <FaExclamationTriangle className="flex-shrink-0 animate-pulse" />
                   {errors.phone}
                 </p>
               )}
@@ -699,15 +720,16 @@ const PostAdd = ({ data, setData }) => {
           </div>
 
           <div 
-            className="border rounded-lg p-5 mt-6"
+            className="border rounded-lg p-5 mt-6 animate-stagger-item"
             style={{ 
               borderColor: `${colors.success}30`,
-              backgroundColor: `${colors.success}10`
+              backgroundColor: `${colors.success}10`,
+              animationDelay: '300ms'
             }}
           >
             <div className="flex items-start gap-4">
               <div 
-                className="p-2 rounded-lg mt-1"
+                className="p-2 rounded-lg mt-1 transition-all duration-300 transform hover:scale-110"
                 style={{ 
                   backgroundColor: `${colors.success}20`,
                   color: colors.success
@@ -716,10 +738,10 @@ const PostAdd = ({ data, setData }) => {
                 <FaCheck className="text-lg" />
               </div>
               <div>
-                <h4 className="font-medium mb-1" style={{ color: colors.success }}>
+                <h4 className="font-medium mb-1 animate-fade-in" style={{ color: colors.success }}>
                   Ready to Publish
                 </h4>
-                <p className="text-sm" style={{ color: colors.success }}>
+                <p className="text-sm animate-fade-in delay-100" style={{ color: colors.success }}>
                   Review your information carefully. Once published, your
                   listing will be visible to other users.
                 </p>
@@ -732,10 +754,10 @@ const PostAdd = ({ data, setData }) => {
 
     return (
       <div
-        className={`transition-all duration-500 ease-in-out ${
+        className={`transition-all duration-700 ease-out ${
           stepDirection === "forward"
-            ? "animate-slideInFromRight"
-            : "animate-slideInFromLeft"
+            ? "animate-slide-in-right"
+            : "animate-slide-in-left"
         }`}
       >
         {stepContent[currentStep]}
@@ -744,21 +766,23 @@ const PostAdd = ({ data, setData }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
-      <div className="bg-white rounded-xl w-full max-w-7xl shadow-lg overflow-hidden border border-gray-200">
+    <div className={`min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8 transition-all duration-1000 ${
+      isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+    }`}>
+      <div className="bg-white rounded-xl w-full max-w-7xl shadow-2xl overflow-hidden border border-gray-200 animate-scale-in">
         {/* Header */}
         <div className="bg-white border-b border-gray-200 px-8 py-6">
           <div className="flex items-center justify-between mb-6">
-            <div>
+            <div className="animate-slide-down">
               <h1 className="text-2xl font-bold" style={{ color: colors.primary }}>
                 Create New Post
               </h1>
-              <p className="text-gray-600 mt-1">
+              <p className="text-gray-600 mt-1 animate-fade-in delay-200">
                 Complete all steps to publish your listing
               </p>
             </div>
             <div 
-              className="px-3 py-1 rounded-md text-sm font-medium"
+              className="px-3 py-1 rounded-md text-sm font-medium animate-bounce-in"
               style={{ 
                 backgroundColor: `${colors.primary}10`,
                 color: colors.primary
@@ -773,24 +797,24 @@ const PostAdd = ({ data, setData }) => {
             {steps.map((step, index) => (
               <React.Fragment key={step.number}>
                 {/* Step Circle */}
-                <div className="flex flex-col items-center z-10 relative">
+                <div className="flex flex-col items-center z-10 relative animate-stagger-item" style={{ animationDelay: `${index * 200}ms` }}>
                   <div className="relative">
                     {/* Pulse animation for current step */}
                     {currentStep === step.number && (
                       <div 
-                        className="absolute -inset-2 rounded-full animate-pulse"
+                        className="absolute -inset-2 rounded-full animate-pulse-ring"
                         style={{ backgroundColor: `${colors.primary}20` }}
                       ></div>
                     )}
 
                     <div
-                      className={`relative w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
+                      className={`relative w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-700 transform hover:scale-110 ${
                         currentStep >= step.number
                           ? "text-white shadow-lg"
                           : "bg-white border-gray-300 text-gray-400"
                       } ${
                         currentStep === step.number
-                          ? "ring-4 scale-110"
+                          ? "ring-4 scale-110 animate-pulse-slow"
                           : ""
                       }`}
                       style={{
@@ -800,15 +824,15 @@ const PostAdd = ({ data, setData }) => {
                       }}
                     >
                       {currentStep > step.number ? (
-                        <FaCheck className="text-sm font-bold" />
+                        <FaCheck className="text-sm font-bold animate-bounce-in" />
                       ) : (
-                        <step.icon className="text-sm" />
+                        <step.icon className="text-sm transition-transform duration-300 hover:rotate-12" />
                       )}
 
                       <div
-                        className={`absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs flex items-center justify-center transition-all duration-300 ${
+                        className={`absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs flex items-center justify-center transition-all duration-500 transform hover:scale-110 ${
                           currentStep >= step.number
-                            ? "text-white"
+                            ? "text-white shadow-lg"
                             : "bg-gray-300 text-gray-600"
                         }`}
                         style={{
@@ -821,7 +845,7 @@ const PostAdd = ({ data, setData }) => {
                   </div>
 
                   <span
-                    className={`mt-3 text-sm font-medium transition-all duration-300 ${
+                    className={`mt-3 text-sm font-medium transition-all duration-500 transform hover:scale-105 ${
                       currentStep >= step.number
                         ? "font-semibold"
                         : "text-gray-500"
@@ -836,11 +860,11 @@ const PostAdd = ({ data, setData }) => {
                 {index < steps.length - 1 && (
                   <div className="flex-1 relative h-2 mx-2">
                     {/* Background Track */}
-                    <div className="absolute top-0 left-0 right-0 h-0.5 bg-gray-200 rounded-full"></div>
+                    <div className="absolute top-0 left-0 right-0 h-0.5 bg-gray-200 rounded-full animate-pulse-slow"></div>
 
                     {/* Animated Progress Line */}
                     <div
-                      className="absolute top-0 left-0 h-0.5 rounded-full transition-all duration-1000 ease-out"
+                      className="absolute top-0 left-0 h-0.5 rounded-full transition-all duration-1000 ease-out transform origin-left"
                       style={{
                         width: currentStep > step.number ? "100%" : currentStep === step.number ? "50%" : "0%",
                         backgroundColor: colors.primary,
@@ -861,22 +885,22 @@ const PostAdd = ({ data, setData }) => {
           </div>
 
           {/* Mobile Progress Bar */}
-          <div className="mt-6 lg:hidden">
+          <div className="mt-6 lg:hidden animate-fade-in">
             <div className="flex justify-between text-xs text-gray-500 mb-2">
               <span>Category</span>
               <span>Details</span>
               <span>Location</span>
               <span>Contact</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2.5">
+            <div className="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
               <div
-                className="h-2.5 rounded-full transition-all duration-700 ease-out relative overflow-hidden"
+                className="h-2.5 rounded-full transition-all duration-1000 ease-out relative overflow-hidden"
                 style={{ 
                   width: `${((currentStep - 1) / 3) * 100}%`,
                   backgroundColor: colors.primary,
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 animate-shimmer"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -skew-x-12 animate-shimmer"></div>
               </div>
             </div>
           </div>
@@ -888,14 +912,14 @@ const PostAdd = ({ data, setData }) => {
             {getStepContent()}
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between items-center pt-8 mt-8 border-t border-gray-200">
+            <div className="flex justify-between items-center pt-8 mt-8 border-t border-gray-200 animate-fade-in-up">
               <button
                 type="button"
                 onClick={currentStep === 1 ? handleCancel : prevStep}
                 disabled={isSubmitting}
-                className="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-colors font-medium disabled:opacity-50 flex items-center gap-2"
+                className="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 transform hover:scale-105 font-medium disabled:opacity-50 flex items-center gap-2"
               >
-                <FaArrowLeft className="text-sm" />
+                <FaArrowLeft className="text-sm transition-transform duration-300 group-hover:-translate-x-1" />
                 {currentStep === 1 ? "Cancel" : "Back"}
               </button>
 
@@ -904,17 +928,17 @@ const PostAdd = ({ data, setData }) => {
                   <button
                     type="button"
                     onClick={nextStep}
-                    className="px-6 py-3 text-white rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:shadow-lg transform hover:scale-105"
+                    className="px-6 py-3 text-white rounded-lg transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:shadow-lg transform hover:scale-105 active:scale-95"
                     style={{ backgroundColor: colors.primary }}
                   >
                     Continue
-                    <FaArrowRight className="text-sm" />
+                    <FaArrowRight className="text-sm transition-transform duration-300 group-hover:translate-x-1" />
                   </button>
                 ) : (
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-6 py-3 text-white rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:shadow-lg transform hover:scale-105"
+                    className="px-6 py-3 text-white rounded-lg transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:shadow-lg transform hover:scale-105 active:scale-95"
                     style={{ backgroundColor: colors.accent }}
                   >
                     {isSubmitting ? (
@@ -924,7 +948,7 @@ const PostAdd = ({ data, setData }) => {
                       </>
                     ) : (
                       <>
-                        <FaRocket className="text-sm" />
+                        <FaRocket className="text-sm transition-transform duration-300 group-hover:-translate-y-1" />
                         Publish Post
                       </>
                     )}
@@ -940,7 +964,7 @@ const PostAdd = ({ data, setData }) => {
         @keyframes slideInFromRight {
           from {
             opacity: 0;
-            transform: translateX(30px);
+            transform: translateX(50px);
           }
           to {
             opacity: 1;
@@ -951,7 +975,7 @@ const PostAdd = ({ data, setData }) => {
         @keyframes slideInFromLeft {
           from {
             opacity: 0;
-            transform: translateX(-30px);
+            transform: translateX(-50px);
           }
           to {
             opacity: 1;
@@ -980,7 +1004,7 @@ const PostAdd = ({ data, setData }) => {
           }
         }
 
-        @keyframes bounceIn {
+        @keyframes bounce-in {
           0% {
             transform: scale(0);
           }
@@ -992,12 +1016,109 @@ const PostAdd = ({ data, setData }) => {
           }
         }
 
-        .animate-slideInFromRight {
-          animation: slideInFromRight 0.3s ease-out;
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
-        .animate-slideInFromLeft {
-          animation: slideInFromLeft 0.3s ease-out;
+        @keyframes slide-down {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes slide-up {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes slide-right {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes scale-in {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+          20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+
+        @keyframes pulse-ring {
+          0% { transform: scale(1); opacity: 1; }
+          100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-3px); }
+        }
+
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse-gentle {
+          0%, 100% { opacity: 0.2; }
+          50% { opacity: 0.1; }
+        }
+
+        @keyframes stagger-item {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-slide-in-right {
+          animation: slideInFromRight 0.5s ease-out;
+        }
+
+        .animate-slide-in-left {
+          animation: slideInFromLeft 0.5s ease-out;
         }
 
         .animate-shimmer {
@@ -1008,8 +1129,70 @@ const PostAdd = ({ data, setData }) => {
           animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite;
         }
 
-        .animate-bounceIn {
-          animation: bounceIn 0.3s ease-out;
+        .animate-bounce-in {
+          animation: bounce-in 0.4s ease-out;
+        }
+
+        .animate-fade-in-up {
+          animation: fade-in-up 0.6s ease-out;
+        }
+
+        .animate-slide-down {
+          animation: slide-down 0.5s ease-out;
+        }
+
+        .animate-slide-up {
+          animation: slide-up 0.5s ease-out;
+        }
+
+        .animate-slide-right {
+          animation: slide-right 0.5s ease-out;
+        }
+
+        .animate-scale-in {
+          animation: scale-in 0.6s ease-out;
+        }
+
+        .animate-shake {
+          animation: shake 0.5s ease-in-out;
+        }
+
+        .animate-pulse-slow {
+          animation: pulse-slow 2s ease-in-out infinite;
+        }
+
+        .animate-pulse-ring {
+          animation: pulse-ring 2s ease-out infinite;
+        }
+
+        .animate-bounce-slow {
+          animation: bounce-slow 2s ease-in-out infinite;
+        }
+
+        .animate-spin-slow {
+          animation: spin-slow 3s linear infinite;
+        }
+
+        .animate-pulse-gentle {
+          animation: pulse-gentle 3s ease-in-out infinite;
+        }
+
+        .animate-stagger-item {
+          animation: stagger-item 0.6s ease-out forwards;
+          opacity: 0;
+        }
+
+        .animate-fade-in {
+          animation: fade-in-up 0.4s ease-out forwards;
+          opacity: 0;
+        }
+
+        .delay-100 {
+          animation-delay: 100ms;
+        }
+
+        .delay-200 {
+          animation-delay: 200ms;
         }
       `}</style>
     </div>

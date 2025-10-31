@@ -34,7 +34,6 @@ export default function Navbar() {
       setSavedCount(saved.length);
     };
 
-    // Listen for profile updates
     const handleStorageChange = () => {
       const storedUser = localStorage.getItem("user");
       if (storedUser) {
@@ -75,7 +74,6 @@ export default function Navbar() {
     }, 250);
   };
 
-  // Get user's first letter for display
   const getUserInitial = () => {
     if (!user?.name) return "U";
     return user.name.charAt(0).toUpperCase();
@@ -137,7 +135,8 @@ export default function Navbar() {
               {isLoggedIn && (
                 <>
                   <Link
-                    to="/saved"
+                    to="/profile"
+                    state={{ activeSection: 'saved' }}
                     className="relative p-2 rounded-full hover:bg-gray-100 transition-all duration-200 group"
                   >
                     <Heart
@@ -156,7 +155,6 @@ export default function Navbar() {
                     onMouseLeave={handleMouseLeave}
                   >
                     <button className="p-1 rounded-full hover:bg-gray-100 transition-all duration-200 group relative">
-                      {/* Show user's first letter if no profile image, otherwise show image */}
                       {user?.profileImage ? (
                         <img
                           src={user.profileImage}
@@ -268,7 +266,8 @@ export default function Navbar() {
               {isLoggedIn ? (
                 <>
                   <Link
-                    to="/saved"
+                    to="/profile"
+                    state={{ activeSection: 'saved' }}
                     className="flex items-center text-gray-700 hover:text-[#2F3A63] font-medium transition-all duration-200 px-3 py-2 relative group block"
                     onClick={() => setIsOpen(false)}
                   >
@@ -287,7 +286,6 @@ export default function Navbar() {
                     className="text-gray-700 hover:text-[#2F3A63] font-medium transition-all duration-200 px-3 py-2 relative group block flex items-center"
                     onClick={() => setIsOpen(false)}
                   >
-                    {/* Show user's first letter or profile image in mobile menu */}
                     {user?.profileImage ? (
                       <img
                         src={user.profileImage}

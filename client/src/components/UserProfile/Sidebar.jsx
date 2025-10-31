@@ -41,7 +41,7 @@ const Sidebar = ({ activeSection, setActiveSection, counts, isMobileMenuOpen, se
 
       {/* Sidebar */}
       <div className={`
-        fixed lg:static top-16 lg:top-0 left-0 h-full lg:h-auto w-64 bg-white rounded-2xl shadow-xl p-4 sm:p-6
+        fixed lg:static top-16 lg:top-0 left-0   w-64 bg-[#2F3A63] text-white h-screen rounded-2xl border border-gray-100  py-4  pl-4
         transition-transform duration-300  
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
@@ -54,10 +54,10 @@ const Sidebar = ({ activeSection, setActiveSection, counts, isMobileMenuOpen, se
                 setActiveSection(item.id);
                 setIsMobileMenuOpen(false);
               }}
-              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all text-left  ${
+              className={`w-full flex items-center justify-between px-4 py-3 rounded-tl-full rounded-bl-full transition-all text-left  ${
                 activeSection === item.id
-                  ? "bg-gradient-to-r from-[#2F3A63]/10 to-[#59B2CE]/10 text-[#2F3A63] shadow-md border border-[#2F3A63]/20 "
-                  : "text-gray-600 hover:bg-gray-50"
+                  ? "bg-gray-100 w-full text-[#2F3A63]  pl-4 pt-4"
+                  : "text-white hover:bg-[#F5F6F7] hover:text-black"
               }`}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -83,7 +83,7 @@ const Sidebar = ({ activeSection, setActiveSection, counts, isMobileMenuOpen, se
                 window.location.href = '/';
               }, 500);
             }}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all mt-4"
+            className="w-full absolute bottom-5 flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all mt-4"
           >
             <LogOut className="w-5 h-5 flex-shrink-0" />
             <span className="font-medium">Logout</span>

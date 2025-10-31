@@ -1,12 +1,12 @@
-// ModernProfile.jsx (Main Wrapper Component)
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { 
   Bell, 
   X, 
   Menu,
   FileText,
-  Heart
+  Heart,
+  MapPin
 } from "lucide-react";
 
 import Sidebar from "../UserProfile/Sidebar";
@@ -19,7 +19,11 @@ import SmallProfileHeader from "../UserProfile/SmallProfileHeader";
 
 export default function ModernProfile() {
   const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState("home");
+  const location = useLocation();
+  
+  const [activeSection, setActiveSection] = useState(
+    location.state?.activeSection || "home"
+  );
   const [user, setUser] = useState({
     name: "John Doe",
     email: "john.doe@example.com",
@@ -28,56 +32,11 @@ export default function ModernProfile() {
     isLoggedIn: true,
     status: "Available"
   });
-  const [savedHouses, setSavedHouses] = useState([
-    {
-      id: 1,
-      title: "Modern Downtown Apartment",
-      description: "Beautiful 2-bedroom apartment in the heart of downtown with amazing city views",
-      location: "Downtown, San Francisco, CA",
-      price: 2500,
-      type: "rent",
-      images: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=400&h=300&fit=crop"],
-      posted: "2 days ago"
-    },
-    {
-      id: 2,
-      title: "Luxury Villa with Pool",
-      description: "Stunning 4-bedroom villa with private pool and garden",
-      location: "Palo Alto, CA",
-      price: 850000,
-      type: "sale",
-      images: ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=300&fit=crop"],
-      posted: "1 week ago"
-    }
-  ]);
+  const [savedHouses, setSavedHouses] = useState([]);
   const [myPosts, setMyPosts] = useState([
-    {
-      id: 3,
-      title: "Cozy Family Home",
-      description: "3 bedroom family home in quiet neighborhood with spacious backyard",
-      location: "Suburbia, CA",
-      price: 650000,
-      type: "sale",
-      bedrooms: 3,
-      bathrooms: 2,
-      sqft: 1800,
-      images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop"],
-      posted: "3 days ago"
-    },
-    {
-      id: 4,
-      title: "Modern Studio Apartment",
-      description: "Compact studio with modern amenities in city center",
-      location: "Urban District, CA",
-      price: 1200,
-      type: "rent",
-      bedrooms: 0,
-      bathrooms: 1,
-      sqft: 500,
-      images: ["https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=400&h=300&fit=crop"],
-      posted: "1 week ago"
-    }
-  ]);
+    { id: 1, title: "Cozy Apartment in Downtown", description: "A beautiful and cozy apartment located in the heart of the city.", type: "rent", price: 2500, location: "San Francisco, CA", images: ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop"], category: "apartments" },
+    { id: 2, title: "Spacious Suburban House", description: "A spacious house perfect for families, located in a quiet suburb.", type: "sale", price: 550000, location: "San Jose, CA", images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop"], category: "houses" }
+    ]);
   const [myAlerts, setMyAlerts] = useState([]);
   const [messages, setMessages] = useState([
     { name: "Alice Brown", preview: "Interested in the downtown apartment...", time: "11:01", unread: true, avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=40&h=40&fit=crop&crop=face" },
@@ -105,6 +64,32 @@ export default function ModernProfile() {
     }
   }, []);
 
+  // Load saved items from localStorage
+  useEffect(() => {
+    const loadSavedItems = () => {
+      try {
+        const savedItems = JSON.parse(localStorage.getItem("savedItems") || "[]");
+        setSavedHouses(savedItems);
+      } catch (error) {
+        console.error('Error loading saved items:', error);
+        setSavedHouses([]);
+      }
+    };
+
+    loadSavedItems();
+    
+    // Listen for changes to saved items
+    const handleSavedItemsChange = () => {
+      loadSavedItems();
+    };
+
+    window.addEventListener("savedItemsChanged", handleSavedItemsChange);
+    
+    return () => {
+      window.removeEventListener("savedItemsChanged", handleSavedItemsChange);
+    };
+  }, []);
+
   useEffect(() => {
     setEditData({
       name: user.name || '',
@@ -113,6 +98,15 @@ export default function ModernProfile() {
       address: user.address || '',
     });
   }, [user]);
+
+  // Update activeSection when location state changes
+  useEffect(() => {
+    if (location.state?.activeSection) {
+      setActiveSection(location.state.activeSection);
+      // Clear the state after using it to prevent sticking on refresh
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, navigate, location.pathname]);
 
   const handleProfilePicChange = (e) => {
     const file = e.target.files[0];
@@ -149,7 +143,12 @@ export default function ModernProfile() {
   };
 
   const toggleSave = (house) => {
-    setSavedHouses(savedHouses.filter(h => h.id !== house.id));
+    const updatedSavedHouses = savedHouses.filter(h => h.id !== house.id);
+    setSavedHouses(updatedSavedHouses);
+    
+    // Also update localStorage
+    localStorage.setItem("savedItems", JSON.stringify(updatedSavedHouses));
+    window.dispatchEvent(new CustomEvent("savedItemsChanged"));
   };
 
   const counts = {
@@ -178,6 +177,20 @@ export default function ModernProfile() {
   const handleViewAll = (section) => {
     setActiveSection(section);
   };
+
+  // Helper functions for saved items display
+  const getPriceDisplay = (item) => {
+    if (!item.price) return "Price not specified";
+    const price = typeof item.price === "number" ? item.price : parseFloat(item.price.replace(/[^\d.]/g, ""));
+    if (isNaN(price)) return "Price not specified";
+    return item.type === "rent" ? `$${price}/mo` : `$${price.toLocaleString()}`;
+  };
+
+  const getTypeDisplay = (item) => {
+    return item.type === "rent" ? "For Rent" : item.type === "sale" ? "For Sale" : item.type || "Item";
+  };
+
+  const getLocationDisplay = (item) => item.location ? item.location.split(",")[0] : "N/A";
 
   return (
     <div className="min-h-screen bg-gray-50/50">
@@ -267,18 +280,83 @@ export default function ModernProfile() {
                     <Heart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">No saved items yet</h3>
                     <p className="text-gray-600 mb-6">Start saving properties you love!</p>
-                    <button className="px-6 py-3 bg-[#2F3A63] text-white rounded-xl hover:bg-[#5669A4] transition-colors font-medium shadow-md hover:shadow-lg">
+                    <button 
+                      onClick={() => navigate('/categories')}
+                      className="px-6 py-3 bg-[#2F3A63] text-white rounded-xl hover:bg-[#5669A4] transition-colors font-medium shadow-md hover:shadow-lg"
+                    >
                       Browse Properties
                     </button>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {savedHouses.map((house) => (
-                      <PropertyCard 
-                        key={house.id} 
-                        property={house} 
-                        onToggleSave={toggleSave}
-                      />
+                      <div
+                        key={house.id}
+                        className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                      >
+                        <div className="relative">
+                          <img
+                            src={
+                              house.images?.[0] ||
+                              "https://via.placeholder.com/300x200?text=No+Image"
+                            }
+                            alt={house.title}
+                            className="w-full h-48 object-cover"
+                          />
+                          <div className="absolute top-3 left-3">
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                house.type === "rent"
+                                  ? "bg-blue-100 text-blue-800"
+                                  : house.type === "sale"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-gray-100 text-gray-800"
+                              }`}
+                            >
+                              {getTypeDisplay(house)}
+                            </span>
+                          </div>
+                          <div className="absolute top-3 right-3">
+                            <button
+                              onClick={() => toggleSave(house)}
+                              className="p-2 rounded-full bg-white/90 hover:bg-white transition-colors shadow-sm"
+                            >
+                              <Heart className="w-5 h-5 fill-red-500 text-red-500" />
+                            </button>
+                          </div>
+                        </div>
+                        <div className="p-5">
+                          <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-1">
+                            {house.title}
+                          </h3>
+                          <p className="text-gray-600 text-sm mb-3 line-clamp-2 leading-relaxed">
+                            {house.description}
+                          </p>
+                          <div className="flex items-center text-gray-500 mb-3 text-sm">
+                            <MapPin className="w-4 h-4 mr-1 text-blue-600" />
+                            <span>{getLocationDisplay(house)}</span>
+                          </div>
+                          <div className="flex justify-between items-center mb-4">
+                            <span className="text-xl font-bold text-green-600">
+                              {getPriceDisplay(house)}
+                            </span>
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => navigate(`/${house.category || "houses"}/${house.id}`)}
+                              className="flex-1 bg-[#2F3A63] text-white text-center py-2 px-3 rounded-xl hover:bg-[#5669A4] transition-colors font-medium text-sm"
+                            >
+                              View Details
+                            </button>
+                            <a
+                              href={`mailto:${house.contactEmail || "contact@example.com"}?subject=Inquiry about ${house.title}`}
+                              className="flex-1 border border-[#2F3A63] text-[#2F3A63] text-center py-2 px-3 rounded-xl hover:bg-[#2F3A63] hover:text-white transition-colors font-medium text-sm"
+                            >
+                              Contact
+                            </a>
+                          </div>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 )}

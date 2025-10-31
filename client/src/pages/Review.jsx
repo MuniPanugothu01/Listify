@@ -21,7 +21,7 @@ function Review() {
       features: ["Identity Verification", "Secure Payments", "24/7 Moderation", "Fraud Prevention"],
       gradient: "from-blue-500 to-cyan-500",
       bgGradient: "from-blue-50 to-cyan-50",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&h=500&q=80"
+      image: "https://images.unsplash.com/photo-1578357078586-491adf1aa5ba?ixlib=rb-4.1.0&q=85&fm=jpg&crop=entropy&cs=srgb"
     },
     {
       icon: Users,
