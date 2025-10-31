@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import {
   MapPin,
   Bed,
-  Search,
+  Search, 
   DollarSign,
   ChevronDown,
   ChevronLeft,
