@@ -42,6 +42,16 @@ const PostAdd = ({ data, setData }) => {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  // Color Scheme
+  const colors = {
+    primary: "#2F3A63",     // Deep navy blue
+    secondary: "#4A5FC1",   // Bright blue for accents
+    accent: "#FF6B35",      // Coral orange for CTAs
+    success: "#10B981",     // Emerald green for success
+    warning: "#F59E0B",     // Amber for warnings
+    error: "#EF4444",       // Red for errors
+  };
+
   // Scroll to top when step changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -53,48 +63,56 @@ const PostAdd = ({ data, setData }) => {
       label: "Real Estate",
       icon: FaHome,
       desc: "Properties & rentals",
+      color: colors.primary,
     },
     {
       value: "sales",
       label: "For Sale",
       icon: FaShoppingCart,
       desc: "Items & merchandise",
+      color: colors.secondary,
     },
     {
       value: "services",
       label: "Services",
       icon: FaTools,
       desc: "Professional services",
+      color: colors.accent,
     },
     {
       value: "gigs",
       label: "Gigs",
       icon: FaBriefcase,
       desc: "Short-term work",
+      color: colors.success,
     },
     {
       value: "jobs",
       label: "Jobs",
       icon: FaUserTie,
       desc: "Employment opportunities",
+      color: colors.warning,
     },
     {
       value: "community",
       label: "Events",
       icon: FaCalendarAlt,
       desc: "Community events",
+      color: colors.error,
     },
     {
       value: "forums",
       label: "Discussion",
       icon: FaComments,
       desc: "Forums & talks",
+      color: colors.primary,
     },
     {
       value: "resumes",
       label: "Resumes",
       icon: FaFileAlt,
       desc: "Job seekers",
+      color: colors.secondary,
     },
   ];
 
@@ -253,7 +271,7 @@ const PostAdd = ({ data, setData }) => {
       1: (
         <div className="space-y-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold text-green-700 mb-3">
+            <h2 className="text-2xl font-semibold" style={{ color: colors.primary }}>
               Select Category
             </h2>
             <p className="text-gray-600">
@@ -272,13 +290,21 @@ const PostAdd = ({ data, setData }) => {
                 <div
                   className={`p-5 rounded-xl border-2 text-center h-full flex flex-col items-center justify-center transition-all duration-300 ${
                     formData.postType === item.value
-                      ? "border-green-600 bg-green-50 shadow-md ring-2 ring-green-500 ring-opacity-20"
+                      ? "border-current bg-opacity-10 shadow-md ring-2 ring-opacity-20"
                       : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
                   }`}
+                  style={{
+                    borderColor: formData.postType === item.value ? item.color : undefined,
+                    backgroundColor: formData.postType === item.value ? `${item.color}10` : undefined,
+                    ringColor: formData.postType === item.value ? item.color : undefined,
+                  }}
                 >
                   {/* Checkmark Badge */}
                   {formData.postType === item.value && (
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-600 rounded-full flex items-center justify-center shadow-lg animate-bounceIn">
+                    <div 
+                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-bounceIn"
+                      style={{ backgroundColor: item.color }}
+                    >
                       <FaCheck className="text-white text-xs font-bold" />
                     </div>
                   )}
@@ -286,11 +312,15 @@ const PostAdd = ({ data, setData }) => {
                   <item.icon
                     className={`text-2xl mb-3 transition-colors duration-300 ${
                       formData.postType === item.value
-                        ? "text-green-600"
+                        ? "text-current"
                         : "text-gray-500 group-hover:text-gray-700"
                     }`}
+                    style={{ color: formData.postType === item.value ? item.color : undefined }}
                   />
-                  <div className="font-semibold text-green-700 text-sm mb-1">
+                  <div 
+                    className="font-semibold text-sm mb-1"
+                    style={{ color: formData.postType === item.value ? item.color : colors.primary }}
+                  >
                     {item.label}
                   </div>
                   <div className="text-xs text-gray-500 leading-tight">
@@ -310,8 +340,8 @@ const PostAdd = ({ data, setData }) => {
 
           {/* Post Type Selection */}
           <div className="border border-gray-200 rounded-xl p-6 bg-white shadow-sm">
-            <h3 className="font-semibold text-green-700 mb-4 flex items-center gap-2">
-              <FaGlobeAmericas className="text-green-600" />
+            <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: colors.primary }}>
+              <FaGlobeAmericas style={{ color: colors.primary }} />
               Post Type
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -323,23 +353,37 @@ const PostAdd = ({ data, setData }) => {
                 <div
                   className={`p-4 rounded-xl border-2 transition-all duration-300 ${
                     formData.intent === "offering"
-                      ? "border-green-600 bg-green-50 shadow-md ring-2 ring-green-500 ring-opacity-20"
+                      ? "border-current bg-opacity-10 shadow-md ring-2 ring-opacity-20"
                       : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
                   }`}
+                  style={{
+                    borderColor: formData.intent === "offering" ? colors.primary : undefined,
+                    backgroundColor: formData.intent === "offering" ? `${colors.primary}10` : undefined,
+                    ringColor: formData.intent === "offering" ? colors.primary : undefined,
+                  }}
                 >
                   {/* Checkmark Badge */}
                   {formData.intent === "offering" && (
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-600 rounded-full flex items-center justify-center shadow-lg animate-bounceIn">
+                    <div 
+                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-bounceIn"
+                      style={{ backgroundColor: colors.primary }}
+                    >
                       <FaCheck className="text-white text-xs font-bold" />
                     </div>
                   )}
 
                   <div className="flex items-center">
-                    <div className="bg-green-100 text-green-600 p-2 rounded-lg mr-3">
+                    <div 
+                      className="p-2 rounded-lg mr-3"
+                      style={{ 
+                        backgroundColor: `${colors.primary}20`,
+                        color: colors.primary
+                      }}
+                    >
                       <FaShoppingCart className="text-sm" />
                     </div>
                     <div>
-                      <div className="font-semibold text-green-700">
+                      <div className="font-semibold" style={{ color: colors.primary }}>
                         Offering
                       </div>
                       <div className="text-sm text-gray-600 mt-1">
@@ -358,23 +402,37 @@ const PostAdd = ({ data, setData }) => {
                 <div
                   className={`p-4 rounded-xl border-2 transition-all duration-300 ${
                     formData.intent === "hiring"
-                      ? "border-green-600 bg-green-50 shadow-md ring-2 ring-green-500 ring-opacity-20"
+                      ? "border-current bg-opacity-10 shadow-md ring-2 ring-opacity-20"
                       : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
                   }`}
+                  style={{
+                    borderColor: formData.intent === "hiring" ? colors.secondary : undefined,
+                    backgroundColor: formData.intent === "hiring" ? `${colors.secondary}10` : undefined,
+                    ringColor: formData.intent === "hiring" ? colors.secondary : undefined,
+                  }}
                 >
                   {/* Checkmark Badge */}
                   {formData.intent === "hiring" && (
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-600 rounded-full flex items-center justify-center shadow-lg animate-bounceIn">
+                    <div 
+                      className="absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg animate-bounceIn"
+                      style={{ backgroundColor: colors.secondary }}
+                    >
                       <FaCheck className="text-white text-xs font-bold" />
                     </div>
                   )}
 
                   <div className="flex items-center">
-                    <div className="bg-emerald-100 text-emerald-600 p-2 rounded-lg mr-3">
+                    <div 
+                      className="p-2 rounded-lg mr-3"
+                      style={{ 
+                        backgroundColor: `${colors.secondary}20`,
+                        color: colors.secondary
+                      }}
+                    >
                       <FaBriefcase className="text-sm" />
                     </div>
                     <div>
-                      <div className="font-semibold text-green-700">
+                      <div className="font-semibold" style={{ color: colors.primary }}>
                         Seeking
                       </div>
                       <div className="text-sm text-gray-600 mt-1">
@@ -398,7 +456,7 @@ const PostAdd = ({ data, setData }) => {
       2: (
         <div className="space-y-6">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold text-green-700 mb-3">
+            <h2 className="text-2xl font-semibold" style={{ color: colors.primary }}>
               Post Details
             </h2>
             <p className="text-gray-600">
@@ -408,7 +466,7 @@ const PostAdd = ({ data, setData }) => {
 
           <div className="space-y-6">
             <div>
-              <label className="block text-green-700 font-medium mb-3">
+              <label className="block font-medium mb-3" style={{ color: colors.primary }}>
                 Title *
               </label>
               <input
@@ -419,7 +477,7 @@ const PostAdd = ({ data, setData }) => {
                 className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-colors ${
                   errors.title
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                    : "border-gray-300 focus:border-green-500 focus:ring-green-100"
+                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20"
                 }`}
                 required
               />
@@ -432,7 +490,7 @@ const PostAdd = ({ data, setData }) => {
             </div>
 
             <div>
-              <label className="block text-green-700 font-medium mb-3 flex items-center gap-2">
+              <label className="block font-medium mb-3 flex items-center gap-2" style={{ color: colors.primary }}>
                 <FaDollarSign className="text-gray-500" />
                 Price (Optional)
               </label>
@@ -442,12 +500,12 @@ const PostAdd = ({ data, setData }) => {
                 placeholder="Enter amount in USD"
                 value={formData.price}
                 onChange={handleInputChange}
-                className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-green-500 focus:ring-2 focus:ring-green-100 outline-none transition-colors"
+                className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-[#2F3A63] focus:ring-2 focus:ring-[#2F3A63]/20 outline-none transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-green-700 font-medium mb-3">
+              <label className="block font-medium mb-3" style={{ color: colors.primary }}>
                 Description *
               </label>
               <textarea
@@ -459,7 +517,7 @@ const PostAdd = ({ data, setData }) => {
                 className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-colors resize-none ${
                   errors.description
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                    : "border-gray-300 focus:border-green-500 focus:ring-green-100"
+                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20"
                 }`}
                 required
               />
@@ -497,7 +555,7 @@ const PostAdd = ({ data, setData }) => {
       3: (
         <div className="space-y-6">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold text-green-700 mb-3">
+            <h2 className="text-2xl font-semibold" style={{ color: colors.primary }}>
               Location Information
             </h2>
             <p className="text-gray-600">Where is this located?</p>
@@ -505,7 +563,7 @@ const PostAdd = ({ data, setData }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-green-700 font-medium mb-3">
+              <label className="block font-medium mb-3" style={{ color: colors.primary }}>
                 City *
               </label>
               <input
@@ -516,7 +574,7 @@ const PostAdd = ({ data, setData }) => {
                 className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-colors ${
                   errors.city
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                    : "border-gray-300 focus:border-green-500 focus:ring-green-100"
+                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20"
                 }`}
                 required
               />
@@ -528,7 +586,7 @@ const PostAdd = ({ data, setData }) => {
               )}
             </div>
             <div>
-              <label className="block text-green-700 font-medium mb-3">
+              <label className="block font-medium mb-3" style={{ color: colors.primary }}>
                 ZIP Code *
               </label>
               <input
@@ -539,7 +597,7 @@ const PostAdd = ({ data, setData }) => {
                 className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-colors ${
                   errors.zipcode
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                    : "border-gray-300 focus:border-green-500 focus:ring-green-100"
+                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20"
                 }`}
                 required
               />
@@ -554,11 +612,17 @@ const PostAdd = ({ data, setData }) => {
 
           <div className="border border-gray-200 rounded-lg p-5 bg-gray-50 mt-6">
             <div className="flex items-start gap-4">
-              <div className="bg-green-100 text-green-600 p-2 rounded-lg mt-1">
+              <div 
+                className="p-2 rounded-lg mt-1"
+                style={{ 
+                  backgroundColor: `${colors.primary}20`,
+                  color: colors.primary
+                }}
+              >
                 <FaShieldAlt className="text-lg" />
               </div>
               <div>
-                <h4 className="font-medium text-green-700 mb-1">
+                <h4 className="font-medium mb-1" style={{ color: colors.primary }}>
                   Your Privacy Matters
                 </h4>
                 <p className="text-gray-600 text-sm">
@@ -574,7 +638,7 @@ const PostAdd = ({ data, setData }) => {
       4: (
         <div className="space-y-6">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-semibold text-green-700 mb-3">
+            <h2 className="text-2xl font-semibold" style={{ color: colors.primary }}>
               Contact Details
             </h2>
             <p className="text-gray-600">How should people contact you?</p>
@@ -582,7 +646,7 @@ const PostAdd = ({ data, setData }) => {
 
           <div className="space-y-6">
             <div>
-              <label className="block text-green-700 font-medium mb-3 flex items-center gap-2">
+              <label className="block font-medium mb-3 flex items-center gap-2" style={{ color: colors.primary }}>
                 <FaEnvelope className="text-gray-500" />
                 Email Address *
               </label>
@@ -595,7 +659,7 @@ const PostAdd = ({ data, setData }) => {
                 className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-colors ${
                   errors.email
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                    : "border-gray-300 focus:border-green-500 focus:ring-green-100"
+                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20"
                 }`}
                 required
               />
@@ -608,7 +672,7 @@ const PostAdd = ({ data, setData }) => {
             </div>
 
             <div>
-              <label className="block text-green-700 font-medium mb-3 flex items-center gap-2">
+              <label className="block font-medium mb-3 flex items-center gap-2" style={{ color: colors.primary }}>
                 <FaPhone className="text-gray-500" />
                 Phone Number *
               </label>
@@ -621,7 +685,7 @@ const PostAdd = ({ data, setData }) => {
                 className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-colors ${
                   errors.phone
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100"
-                    : "border-gray-300 focus:border-green-500 focus:ring-green-100"
+                    : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20"
                 }`}
                 required
               />
@@ -634,16 +698,28 @@ const PostAdd = ({ data, setData }) => {
             </div>
           </div>
 
-          <div className="border border-green-200 rounded-lg p-5 bg-green-50 mt-6">
+          <div 
+            className="border rounded-lg p-5 mt-6"
+            style={{ 
+              borderColor: `${colors.success}30`,
+              backgroundColor: `${colors.success}10`
+            }}
+          >
             <div className="flex items-start gap-4">
-              <div className="bg-green-100 text-green-600 p-2 rounded-lg mt-1">
+              <div 
+                className="p-2 rounded-lg mt-1"
+                style={{ 
+                  backgroundColor: `${colors.success}20`,
+                  color: colors.success
+                }}
+              >
                 <FaCheck className="text-lg" />
               </div>
               <div>
-                <h4 className="font-medium text-green-800 mb-1">
+                <h4 className="font-medium mb-1" style={{ color: colors.success }}>
                   Ready to Publish
                 </h4>
-                <p className="text-green-700 text-sm">
+                <p className="text-sm" style={{ color: colors.success }}>
                   Review your information carefully. Once published, your
                   listing will be visible to other users.
                 </p>
@@ -674,14 +750,20 @@ const PostAdd = ({ data, setData }) => {
         <div className="bg-white border-b border-gray-200 px-8 py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-green-700">
+              <h1 className="text-2xl font-bold" style={{ color: colors.primary }}>
                 Create New Post
               </h1>
               <p className="text-gray-600 mt-1">
                 Complete all steps to publish your listing
               </p>
             </div>
-            <div className="bg-gray-100 text-gray-700 px-3 py-1 rounded-md text-sm font-medium">
+            <div 
+              className="px-3 py-1 rounded-md text-sm font-medium"
+              style={{ 
+                backgroundColor: `${colors.primary}10`,
+                color: colors.primary
+              }}
+            >
               Step {currentStep} of 4
             </div>
           </div>
@@ -695,19 +777,27 @@ const PostAdd = ({ data, setData }) => {
                   <div className="relative">
                     {/* Pulse animation for current step */}
                     {currentStep === step.number && (
-                      <div className="absolute -inset-2 bg-green-100 rounded-full animate-pulse"></div>
+                      <div 
+                        className="absolute -inset-2 rounded-full animate-pulse"
+                        style={{ backgroundColor: `${colors.primary}20` }}
+                      ></div>
                     )}
 
                     <div
                       className={`relative w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
                         currentStep >= step.number
-                          ? "bg-green-600 border-green-600 text-white shadow-lg"
+                          ? "text-white shadow-lg"
                           : "bg-white border-gray-300 text-gray-400"
                       } ${
                         currentStep === step.number
-                          ? "ring-4 ring-green-100 scale-110"
+                          ? "ring-4 scale-110"
                           : ""
                       }`}
+                      style={{
+                        backgroundColor: currentStep >= step.number ? colors.primary : undefined,
+                        borderColor: currentStep >= step.number ? colors.primary : undefined,
+                        ringColor: currentStep === step.number ? `${colors.primary}20` : undefined,
+                      }}
                     >
                       {currentStep > step.number ? (
                         <FaCheck className="text-sm font-bold" />
@@ -718,9 +808,12 @@ const PostAdd = ({ data, setData }) => {
                       <div
                         className={`absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs flex items-center justify-center transition-all duration-300 ${
                           currentStep >= step.number
-                            ? "bg-emerald-500 text-white"
+                            ? "text-white"
                             : "bg-gray-300 text-gray-600"
                         }`}
+                        style={{
+                          backgroundColor: currentStep >= step.number ? colors.secondary : undefined,
+                        }}
                       >
                         {step.number}
                       </div>
@@ -730,9 +823,10 @@ const PostAdd = ({ data, setData }) => {
                   <span
                     className={`mt-3 text-sm font-medium transition-all duration-300 ${
                       currentStep >= step.number
-                        ? "text-green-600 font-semibold"
+                        ? "font-semibold"
                         : "text-gray-500"
                     }`}
+                    style={{ color: currentStep >= step.number ? colors.primary : undefined }}
                   >
                     {step.title}
                   </span>
@@ -746,19 +840,18 @@ const PostAdd = ({ data, setData }) => {
 
                     {/* Animated Progress Line */}
                     <div
-                      className="absolute top-0 left-0 h-0.5 bg-green-600 rounded-full transition-all duration-1000 ease-out"
+                      className="absolute top-0 left-0 h-0.5 rounded-full transition-all duration-1000 ease-out"
                       style={{
-                        width:
-                          currentStep > step.number
-                            ? "100%"
-                            : currentStep === step.number
-                            ? "50%"
-                            : "0%",
+                        width: currentStep > step.number ? "100%" : currentStep === step.number ? "50%" : "0%",
+                        backgroundColor: colors.primary,
                       }}
                     >
                       {/* Moving Dot */}
                       {currentStep === step.number + 1 && (
-                        <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 bg-green-600 rounded-full shadow-lg animate-ping-slow"></div>
+                        <div 
+                          className="absolute right-0 top-1/2 transform -translate-y-1/2 w-3 h-3 rounded-full shadow-lg animate-ping-slow"
+                          style={{ backgroundColor: colors.primary }}
+                        ></div>
                       )}
                     </div>
                   </div>
@@ -777,8 +870,11 @@ const PostAdd = ({ data, setData }) => {
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2.5">
               <div
-                className="bg-green-600 h-2.5 rounded-full transition-all duration-700 ease-out relative overflow-hidden"
-                style={{ width: `${((currentStep - 1) / 3) * 100}%` }}
+                className="h-2.5 rounded-full transition-all duration-700 ease-out relative overflow-hidden"
+                style={{ 
+                  width: `${((currentStep - 1) / 3) * 100}%`,
+                  backgroundColor: colors.primary,
+                }}
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 animate-shimmer"></div>
               </div>
@@ -808,7 +904,8 @@ const PostAdd = ({ data, setData }) => {
                   <button
                     type="button"
                     onClick={nextStep}
-                    className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-6 py-3 text-white rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:shadow-lg transform hover:scale-105"
+                    style={{ backgroundColor: colors.primary }}
                   >
                     Continue
                     <FaArrowRight className="text-sm" />
@@ -817,7 +914,8 @@ const PostAdd = ({ data, setData }) => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-6 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-6 py-3 text-white rounded-lg transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:shadow-lg transform hover:scale-105"
+                    style={{ backgroundColor: colors.accent }}
                   >
                     {isSubmitting ? (
                       <>
