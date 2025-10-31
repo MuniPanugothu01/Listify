@@ -8,7 +8,7 @@ const PropertyCard = ({ property, onToggleSave, isMyPost = false, showSaveButton
       <img
         src={property.images[0]}
         alt={property.title}
-        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+        className="w-full h-48 object-cover group-hover: transition-transform duration-300"
       />
       <div className="absolute top-3 left-3">
         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${

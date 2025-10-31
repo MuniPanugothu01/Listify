@@ -164,7 +164,7 @@ function About() {
                 whileHover={{ scale: 1.05 }}
               >
                 <motion.div 
-                  className="text-4xl lg:text-5xl font-black text-[#2F3A63] mb-2 group-hover:scale-110 transition-transform duration-300"
+                  className="text-4xl lg:text-5xl font-black text-[#2F3A63] mb-2  transition-transform duration-300"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
@@ -202,7 +202,7 @@ function About() {
                 <motion.img 
                   src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600&q=80" 
                   alt="Community gathering"
-                  className="w-full h-[500px] object-cover transform hover:scale-105 transition-transform duration-700"
+                  className="w-full h-[500px] object-cover transform hover: transition-transform duration-700"
                   initial={{ opacity: 0, scale: 1.1 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 1, ease: "easeOut" }}
@@ -362,7 +362,7 @@ function About() {
                 transition={{ duration: 0.4 }}
               >
                 <motion.div 
-                  className="w-20 h-20 mb-6 rounded-2xl overflow-hidden transform group-hover:scale-110 transition-transform duration-300"
+                  className="w-20 h-20 mb-6 rounded-2xl overflow-hidden transform  transition-transform duration-300"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -441,7 +441,7 @@ function About() {
             variants={itemVariants}
           >
             <motion.button 
-              className="px-12 py-4 bg-[#2F3A63] text-white rounded-2xl font-bold text-lg hover:bg-[#465794] transition-all duration-300 shadow-2xl hover:shadow-3xl hover:scale-105"
+              className="px-12 py-4 bg-[#2F3A63] text-white rounded-2xl font-bold text-lg hover:bg-[#465794] transition-all duration-300 shadow-2xl hover:shadow-3xl hover:"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >

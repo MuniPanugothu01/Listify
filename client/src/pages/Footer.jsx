@@ -271,7 +271,7 @@ const Footer = () => {
                 <a
                   key={social.label}
                   href={social.href}
-                  className="text-gray-400 hover:text-[#2F3A63] hover:bg-[#2F3A63]/5 transition-all duration-200 p-2 rounded-lg hover:scale-110"
+                  className="text-gray-400 hover:text-[#2F3A63] hover:bg-[#2F3A63]/5 transition-all duration-200 p-2 rounded-lg hover:"
                   aria-label={`Follow us on ${social.label}`}
                   target="_blank"
                   rel="noopener noreferrer"

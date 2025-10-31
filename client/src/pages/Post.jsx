@@ -296,9 +296,9 @@ const PostAdd = ({ data, setData }) => {
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div
-                  className={`p-5 rounded-xl border-2 text-center h-full flex flex-col items-center justify-center transition-all duration-500 transform hover:scale-105 ${
+                  className={`p-5 rounded-xl border-2 text-center h-full flex flex-col items-center justify-center transition-all duration-500 transform hover: ${
                     formData.postType === item.value
-                      ? "border-current bg-opacity-10 shadow-lg ring-2 ring-opacity-20 scale-105"
+                      ? "border-current bg-opacity-10 shadow-lg ring-2 ring-opacity-20 "
                       : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"
                   }`}
                   style={{
@@ -321,7 +321,7 @@ const PostAdd = ({ data, setData }) => {
                   <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white to-gray-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
 
                   <item.icon
-                    className={`text-2xl mb-3 transition-all duration-500 transform group-hover:scale-110 ${
+                    className={`text-2xl mb-3 transition-all duration-500 transform  ${
                       formData.postType === item.value
                         ? "text-current animate-pulse-slow"
                         : "text-gray-500 group-hover:text-gray-700"
@@ -371,9 +371,9 @@ const PostAdd = ({ data, setData }) => {
                 style={{ animationDelay: '400ms' }}
               >
                 <div
-                  className={`p-4 rounded-xl border-2 transition-all duration-500 transform hover:scale-105 ${
+                  className={`p-4 rounded-xl border-2 transition-all duration-500 transform hover: ${
                     formData.intent === "offering"
-                      ? "border-current bg-opacity-10 shadow-lg ring-2 ring-opacity-20 scale-105"
+                      ? "border-current bg-opacity-10 shadow-lg ring-2 ring-opacity-20 "
                       : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"
                   }`}
                   style={{
@@ -394,7 +394,7 @@ const PostAdd = ({ data, setData }) => {
 
                   <div className="flex items-center">
                     <div 
-                      className="p-2 rounded-lg mr-3 transition-all duration-300 transform group-hover:scale-110"
+                      className="p-2 rounded-lg mr-3 transition-all duration-300 transform "
                       style={{ 
                         backgroundColor: `${colors.primary}20`,
                         color: colors.primary
@@ -421,9 +421,9 @@ const PostAdd = ({ data, setData }) => {
                 style={{ animationDelay: '500ms' }}
               >
                 <div
-                  className={`p-4 rounded-xl border-2 transition-all duration-500 transform hover:scale-105 ${
+                  className={`p-4 rounded-xl border-2 transition-all duration-500 transform hover: ${
                     formData.intent === "hiring"
-                      ? "border-current bg-opacity-10 shadow-lg ring-2 ring-opacity-20 scale-105"
+                      ? "border-current bg-opacity-10 shadow-lg ring-2 ring-opacity-20 "
                       : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-md"
                   }`}
                   style={{
@@ -444,7 +444,7 @@ const PostAdd = ({ data, setData }) => {
 
                   <div className="flex items-center">
                     <div 
-                      className="p-2 rounded-lg mr-3 transition-all duration-300 transform group-hover:scale-110"
+                      className="p-2 rounded-lg mr-3 transition-all duration-300 transform "
                       style={{ 
                         backgroundColor: `${colors.secondary}20`,
                         color: colors.secondary
@@ -495,7 +495,7 @@ const PostAdd = ({ data, setData }) => {
                 placeholder="e.g., Professional web development services"
                 value={formData.title}
                 onChange={handleInputChange}
-                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover:scale-105 ${
+                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover: ${
                   errors.title
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100 animate-shake"
                     : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20 hover:border-gray-400"
@@ -521,7 +521,7 @@ const PostAdd = ({ data, setData }) => {
                 placeholder="Enter amount in USD"
                 value={formData.price}
                 onChange={handleInputChange}
-                className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-[#2F3A63] focus:ring-2 focus:ring-[#2F3A63]/20 outline-none transition-all duration-500 transform hover:scale-105 hover:border-gray-400"
+                className="w-full border-2 border-gray-300 rounded-lg px-4 py-3 focus:border-[#2F3A63] focus:ring-2 focus:ring-[#2F3A63]/20 outline-none transition-all duration-500 transform hover: hover:border-gray-400"
               />
             </div>
 
@@ -535,7 +535,7 @@ const PostAdd = ({ data, setData }) => {
                 value={formData.description}
                 onChange={handleInputChange}
                 rows="6"
-                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover:scale-105 resize-none ${
+                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover: resize-none ${
                   errors.description
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100 animate-shake"
                     : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20 hover:border-gray-400"
@@ -592,7 +592,7 @@ const PostAdd = ({ data, setData }) => {
                 placeholder="Enter city name"
                 value={formData.city}
                 onChange={handleInputChange}
-                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover:scale-105 ${
+                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover: ${
                   errors.city
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100 animate-shake"
                     : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20 hover:border-gray-400"
@@ -615,7 +615,7 @@ const PostAdd = ({ data, setData }) => {
                 placeholder="Enter ZIP code"
                 value={formData.zipcode}
                 onChange={handleInputChange}
-                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover:scale-105 ${
+                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover: ${
                   errors.zipcode
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100 animate-shake"
                     : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20 hover:border-gray-400"
@@ -677,7 +677,7 @@ const PostAdd = ({ data, setData }) => {
                 placeholder="your.email@example.com"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover:scale-105 ${
+                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover: ${
                   errors.email
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100 animate-shake"
                     : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20 hover:border-gray-400"
@@ -703,7 +703,7 @@ const PostAdd = ({ data, setData }) => {
                 placeholder="+1 (555) 123-4567"
                 value={formData.phone}
                 onChange={handleInputChange}
-                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover:scale-105 ${
+                className={`w-full border-2 rounded-lg px-4 py-3 focus:ring-2 outline-none transition-all duration-500 transform hover: ${
                   errors.phone
                     ? "border-red-300 focus:border-red-500 focus:ring-red-100 animate-shake"
                     : "border-gray-300 focus:border-[#2F3A63] focus:ring-[#2F3A63]/20 hover:border-gray-400"
@@ -729,7 +729,7 @@ const PostAdd = ({ data, setData }) => {
           >
             <div className="flex items-start gap-4">
               <div 
-                className="p-2 rounded-lg mt-1 transition-all duration-300 transform hover:scale-110"
+                className="p-2 rounded-lg mt-1 transition-all duration-300 transform hover:"
                 style={{ 
                   backgroundColor: `${colors.success}20`,
                   color: colors.success
@@ -808,13 +808,13 @@ const PostAdd = ({ data, setData }) => {
                     )}
 
                     <div
-                      className={`relative w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-700 transform hover:scale-110 ${
+                      className={`relative w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-700 transform hover: ${
                         currentStep >= step.number
                           ? "text-white shadow-lg"
                           : "bg-white border-gray-300 text-gray-400"
                       } ${
                         currentStep === step.number
-                          ? "ring-4 scale-110 animate-pulse-slow"
+                          ? "ring-4  animate-pulse-slow"
                           : ""
                       }`}
                       style={{
@@ -830,7 +830,7 @@ const PostAdd = ({ data, setData }) => {
                       )}
 
                       <div
-                        className={`absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs flex items-center justify-center transition-all duration-500 transform hover:scale-110 ${
+                        className={`absolute -top-1 -right-1 w-5 h-5 rounded-full text-xs flex items-center justify-center transition-all duration-500 transform hover: ${
                           currentStep >= step.number
                             ? "text-white shadow-lg"
                             : "bg-gray-300 text-gray-600"
@@ -845,7 +845,7 @@ const PostAdd = ({ data, setData }) => {
                   </div>
 
                   <span
-                    className={`mt-3 text-sm font-medium transition-all duration-500 transform hover:scale-105 ${
+                    className={`mt-3 text-sm font-medium transition-all duration-500 transform hover: ${
                       currentStep >= step.number
                         ? "font-semibold"
                         : "text-gray-500"
@@ -917,7 +917,7 @@ const PostAdd = ({ data, setData }) => {
                 type="button"
                 onClick={currentStep === 1 ? handleCancel : prevStep}
                 disabled={isSubmitting}
-                className="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 transform hover:scale-105 font-medium disabled:opacity-50 flex items-center gap-2"
+                className="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 transform hover: font-medium disabled:opacity-50 flex items-center gap-2"
               >
                 <FaArrowLeft className="text-sm transition-transform duration-300 group-hover:-translate-x-1" />
                 {currentStep === 1 ? "Cancel" : "Back"}
@@ -928,7 +928,7 @@ const PostAdd = ({ data, setData }) => {
                   <button
                     type="button"
                     onClick={nextStep}
-                    className="px-6 py-3 text-white rounded-lg transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:shadow-lg transform hover:scale-105 active:scale-95"
+                    className="px-6 py-3 text-white rounded-lg transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:shadow-lg transform hover: active:scale-95"
                     style={{ backgroundColor: colors.primary }}
                   >
                     Continue
@@ -938,7 +938,7 @@ const PostAdd = ({ data, setData }) => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="px-6 py-3 text-white rounded-lg transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:shadow-lg transform hover:scale-105 active:scale-95"
+                    className="px-6 py-3 text-white rounded-lg transition-all duration-300 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 hover:shadow-lg transform hover: active:scale-95"
                     style={{ backgroundColor: colors.accent }}
                   >
                     {isSubmitting ? (

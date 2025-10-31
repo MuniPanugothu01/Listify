@@ -334,7 +334,7 @@ const HelpCenter = () => {
               className="bg-white rounded-xl p-4 sm:p-6 text-center shadow-sm border border-gray-200 hover:shadow-md transition-all duration-300 hover:-translate-y-1 animate-slide-up"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className="inline-flex items-center justify-center w-12 h-12 bg-[#2F3A63]/10 text-[#2F3A63] rounded-lg mb-3 transition-transform duration-300 group-hover:scale-110">
+              <div className="inline-flex items-center justify-center w-12 h-12 bg-[#2F3A63]/10 text-[#2F3A63] rounded-lg mb-3 transition-transform duration-300 ">
                 {contact.icon}
               </div>
               <h3 className="font-semibold text-gray-900 mb-1">
@@ -573,14 +573,14 @@ const HelpCenter = () => {
             <div className="flex gap-2">
               <button
                 onClick={expandAllSections}
-                className="text-sm text-[#2F3A63] hover:text-[#1e2a4a] font-medium transition-all duration-200 hover:scale-105"
+                className="text-sm text-[#2F3A63] hover:text-[#1e2a4a] font-medium transition-all duration-200 hover:"
               >
                 Expand All
               </button>
               <span className="text-gray-300">|</span>
               <button
                 onClick={collapseAllSections}
-                className="text-sm text-[#2F3A63] hover:text-[#1e2a4a] font-medium transition-all duration-200 hover:scale-105"
+                className="text-sm text-[#2F3A63] hover:text-[#1e2a4a] font-medium transition-all duration-200 hover:"
               >
                 Collapse All
               </button>
@@ -620,7 +620,7 @@ const HelpCenter = () => {
                   className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-all duration-300 group"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-lg transition-transform duration-300 group-hover:scale-110">
+                    <span className="text-lg transition-transform duration-300 ">
                       {section.icon}
                     </span>
                     <h3 className="text-left font-semibold text-gray-900">
@@ -630,8 +630,8 @@ const HelpCenter = () => {
                   <ChevronDown
                     className={`w-5 h-5 text-gray-500 transition-all duration-300 ${
                       expandedSections[section.id] 
-                        ? "rotate-180 transform scale-110" 
-                        : "group-hover:scale-110"
+                        ? "rotate-180 transform " 
+                        : ""
                     }`}
                   />
                 </button>

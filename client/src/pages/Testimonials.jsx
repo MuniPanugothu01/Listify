@@ -52,7 +52,7 @@ const Testimonials = ({ testimonials = data.testimonials }) => {
           {stats.map((stat, index) => (
             <div 
               key={stat.label}
-              className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-gray-200/50 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105"
+              className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 text-center border border-gray-200/50 shadow-sm hover:shadow-md transition-all duration-300 hover:"
             >
               <div className="flex justify-center mb-3">
                 <div className="p-3 bg-[#2F3A63] rounded-xl">
@@ -162,7 +162,7 @@ const Testimonials = ({ testimonials = data.testimonials }) => {
                   <img
                     src={testimonial.avatar}
                     alt={testimonial.author}
-                    className="w-12 h-12 rounded-full flex-shrink-0 group-hover:scale-110 transition-transform duration-300"
+                    className="w-12 h-12 rounded-full flex-shrink-0  transition-transform duration-300"
                   />
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-2">
@@ -214,7 +214,7 @@ const Testimonials = ({ testimonials = data.testimonials }) => {
     {[...testimonials, ...testimonials].map((testimonial, index) => (
       <div
         key={index}
-        className="flex-shrink-0 w-80 bg-white rounded-2xl p-6 border border-gray-200/50 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105"
+        className="flex-shrink-0 w-80 bg-white rounded-2xl p-6 border border-gray-200/50 shadow-sm hover:shadow-md transition-all duration-300 hover:"
       >
         <div className="flex items-center mb-4">
           {[...Array(5)].map((_, i) => (
@@ -257,7 +257,7 @@ const Testimonials = ({ testimonials = data.testimonials }) => {
               Start buying and selling with confidence today
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-[#2F3A63] px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover:scale-105 shadow-lg">
+              <button className="bg-white text-[#2F3A63] px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover: shadow-lg">
                 Get Started Free
               </button>
               <button className="border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">

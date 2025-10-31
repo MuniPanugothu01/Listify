@@ -400,7 +400,7 @@ const ChatBot = () => {
                   <button
                     type="submit"
                     disabled={!inputMessage.trim() || isTyping}
-                    className="bg-[#2F3A63] text-white rounded-xl p-3 hover:bg-[#1e2a4a] disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 disabled:hover:scale-100 flex items-center justify-center"
+                    className="bg-[#2F3A63] text-white rounded-xl p-3 hover:bg-[#1e2a4a] disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover: disabled:hover:scale-100 flex items-center justify-center"
                   >
                     <Send size={18} />
                   </button>
@@ -454,7 +454,7 @@ const ChatBot = () => {
 
       {/* Enhanced Floating Icon */}
       <div
-        className="cursor-pointer transform hover:scale-105 transition-all duration-300 relative group"
+        className="cursor-pointer transform hover: transition-all duration-300 relative group"
         onClick={handleToggleChat}
       >
         <div className="relative">

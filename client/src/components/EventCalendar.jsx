@@ -184,7 +184,7 @@ export default function MarketplaceDiscovery() {
             <div className="flex items-center justify-between mb-6 px-2 relative animate-fade-in-up">
               <button
                 onClick={previousMonth}
-                className="p-2 text-gray-500 hover:text-[#2F3A63] rounded-lg transition-all duration-300 transform hover:scale-110 hover:bg-gray-100"
+                className="p-2 text-gray-500 hover:text-[#2F3A63] rounded-lg transition-all duration-300 transform hover: hover:bg-gray-100"
               >
                 <ChevronLeft className="w-5 h-5 transition-transform duration-300 hover:-translate-x-1" />
               </button>
@@ -194,7 +194,7 @@ export default function MarketplaceDiscovery() {
                     setShowMonthPicker(!showMonthPicker);
                     setShowYearPicker(false);
                   }}
-                  className="px-3 py-1 text-base font-medium rounded-lg hover:bg-gray-50 transition-all duration-300 transform hover:scale-105"
+                  className="px-3 py-1 text-base font-medium rounded-lg hover:bg-gray-50 transition-all duration-300 transform hover:"
                 >
                   {monthNames[currentDate.getMonth()]}
                 </button>
@@ -203,14 +203,14 @@ export default function MarketplaceDiscovery() {
                     setShowYearPicker(!showYearPicker);
                     setShowMonthPicker(false);
                   }}
-                  className="px-3 py-1 text-base font-medium rounded-lg hover:bg-gray-50 transition-all duration-300 transform hover:scale-105"
+                  className="px-3 py-1 text-base font-medium rounded-lg hover:bg-gray-50 transition-all duration-300 transform hover:"
                 >
                   {currentDate.getFullYear()}
                 </button>
               </div>
               <button
                 onClick={nextMonth}
-                className="p-2 text-gray-500 hover:text-[#2F3A63] rounded-lg transition-all duration-300 transform hover:scale-110 hover:bg-gray-100"
+                className="p-2 text-gray-500 hover:text-[#2F3A63] rounded-lg transition-all duration-300 transform hover: hover:bg-gray-100"
               >
                 <ChevronRight className="w-5 h-5 transition-transform duration-300 hover:translate-x-1" />
               </button>
@@ -223,7 +223,7 @@ export default function MarketplaceDiscovery() {
                   <button
                     key={index}
                     onClick={() => selectMonth(index)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform hover: ${
                       currentDate.getMonth() === index
                         ? "bg-gradient-to-r from-[#2F3A63] to-[#1e2a4a] text-white shadow-md"
                         : "bg-gray-50 text-gray-500 hover:bg-gray-100"
@@ -242,7 +242,7 @@ export default function MarketplaceDiscovery() {
                   <button
                     key={year}
                     onClick={() => selectYear(year)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 transform hover: ${
                       currentDate.getFullYear() === year
                         ? "bg-gradient-to-r from-[#2F3A63] to-[#1e2a4a] text-white shadow-md"
                         : "bg-gray-50 text-gray-500 hover:bg-gray-100"
@@ -275,9 +275,9 @@ export default function MarketplaceDiscovery() {
                       <button
                         key={dayIndex}
                         onClick={() => selectDate(day)}
-                        className={`aspect-square flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-110 ${
+                        className={`aspect-square flex items-center justify-center rounded-lg text-sm font-medium transition-all duration-300 transform hover: ${
                           selectedDate === day
-                            ? "bg-gradient-to-br from-[#2F3A63] to-[#1e2a4a] text-white shadow-lg scale-105 animate-pulse-slow"
+                            ? "bg-gradient-to-br from-[#2F3A63] to-[#1e2a4a] text-white shadow-lg  animate-pulse-slow"
                             : "text-gray-500 hover:bg-gray-100 hover:shadow-sm"
                         }`}
                       >
@@ -330,7 +330,7 @@ export default function MarketplaceDiscovery() {
                   <div
                     key={idx}
                     onClick={() => handleCategoryClick(category.label, category.path)}
-                    className="group bg-white rounded-3xl shadow-lg overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-2xl border border-gray-200/50 transform hover:scale-105 animate-stagger-item"
+                    className="group bg-white rounded-3xl shadow-lg overflow-hidden cursor-pointer transition-all duration-500 hover:shadow-2xl border border-gray-200/50 transform hover: animate-stagger-item"
                     style={{ animationDelay: `${idx * 100}ms` }}
                   >
                     <div className="relative h-48 overflow-hidden">
@@ -338,10 +338,10 @@ export default function MarketplaceDiscovery() {
                         src={category.imageUrl}
                         alt={category.label}
                         loading="lazy"
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        className="w-full h-full object-cover transition-transform duration-700 "
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent transition-all duration-500 group-hover:from-black/50" />
-                      <div className="absolute top-4 right-4 transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-12">
+                      <div className="absolute top-4 right-4 transform transition-all duration-500  group-hover:rotate-12">
                         <div
                           className={`p-2 rounded-xl bg-gradient-to-br ${category.gradient} text-white shadow-lg`}
                         >
@@ -349,7 +349,7 @@ export default function MarketplaceDiscovery() {
                         </div>
                       </div>
                       <div className="absolute bottom-4 left-4 text-white transform transition-all duration-500 group-hover:translate-y-1">
-                        <h3 className="text-xl font-bold mb-1 transform transition-all duration-300 group-hover:scale-105">
+                        <h3 className="text-xl font-bold mb-1 transform transition-all duration-300 group-hover:">
                           {category.label}
                         </h3>
                         <p className="text-sm opacity-90 mb-2">
