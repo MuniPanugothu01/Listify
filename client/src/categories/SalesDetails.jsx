@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { 
-  FaMapMarkerAlt, 
-  FaEnvelope, 
-  FaHeart, 
-  FaShareAlt, 
-  FaPhone, 
+import {
+  FaMapMarkerAlt,
+  FaEnvelope,
+  FaHeart,
+  FaShareAlt,
+  FaPhone,
   FaCalendarAlt,
   FaStar,
   FaArrowLeft,
   FaExternalLinkAlt,
   FaShieldAlt,
-  FaComments
+  FaComments,
+  FaBox,
+  FaCheck,
+  FaSync,
+  FaHome,
+  FaTag,
 } from "react-icons/fa";
 
 // Import your JSON data
@@ -102,23 +107,23 @@ function SalesDetails() {
   }, [id]);
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('savedItems') || '[]');
+    const saved = JSON.parse(localStorage.getItem("savedItems") || "[]");
     setSavedItems(saved);
   }, [id]);
 
-  const isSaved = savedItems.some(h => h.id === sale?.id);
+  const isSaved = savedItems.some((h) => h.id === sale?.id);
 
   const toggleSave = () => {
     if (!sale) return;
     let newSaved;
     if (isSaved) {
-      newSaved = savedItems.filter(h => h.id !== sale.id);
+      newSaved = savedItems.filter((h) => h.id !== sale.id);
     } else {
       newSaved = [...savedItems, sale];
     }
     setSavedItems(newSaved);
-    localStorage.setItem('savedItems', JSON.stringify(newSaved));
-    window.dispatchEvent(new CustomEvent('savedItemsChanged'));
+    localStorage.setItem("savedItems", JSON.stringify(newSaved));
+    window.dispatchEvent(new CustomEvent("savedItemsChanged"));
   };
 
   const shareProperty = () => {
@@ -142,13 +147,25 @@ function SalesDetails() {
   const getTypeInfo = (type) => {
     switch (type) {
       case "sale":
-        return { color: "bg-green-100 text-green-800 border-green-200", text: "For Sale" };
+        return {
+          color: "bg-green-100 text-green-800 border-green-200",
+          text: "For Sale",
+        };
       case "free":
-        return { color: "bg-blue-100 text-blue-800 border-blue-200", text: "Free" };
+        return {
+          color: "bg-blue-100 text-blue-800 border-blue-200",
+          text: "Free",
+        };
       case "wanted":
-        return { color: "bg-purple-100 text-purple-800 border-purple-200", text: "Wanted" };
+        return {
+          color: "bg-purple-100 text-purple-800 border-purple-200",
+          text: "Wanted",
+        };
       default:
-        return { color: "bg-gray-100 text-gray-800 border-gray-200", text: type };
+        return {
+          color: "bg-gray-100 text-gray-800 border-gray-200",
+          text: type,
+        };
     }
   };
 
@@ -175,20 +192,51 @@ function SalesDetails() {
     const features = [];
     if (!description) return features;
 
-    if (description.toLowerCase().includes('brand new') || description.toLowerCase().includes('new')) features.push('Brand New');
-    if (description.toLowerCase().includes('excellent') || description.toLowerCase().includes('perfect')) features.push('Excellent Condition');
-    if (description.toLowerCase().includes('rare') || description.toLowerCase().includes('limited')) features.push('Rare Item');
-    if (description.toLowerCase().includes('authentic') || description.toLowerCase().includes('original')) features.push('Authentic');
-    if (description.toLowerCase().includes('warranty')) features.push('Warranty Included');
-    if (description.toLowerCase().includes('delivery') || description.toLowerCase().includes('shipping')) features.push('Delivery Available');
-    if (description.toLowerCase().includes('negotiable')) features.push('Price Negotiable');
-    if (description.toLowerCase().includes('urgent') || description.toLowerCase().includes('quick')) features.push('Quick Sale');
-    
+    if (
+      description.toLowerCase().includes("brand new") ||
+      description.toLowerCase().includes("new")
+    )
+      features.push("Brand New");
+    if (
+      description.toLowerCase().includes("excellent") ||
+      description.toLowerCase().includes("perfect")
+    )
+      features.push("Excellent Condition");
+    if (
+      description.toLowerCase().includes("rare") ||
+      description.toLowerCase().includes("limited")
+    )
+      features.push("Rare Item");
+    if (
+      description.toLowerCase().includes("authentic") ||
+      description.toLowerCase().includes("original")
+    )
+      features.push("Authentic");
+    if (description.toLowerCase().includes("warranty"))
+      features.push("Warranty Included");
+    if (
+      description.toLowerCase().includes("delivery") ||
+      description.toLowerCase().includes("shipping")
+    )
+      features.push("Delivery Available");
+    if (description.toLowerCase().includes("negotiable"))
+      features.push("Price Negotiable");
+    if (
+      description.toLowerCase().includes("urgent") ||
+      description.toLowerCase().includes("quick")
+    )
+      features.push("Quick Sale");
+
     // Add default features if none found
     if (features.length === 0) {
-      features.push('Good Condition', 'Well Maintained', 'Clean Item', 'Ready to Use');
+      features.push(
+        "Good Condition",
+        "Well Maintained",
+        "Clean Item",
+        "Ready to Use"
+      );
     }
-    
+
     return features.slice(0, 6);
   };
 
@@ -196,7 +244,7 @@ function SalesDetails() {
   const getSimilarItems = () => {
     if (!sale) return [];
     return data.marketplace
-      .filter(item => item.id !== sale.id && item.type === sale.type)
+      .filter((item) => item.id !== sale.id && item.type === sale.type)
       .slice(0, 6);
   };
 
@@ -215,9 +263,13 @@ function SalesDetails() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 text-gray-400 mx-auto mb-4">📦</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Item Not Found</h2>
-          <p className="text-gray-600 mb-6">The item you're looking for doesn't exist.</p>
+          <FaBox className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            Item Not Found
+          </h2>
+          <p className="text-gray-600 mb-6">
+            The item you're looking for doesn't exist.
+          </p>
           <Link
             to="/categories/sales"
             className="bg-[#2F3A63] text-white px-6 py-3 rounded-lg hover:bg-[#1E2A4D] transition-colors font-medium inline-flex items-center"
@@ -234,13 +286,22 @@ function SalesDetails() {
   const similarItems = getSimilarItems();
   const typeInfo = getTypeInfo(sale.type);
   const conditionColor = getConditionColor(sale.condition);
-  
+
   // Use the same image logic for display images
-  const displayImages = sale.images && sale.images.length > 0 
-    ? (sale.images.length < 4 
-        ? [...sale.images, ...Array(4 - sale.images.length).fill(sale.images[0])] 
-        : sale.images.slice(0, 4))
-    : [getItemImage(sale), getItemImage(sale), getItemImage(sale), getItemImage(sale)];
+  const displayImages =
+    sale.images && sale.images.length > 0
+      ? sale.images.length < 4
+        ? [
+            ...sale.images,
+            ...Array(4 - sale.images.length).fill(sale.images[0]),
+          ]
+        : sale.images.slice(0, 4)
+      : [
+          getItemImage(sale),
+          getItemImage(sale),
+          getItemImage(sale),
+          getItemImage(sale),
+        ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -255,7 +316,7 @@ function SalesDetails() {
               <FaArrowLeft className="w-4 h-4 mr-2" />
               Back to Marketplace
             </Link>
-            
+
             <div className="flex items-center gap-3">
               <button
                 onClick={shareProperty}
@@ -278,18 +339,22 @@ function SalesDetails() {
                   </div>
                 )}
               </button>
-              
+
               <button
                 onClick={toggleSave}
                 className={`p-2 rounded-lg transition-colors flex items-center gap-2 ${
-                  isSaved 
-                    ? 'bg-red-50 text-red-600 border border-red-200' 
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  isSaved
+                    ? "bg-red-50 text-red-600 border border-red-200"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                 }`}
               >
-                <FaHeart className={`w-4 h-4 ${isSaved ? 'fill-red-600 text-red-600' : ''}`} />
+                <FaHeart
+                  className={`w-4 h-4 ${
+                    isSaved ? "fill-red-600 text-red-600" : ""
+                  }`}
+                />
                 <span className="hidden sm:inline font-medium">
-                  {isSaved ? 'Saved' : 'Save'}
+                  {isSaved ? "Saved" : "Save"}
                 </span>
               </button>
             </div>
@@ -307,27 +372,31 @@ function SalesDetails() {
                 <img
                   src={selectedImage}
                   alt={sale.title}
-                  className="w-full h-80 object-cover"
+                  className="w-full h-100 object-cover"
                 />
                 <div className="absolute bottom-4 left-4 flex gap-2">
-                  <span className={`px-3 py-1.5 rounded-full text-sm font-medium ${typeInfo.color} border`}>
+                  <span
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium ${typeInfo.color} border`}
+                  >
                     {typeInfo.text}
                   </span>
-                  <span className={`px-3 py-1.5 rounded-full text-sm font-medium ${conditionColor}`}>
+                  <span
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium ${conditionColor}`}
+                  >
                     {sale.condition}
                   </span>
                 </div>
               </div>
-              
+
               {/* Thumbnail Gallery */}
               <div className="p-4 grid grid-cols-4 gap-3">
                 {displayImages.map((img, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(img)}
-                    className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                      selectedImage === img 
-                        ? "border-[#2F3A63] ring-2 ring-[#2F3A63] ring-opacity-20" 
+                    className={`rounded-lg overflow-hidden border-2 transition-all ${
+                      selectedImage === img
+                        ? ""
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
@@ -355,19 +424,25 @@ function SalesDetails() {
                       <span className="font-medium">{sale.location}</span>
                     </div>
                   </div>
-                  
+
                   <div className="text-right">
-                    <div className={`text-3xl font-bold mb-1 ${
-                      sale.price === "Free" 
-                        ? "text-green-600" 
-                        : sale.price === "Negotiable" 
-                        ? "text-blue-600" 
-                        : "text-[#2F3A63]"
-                    }`}>
+                    <div
+                      className={`text-3xl font-bold mb-1 ${
+                        sale.price === "Free"
+                          ? "text-green-600"
+                          : sale.price === "Negotiable"
+                          ? "text-blue-600"
+                          : "text-[#2F3A63]"
+                      }`}
+                    >
                       {sale.price}
                     </div>
                     <div className="text-sm text-gray-500">
-                      {sale.type === "free" ? "Free Item" : sale.type === "wanted" ? "Price Negotiable" : "Sale Price"}
+                      {sale.type === "free"
+                        ? "Free Item"
+                        : sale.type === "wanted"
+                        ? "Price Negotiable"
+                        : "Sale Price"}
                     </div>
                   </div>
                 </div>
@@ -380,8 +455,12 @@ function SalesDetails() {
                       <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mb-1 border border-gray-200">
                         <FaShieldAlt className="w-4 h-4 text-[#2F3A63]" />
                       </div>
-                      <div className="text-xs text-gray-600 mb-1">Condition</div>
-                      <div className="font-semibold text-gray-900 text-sm">{sale.condition}</div>
+                      <div className="text-xs text-gray-600 mb-1">
+                        Condition
+                      </div>
+                      <div className="font-semibold text-gray-900 text-sm">
+                        {sale.condition}
+                      </div>
                     </div>
 
                     {/* Vertical Divider */}
@@ -390,10 +469,12 @@ function SalesDetails() {
                     {/* Category */}
                     <div className="flex flex-col items-center flex-1">
                       <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mb-1 border border-gray-200">
-                        <span className="text-[#2F3A63] text-sm font-bold">📦</span>
+                        <FaBox className="w-4 h-4 text-[#2F3A63]" />
                       </div>
                       <div className="text-xs text-gray-600 mb-1">Category</div>
-                      <div className="font-semibold text-gray-900 text-sm">{sale.type}</div>
+                      <div className="font-semibold text-gray-900 text-sm">
+                        {sale.type}
+                      </div>
                     </div>
 
                     {/* Vertical Divider */}
@@ -402,10 +483,12 @@ function SalesDetails() {
                     {/* Availability */}
                     <div className="flex flex-col items-center flex-1">
                       <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mb-1 border border-gray-200">
-                        <span className="text-[#2F3A63] text-sm font-bold">✓</span>
+                        <FaCheck className="w-4 h-4 text-[#2F3A63]" />
                       </div>
                       <div className="text-xs text-gray-600 mb-1">Status</div>
-                      <div className="font-semibold text-gray-900 text-sm">Available</div>
+                      <div className="font-semibold text-gray-900 text-sm">
+                        Available
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -415,17 +498,23 @@ function SalesDetails() {
                   <div className="text-center">
                     <FaCalendarAlt className="w-4 h-4 text-[#2F3A63] mx-auto mb-1" />
                     <div className="text-xs text-gray-600">Listed</div>
-                    <div className="font-semibold text-gray-900 text-xs">{sale.posted}</div>
+                    <div className="font-semibold text-gray-900 text-xs">
+                      {sale.posted}
+                    </div>
                   </div>
                   <div className="text-center">
-                    <div className="w-4 h-4 text-[#2F3A63] mx-auto mb-1">📍</div>
+                    <FaMapMarkerAlt className="w-4 h-4 text-[#2F3A63] mx-auto mb-1" />
                     <div className="text-xs text-gray-600">Location</div>
-                    <div className="font-semibold text-gray-900 text-xs">{sale.location.split(',')[0]}</div>
+                    <div className="font-semibold text-gray-900 text-xs">
+                      {sale.location.split(",")[0]}
+                    </div>
                   </div>
                   <div className="text-center">
-                    <div className="w-4 h-4 text-[#2F3A63] mx-auto mb-1">🔄</div>
+                    <FaSync className="w-4 h-4 text-[#2F3A63] mx-auto mb-1" />
                     <div className="text-xs text-gray-600">Type</div>
-                    <div className="font-semibold text-gray-900 text-xs">{typeInfo.text}</div>
+                    <div className="font-semibold text-gray-900 text-xs">
+                      {typeInfo.text}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -454,12 +543,18 @@ function SalesDetails() {
                 {activeTab === "overview" && (
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Item Description</h3>
-                      <p className="text-gray-600 leading-relaxed">{sale.description}</p>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                        Item Description
+                      </h3>
+                      <p className="text-gray-600 leading-relaxed">
+                        {sale.description}
+                      </p>
                     </div>
-                    
+
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Key Features</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                        Key Features
+                      </h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {features.map((feature, index) => (
                           <div key={index} className="flex items-center gap-3">
@@ -476,11 +571,15 @@ function SalesDetails() {
                   <div className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-3">Item Details</h4>
+                        <h4 className="font-semibold text-gray-900 mb-3">
+                          Item Details
+                        </h4>
                         <div className="space-y-3">
                           <div className="flex justify-between py-2 border-b border-gray-100">
                             <span className="text-gray-600">Condition</span>
-                            <span className="font-medium">{sale.condition}</span>
+                            <span className="font-medium">
+                              {sale.condition}
+                            </span>
                           </div>
                           <div className="flex justify-between py-2 border-b border-gray-100">
                             <span className="text-gray-600">Price Type</span>
@@ -496,9 +595,11 @@ function SalesDetails() {
                           </div>
                         </div>
                       </div>
-                      
+
                       <div>
-                        <h4 className="font-semibold text-gray-900 mb-3">Seller Information</h4>
+                        <h4 className="font-semibold text-gray-900 mb-3">
+                          Seller Information
+                        </h4>
                         <div className="space-y-3">
                           <div className="flex justify-between py-2 border-b border-gray-100">
                             <span className="text-gray-600">Seller Type</span>
@@ -525,30 +626,45 @@ function SalesDetails() {
                 {activeTab === "location" && (
                   <div className="space-y-6">
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Pickup Location</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                        Pickup Location
+                      </h3>
                       <p className="text-gray-600 mb-4">
-                        {sale.location}. The seller prefers to meet in a public location for safety.
-                        Contact the seller to arrange a convenient meeting time and place.
+                        {sale.location}. The seller prefers to meet in a public
+                        location for safety. Contact the seller to arrange a
+                        convenient meeting time and place.
                       </p>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                         <div className="text-center p-4 bg-gray-50 rounded-lg">
-                          <div className="text-lg font-bold text-[#2F3A63]">Public</div>
-                          <div className="text-sm text-gray-600">Meeting Place</div>
+                          <div className="text-lg font-bold text-[#2F3A63]">
+                            Public
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            Meeting Place
+                          </div>
                         </div>
                         <div className="text-center p-4 bg-gray-50 rounded-lg">
-                          <div className="text-lg font-bold text-[#2F3A63]">Flexible</div>
+                          <div className="text-lg font-bold text-[#2F3A63]">
+                            Flexible
+                          </div>
                           <div className="text-sm text-gray-600">Timings</div>
                         </div>
                         <div className="text-center p-4 bg-gray-50 rounded-lg">
-                          <div className="text-lg font-bold text-[#2F3A63]">Safe</div>
-                          <div className="text-sm text-gray-600">Transaction</div>
+                          <div className="text-lg font-bold text-[#2F3A63]">
+                            Safe
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            Transaction
+                          </div>
                         </div>
                       </div>
                     </div>
-                    
+
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-3">Map Location</h3>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                        Map Location
+                      </h3>
                       <div className="w-full h-80 rounded-lg overflow-hidden border border-gray-200">
                         <iframe
                           title="Item Location Map"
@@ -557,7 +673,9 @@ function SalesDetails() {
                           loading="lazy"
                           allowFullScreen
                           referrerPolicy="no-referrer-when-downgrade"
-                          src={`https://www.google.com/maps?q=${encodeURIComponent(sale.location)}&output=embed&zoom=15`}
+                          src={`https://www.google.com/maps?q=${encodeURIComponent(
+                            sale.location
+                          )}&output=embed&zoom=15`}
                           className="border-0"
                         ></iframe>
                       </div>
@@ -572,31 +690,40 @@ function SalesDetails() {
           <div className="lg:w-1/3 space-y-6">
             {/* Contact Card */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Seller</h3>
-              
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Contact Seller
+              </h3>
+
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-[#2F3A63] to-[#4A5FC1] rounded-full flex items-center justify-center text-white font-bold text-lg">
                   {sale.sellerName?.charAt(0) || "S"}
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">{sale.sellerName || "Seller"}</h4>
+                  <h4 className="font-semibold text-gray-900">
+                    {sale.sellerName || "Seller"}
+                  </h4>
                   <p className="text-gray-600 text-sm">Marketplace Seller</p>
                   <div className="flex items-center gap-1 mt-1">
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <FaStar key={star} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <FaStar
+                        key={star}
+                        className="w-4 h-4 fill-yellow-400 text-yellow-400"
+                      />
                     ))}
-                    <span className="text-sm text-gray-600 ml-1">(12 reviews)</span>
+                    <span className="text-sm text-gray-600 ml-1">
+                      (12 reviews)
+                    </span>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-3">
-                <button className="w-full bg-[#2F3A63] text-white py-3 px-4 rounded-lg hover:bg-[#1E2A4D] transition-colors font-medium flex items-center justify-center gap-2">
+                <button className="w-full bg-[#2F3A63] text-white py-3 px-4 cursor-pointer rounded-lg hover:bg-[#1E2A4D] transition-colors font-medium flex items-center justify-center gap-2">
                   <FaComments className="w-4 h-4" />
                   Message Seller
                 </button>
-                
-                <button className="w-full border border-[#2F3A63] text-[#2F3A63] py-3 px-4 rounded-lg hover:bg-[#2F3A63] hover:text-white transition-colors font-medium flex items-center justify-center gap-2">
+
+                <button className="w-full border border-[#2F3A63] cursor-pointer text-[#2F3A63] py-3 px-4 rounded-lg hover:bg-[#2F3A63] hover:text-white transition-colors font-medium flex items-center justify-center gap-2">
                   <FaPhone className="w-4 h-4" />
                   Call Seller
                 </button>
@@ -614,11 +741,11 @@ function SalesDetails() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="p-6 border-b border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                  <span>📦</span>
+                  <FaBox className="w-5 h-5 text-[#2F3A63]" />
                   Similar Items ({similarItems.length})
                 </h3>
               </div>
-              
+
               <div className="divide-y divide-gray-100 max-h-[600px] overflow-y-auto">
                 {similarItems.map((item) => {
                   const itemTypeInfo = getTypeInfo(item.type);
@@ -639,26 +766,30 @@ function SalesDetails() {
                             <h4 className="font-semibold text-gray-900 text-sm line-clamp-1 flex-1">
                               {item.title}
                             </h4>
-                            <span className={`text-xs px-2 py-1 rounded-full flex-shrink-0 ml-2 ${itemTypeInfo.color}`}>
+                            <span
+                              className={`text-xs px-2 py-1 rounded-full flex-shrink-0 ml-2 ${itemTypeInfo.color}`}
+                            >
                               {itemTypeInfo.text}
                             </span>
                           </div>
-                          
+
                           <div className="flex items-center gap-1 mb-2">
                             <FaMapMarkerAlt className="w-3 h-3 text-gray-400" />
                             <p className="text-xs text-gray-600 truncate">
-                              {item.location.split(',')[0]}
+                              {item.location.split(",")[0]}
                             </p>
                           </div>
 
                           <div className="flex items-center justify-between">
-                            <span className={`font-bold text-sm ${
-                              item.price === "Free" 
-                                ? "text-green-600" 
-                                : item.price === "Negotiable" 
-                                ? "text-blue-600" 
-                                : "text-[#2F3A63]"
-                            }`}>
+                            <span
+                              className={`font-bold text-sm ${
+                                item.price === "Free"
+                                  ? "text-green-600"
+                                  : item.price === "Negotiable"
+                                  ? "text-blue-600"
+                                  : "text-[#2F3A63]"
+                              }`}
+                            >
                               {item.price}
                             </span>
                             <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
@@ -671,7 +802,7 @@ function SalesDetails() {
                   );
                 })}
               </div>
-              
+
               <div className="p-4 bg-gray-50 border-t border-gray-200">
                 <Link
                   to="/categories/sales"
