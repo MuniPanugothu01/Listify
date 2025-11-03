@@ -33,7 +33,7 @@ const PersonalDetailsSection = ({
     <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6 space-y-6">
       {/* Always show profile picture */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pb-6 border-b border-gray-100">
-        <div className="relative flex-shrink-0">
+        <div className="lg:relative flex-shrink-0">
           <img
             src={profilePicPreview}
             alt="Profile Preview"

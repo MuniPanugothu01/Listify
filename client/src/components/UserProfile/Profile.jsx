@@ -195,8 +195,8 @@ export default function ModernProfile() {
   return (
     <div className="min-h-screen bg-gray-50/50">
       {/* Header */}
-      <header className="fixed top-0 left-0 w-full z-40 bg-white shadow-md border-b border-gray-200 px-4 sm:px-6 py-4">
-        <div className="mx-auto flex items-center justify-between">
+      <header className="fixed top-0 left-0 w-full z-40 bg-white shadow-md border-b border-gray-200 px-1 sm:px-6 py-4">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -228,8 +228,8 @@ export default function ModernProfile() {
         </div>
       </header>
 
-      <div className="pt-16 container mx-auto px-4 py-6 mt-4">
-        <div className="flex lg:flex-row gap-6">
+      <div className="pt-16 container  mx-auto px-1 py-6 mt-4">
+        <div className="lg:flex gap-6">
           <Sidebar 
             activeSection={activeSection}
             setActiveSection={setActiveSection}
@@ -238,7 +238,7 @@ export default function ModernProfile() {
             setIsMobileMenuOpen={setIsMobileMenuOpen}
           />
           
-          <main className="flex-1 lg:mr-6 space-y-6 w-full ">
+          <main className="flex-1 lg:mr-6 space-y-6 w-full">
             {activeSection === "home" && (
               <HomeSection
                 savedHouses={savedHouses}
@@ -267,7 +267,7 @@ export default function ModernProfile() {
                 handleSave={handleSave}
                 handleCancel={handleCancel}
               />
-            )}
+            )} 
 
             {activeSection === "saved" && (
               <div>
@@ -363,7 +363,7 @@ export default function ModernProfile() {
               </div>
             )}
 
-            {activeSection === "posts" && (
+           {activeSection === "posts" && (
               <div>
                 <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                   <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">My Posts ({myPosts.length})</h2>
@@ -416,7 +416,7 @@ export default function ModernProfile() {
               </div>
             )}
 
-            {activeSection === "alerts" && (
+             {activeSection === "alerts" && (
               <div className="bg-white rounded-2xl shadow-md p-12 text-center">
                 <Bell className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">No alerts yet</h3>
@@ -427,19 +427,19 @@ export default function ModernProfile() {
               </div>
             )}
 
-            {activeSection === "activity" && (
+             {activeSection === "activity" && (
               <div className="bg-white rounded-2xl shadow-md p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4 sm:text-3xl">Account Activity</h2>
                 <p className="text-gray-600">Recent activity will be shown here.</p>
               </div>
-            )}
+            )} 
 
-            {activeSection === "security" && (
+           {activeSection === "security" && (
               <div className="bg-white rounded-2xl shadow-md p-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-4 sm:text-3xl">Security</h2>
                 <p className="text-gray-600">Security settings will be managed here.</p>
               </div>
-            )}
+            )} 
           </main>
 
           {/* Right Profile Section */}
