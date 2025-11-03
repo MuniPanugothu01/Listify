@@ -231,7 +231,7 @@ const FAQSection = () => {
           </div>
        
           {/* FAQ Sections */}
-          <div className="space-y-4">
+          <div className="space-y-4 ">
             {filteredSections.map((section) => (
               <div
                 key={section.id}
@@ -239,7 +239,7 @@ const FAQSection = () => {
               >
                 <button
                   onClick={() => toggleSection(section.id)}
-                  className="w-full flex items-center justify-between p-6 bg-gradient-to-r from-gray-50 to-white hover:from-gray-100 transition-all duration-200 group-hover:border-[#2F3A63]/20"
+                  className="w-full flex items-center justify-between p-6 cursor-pointer bg-gradient-to-r from-gray-50 to-white hover:from-gray-100 transition-all duration-200 group-hover:border-[#2F3A63]/20"
                 >
                   <div className="flex items-center gap-4">
                     <div className={`p-3 rounded-xl bg-gradient-to-br ${section.color} text-white shadow-lg`}>
@@ -302,8 +302,8 @@ const FAQSection = () => {
               <p className="text-gray-600 mb-4">
                 Can't find the answer you're looking for? Our support team is here to help.
               </p>
-              <button className="bg-[#2F3A63] text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#1e2a4a] transition-colors duration-200 inline-flex items-center gap-2">
-                <FaRegCommentDots className="w-4 h-4" />
+              <button className="bg-[#2F3A63]  cursor-pointer text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#1e2a4a] transition-colors duration-200 inline-flex items-center gap-2">
+                <FaRegCommentDots className="w-4 h-4 " />
                 Contact Support
               </button>
             </div>

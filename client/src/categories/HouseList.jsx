@@ -467,7 +467,7 @@ function HousesList() {
 
                 {/* Search Button */}
                 <div>
-                  <button className="w-full bg-[#2F3A63] text-white py-3 px-6 rounded-lg hover:bg-[#1E2A4D] transition-colors font-medium flex items-center justify-center">
+                  <button className="w-full bg-[#2F3A63]  cursor-pointer text-white py-3 px-6 rounded-lg hover:bg-[#1E2A4D] transition-colors font-medium flex items-center justify-center">
                     <Search className="w-4 h-4 mr-2" />
                     Search
                   </button>

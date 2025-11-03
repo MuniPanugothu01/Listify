@@ -81,11 +81,11 @@ function Review() {
               >
                 <div className="flex flex-col lg:flex-row h-full">
                   {/* Image Section */}
-                  <div className="relative lg:w-2/5 h-48 lg:h-auto overflow-hidden">
+                  <div className="relative lg:w-2/5 cursor-pointer h-48 lg:h-auto overflow-hidden">
                     <img
                       src={principle.image}
                       alt={principle.title}
-                      className="w-full h-full object-cover  transition-transform duration-700"
+                      className="w-full h-full object-cover transition-transform duration-700"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     
@@ -119,8 +119,8 @@ function Review() {
 
                     {/* Learn More Button */}
                     <button className="flex items-center space-x-2 text-[#2F3A63] font-semibold text-sm hover:space-x-3 transition-all duration-300 group/btn">
-                      <span>Learn more</span>
-                      <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300" />
+                      <span className=" cursor-pointer ">Learn more</span>
+                      <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-300 cursor-pointer" />
                     </button>
                   </div>
                 </div>

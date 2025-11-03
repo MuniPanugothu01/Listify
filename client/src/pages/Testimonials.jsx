@@ -257,10 +257,10 @@ const Testimonials = ({ testimonials = data.testimonials }) => {
               Start buying and selling with confidence today
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-[#2F3A63] px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover: shadow-lg">
+              <button className="bg-white text-[#2F3A63] px-8 py-3 cursor-pointer rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover: shadow-lg">
                 Get Started Free
               </button>
-              <button className="border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">
+              <button className="border-2 border-white cursor-pointer text-white px-8 py-3 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">
                 View All Reviews
               </button>
             </div>

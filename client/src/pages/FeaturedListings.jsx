@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import { 
-  Star, 
-  ArrowRight, 
-  Heart, 
-  MapPin, 
-  Clock, 
-  Eye, 
+import {
+  Star,
+  ArrowRight,
+  Heart,
+  MapPin,
+  Clock,
+  Eye,
   Shield,
   Sparkles,
   TrendingUp,
-  Zap
+  Zap,
 } from "lucide-react";
 import data from "../data/index.js";
 
@@ -18,7 +18,7 @@ const FeaturedListings = ({ featuredListings = data.featuredListings }) => {
   const [activeFilter, setActiveFilter] = useState("all");
 
   const toggleFavorite = (id) => {
-    setFavorites(prev => {
+    setFavorites((prev) => {
       const newFavorites = new Set(prev);
       if (newFavorites.has(id)) {
         newFavorites.delete(id);
@@ -29,23 +29,20 @@ const FeaturedListings = ({ featuredListings = data.featuredListings }) => {
     });
   };
 
-
   return (
     <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-[#F3F3F3] overflow-hidden">
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header Section */}
         <div className="text-center mb-16">
-          
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
             Featured Listings
           </h2>
-          
+
           <p className="text-gray-600 text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed">
-            Hand-picked premium listings with verified sellers—discover exceptional deals and exclusive opportunities in your community.
+            Hand-picked premium listings with verified sellers—discover
+            exceptional deals and exclusive opportunities in your community.
           </p>
         </div>
-
-  
 
         {/* Listings Grid */}
         {featuredListings.length > 0 ? (
@@ -67,8 +64,6 @@ const FeaturedListings = ({ featuredListings = data.featuredListings }) => {
                       </span>
                     </div>
                   )}
-
-        
 
                   {/* Image */}
                   <img
@@ -102,7 +97,9 @@ const FeaturedListings = ({ featuredListings = data.featuredListings }) => {
                   {/* Location */}
                   <div className="flex items-center space-x-2 text-gray-500 mb-4">
                     <MapPin className="w-4 h-4" />
-                    <span className="text-sm font-medium truncate">{item.location}</span>
+                    <span className="text-sm font-medium truncate">
+                      {item.location}
+                    </span>
                   </div>
 
                   {/* Stats */}
@@ -129,13 +126,11 @@ const FeaturedListings = ({ featuredListings = data.featuredListings }) => {
                         </span>
                       )}
                     </div>
-                    <button className="bg-[#2F3A63] text-white px-4 py-2 rounded-xl font-semibold text-sm hover:shadow-lg  transition-all duration-300">
+                    <button className="bg-[#2F3A63] text-white px-4 py-2 rounded-xl cursor-pointer font-semibold text-sm hover:shadow-lg  transition-all duration-300">
                       View Details
                     </button>
                   </div>
                 </div>
-
-            
               </article>
             ))}
           </div>
@@ -144,13 +139,14 @@ const FeaturedListings = ({ featuredListings = data.featuredListings }) => {
             <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
               <Sparkles className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No Listings Available</h3>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              No Listings Available
+            </h3>
             <p className="text-gray-500 max-w-md mx-auto">
               Check back later for new featured listings in your area.
             </p>
           </div>
         )}
-
       </div>
     </section>
   );

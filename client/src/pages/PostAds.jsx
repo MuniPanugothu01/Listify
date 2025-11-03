@@ -87,7 +87,7 @@ const PostAds = () => {
         className="group relative px-6 py-3 bg-[#2F3A63] text-white font-semibold text-base rounded-xl shadow-[0_10px_25px_rgba(0,0,0,0.15),0_4px_10px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,0.1)] transition-all duration-200 hover:bg-[#1e2a4a] focus:outline-none focus:ring-2 focus:ring-[#2F3A63] focus:ring-offset-2 transform hover:-translate-y-0.5"
         aria-label="Post an ad now"
       >
-        <span className="relative z-10">Post Ad Now</span>
+        <span className="relative z-10 cursor-pointer">Post Ad Now</span>
         <div className="absolute inset-0 bg-white/10 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
       </button>
     </div>

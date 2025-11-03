@@ -418,7 +418,7 @@ function ResumesList() {
 
                 {/* Search Button */}
                 <div>
-                  <button className="w-full bg-[#2F3A63] text-white py-3 px-6 rounded-lg hover:bg-[#1E2A4D] transition-colors font-medium flex items-center justify-center">
+                  <button className="w-full bg-[#2F3A63] text-white py-3 px-6  cursor-pointer rounded-lg hover:bg-[#1E2A4D] transition-colors font-medium flex items-center justify-center">
                     <Search className="w-4 h-4 mr-2" />
                     Search
                   </button>
@@ -773,7 +773,7 @@ function ResumesList() {
                               >
                                 View Profile
                               </Link>
-                              <button className="flex-1 border border-[#2F3A63] text-[#2F3A63] text-center py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors font-medium text-sm">
+                              <button className="flex-1 border border-[#2F3A63] text-[#2F3A63] text-center  cursor-pointer py-2 px-3 rounded-lg hover:bg-blue-50 transition-colors font-medium text-sm">
                                 Contact
                               </button>
                             </div>

@@ -74,9 +74,9 @@ const Footer = () => {
             <div className="space-y-3 mb-6">
               <div className="flex items-center space-x-3 text-gray-600">
                 <MapPin className="w-4 h-4 text-[#2F3A63]" />
-                <span className="text-sm">123 Market St, City, State 12345</span>
+                <span className="text-sm ">123 Market St, City, State 12345</span>
               </div>
-              <div className="flex items-center space-x-3 text-gray-600">
+              <div className="flex items-center space-x-3 text-gray-600 ">
                 <Phone className="w-4 h-4 text-[#2F3A63]" />
                 <span className="text-sm">+1 (555) 123-4567</span>
               </div>
@@ -176,7 +176,7 @@ const Footer = () => {
                   />
                   <button
                     type="submit"
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-[#2F3A63] to-[#1e2a4a] text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-200 text-xs font-medium"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r  cursor-pointer from-[#2F3A63] to-[#1e2a4a] text-white px-4 py-1.5 rounded-lg hover:shadow-lg transition-all duration-200 text-xs font-medium"
                   >
                     Subscribe
                   </button>
@@ -191,11 +191,11 @@ const Footer = () => {
             <div className="mb-6">
               <h4 className="text-gray-700 font-semibold mb-3 text-sm">Get the App</h4>
               <div className="space-y-2">
-                <button className="w-full flex items-center justify-center space-x-2 bg-black text-white py-2.5 px-4 rounded-xl hover:bg-gray-800 transition-all duration-200 text-sm">
+                <button className="w-full  cursor-pointer flex items-center justify-center space-x-2 bg-black text-white py-2.5 px-4 rounded-xl hover:bg-gray-800 transition-all duration-200 text-sm">
                   <Download className="w-4 h-4" />
                   <span>App Store</span>
                 </button>
-                <button className="w-full flex items-center justify-center space-x-2 bg-black text-white py-2.5 px-4 rounded-xl hover:bg-gray-800 transition-all duration-200 text-sm">
+                <button className="w-full flex items-center  cursor-pointer justify-center space-x-2 bg-black text-white py-2.5 px-4 rounded-xl hover:bg-gray-800 transition-all duration-200 text-sm">
                   <Download className="w-4 h-4" />
                   <span>Google Play</span>
                 </button>
@@ -284,10 +284,10 @@ const Footer = () => {
             {/* Scroll to Top */}
             <button
               onClick={scrollToTop}
-              className="flex items-center space-x-2 bg-[#2F3A63] text-white px-4 py-2.5 rounded-xl hover:bg-[#1e2a4a] transition-all duration-200 hover:shadow-lg text-sm font-medium"
+              className="flex items-center  cursor-pointer space-x-2 bg-[#2F3A63] text-white px-4 py-2.5 rounded-xl hover:bg-[#1e2a4a] transition-all duration-200 hover:shadow-lg text-sm font-medium"
               aria-label="Scroll to top"
             >
-              <ArrowUp className="w-4 h-4" />
+              <ArrowUp className="w-4 h-4 " />
               <span>Top</span>
             </button>
           </div>
