@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { Globe } from "../../src/components/ui/globe";
 
@@ -6,6 +6,11 @@ const HeroSection = () => {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
   const [showErrors, setShowErrors] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const countries = [
     { value: "usa", label: "United States" },
@@ -129,6 +134,7 @@ const HeroSection = () => {
             ? "#2F3A63"
             : "#9CA3AF",
       },
+      transition: "all 0.3s ease",
     }),
     option: (provided, state) => ({
       ...provided,
@@ -140,6 +146,8 @@ const HeroSection = () => {
       color: state.isSelected ? "white" : "black",
       "&:hover": {
         backgroundColor: "#F9FAFB",
+        transform: "translateX(4px)",
+        transition: "all 0.2s ease",
       },
     }),
     singleValue: (provided) => ({
@@ -153,27 +161,41 @@ const HeroSection = () => {
     }),
   };
 
+  const entranceAnimation = (delay = 0) => ({
+    opacity: mounted ? 1 : 0,
+    transform: mounted ? "translateY(0)" : "translateY(20px)",
+    transition: `all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${delay}s`,
+  });
+
   return (
-    <section className="relative w-full bg-transparent flex flex-col-reverse lg:flex-row items-center justify-between px-4 sm:px-8 md:px-12 lg:px-16 lg:pt-16 pb-12 lg:pb-20 lg:min-h-[680px]  z-10">
+    <section className="relative w-full bg-transparent flex flex-col-reverse lg:flex-row items-center justify-between px-4 sm:px-8 md:px-12 lg:px-16 lg:pt-16 pb-12 lg:pb-20 lg:min-h-[680px] z-10">
       {/* LEFT SIDE */}
-      <div className="w-full  lg:w-1/2 text-center lg:text-left  lg:mt-0 z-20 flex flex-col justify-center">
-    
-         <h1 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-[#2F3A63] leading-tight drop-shadow-2xl">
+      <div className="w-full lg:w-1/2 text-center lg:text-left lg:mt-0 z-20 flex flex-col justify-center">
+        <h1
+          className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-[#2F3A63] leading-tight drop-shadow-2xl"
+          style={entranceAnimation(0)}
+        >
           Connect. Discover. Buy More.
         </h1>
 
-        <p className="mt-6 text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed drop-shadow-md">
+        <p
+          className="mt-6 text-sm sm:text-base md:text-lg text-gray-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed drop-shadow-md"
+          style={entranceAnimation(0.3)}
+        >
           Find the best deals, services, and products right in your
           neighborhood. Connect with trusted local vendors and experience your
           community like never before.
         </p>
 
         {/* SEARCH BAR SECTION */}
-        <div className="mt-8 w-full max-w-4xl mx-auto lg:mx-0">
+        <div
+          className="mt-8 w-full max-w-4xl mx-auto lg:mx-0"
+          style={entranceAnimation(0.6)}
+        >
           {/* Search Bar Label */}
           <div className="flex items-center gap-2 mb-3">
             <svg
-              className="w-5 h-5 text-gray-600"
+              className="w-5 h-5 text-gray-600 transition-transform hover:scale-110 duration-200"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -190,12 +212,12 @@ const HeroSection = () => {
             </span>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 bg-white shadow-md rounded-xl p-4 w-full">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 bg-white shadow-md rounded-xl p-4 w-full transition-all duration-500 hover:shadow-xl">
             {/* Country Select */}
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <svg
-                  className="w-4 h-4 text-gray-500"
+                  className="w-4 h-4 text-gray-500 transition-transform hover:scale-110 duration-200"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -232,7 +254,7 @@ const HeroSection = () => {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <svg
-                  className="w-4 h-4 text-gray-500"
+                  className="w-4 h-4 text-gray-500 transition-transform hover:scale-110 duration-200"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -274,10 +296,10 @@ const HeroSection = () => {
             <div className="flex items-end">
               <button
                 onClick={handleSearch}
-                className="px-6 py-3 bg-[#2F3A63] text-white rounded-lg cursor-pointer font-semibold hover:bg-[#1e2a4a] transition duration-200 w-full sm:w-auto h-[42px] flex items-center justify-center gap-2"
+                className="px-6 py-3 bg-[#2F3A63] text-white rounded-lg cursor-pointer font-semibold hover:bg-[#1e2a4a] transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 w-full sm:w-auto h-[42px] flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
               >
                 <svg
-                  className="w-4 h-4"
+                  className="w-4 h-4 transition-transform group-hover:scale-110"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -302,13 +324,12 @@ const HeroSection = () => {
           w-full lg:w-1/2 
           flex justify-center lg:justify-end 
           items-center 
-         z-10
+          z-10
         "
       >
         <Globe
           className="
-            w-[300px] md:mt-10
-            sm:w-[380px] 
+            w-[300px] sm:w-[380px] 
             md:w-[380px] 
             lg:w-[460px] 
             xl:w-[520px] 
@@ -316,6 +337,7 @@ const HeroSection = () => {
             h-auto 
             object-contain
             lg:mr-20 
+            lg:mt-20
           "
         />
       </div>
