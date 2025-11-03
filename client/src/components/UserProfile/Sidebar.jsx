@@ -34,15 +34,15 @@ const Sidebar = ({ activeSection, setActiveSection, counts, isMobileMenuOpen, se
       {/* Overlay */}
       {isMobileMenuOpen && (
         <div 
-          className="lg:hidden fixed inset-0 bg-black/20 bg-opacity-50 "
+          className="lg:hidden fixed inset-0 bg-black/50 z-40"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <div className={`
-        fixed lg:static top-16 lg:top-0 left-0   w-64 bg-[#2F3A63] text-white h-screen rounded-2xl border border-gray-100  py-4  pl-4
-        transition-transform duration-300  
+        fixed lg:static top-16 lg:top-0 left-0   w-64 bg-[#2F3A63] text-white h-[calc(100vh-4rem)] lg:h-screen rounded-2xl py-4 pl-4
+        transition-transform duration-300 ease-in-out z-50
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         
@@ -83,7 +83,7 @@ const Sidebar = ({ activeSection, setActiveSection, counts, isMobileMenuOpen, se
                 window.location.href = '/';
               }, 500);
             }}
-            className="w-full absolute bottom-5 flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all mt-4"
+            className="w-full absolute flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all"
           >
             <LogOut className="w-5 h-5 flex-shrink-0" />
             <span className="font-medium">Logout</span>
@@ -94,7 +94,7 @@ const Sidebar = ({ activeSection, setActiveSection, counts, isMobileMenuOpen, se
       {/* Toast Container */}
       <ToastContainer
         position="top-right"
-        autoClose={3000}
+        autoClose={2000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
