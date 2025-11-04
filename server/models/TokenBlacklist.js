@@ -1,11 +1,23 @@
-// server/models/TokenBlacklist.js
 const mongoose = require("mongoose");
 
-const TokenBlacklistSchema = new mongoose.Schema({
-  token: { type: String, required: true },
-  expiresAt: { type: Date, required: true },
+const tokenBlacklistSchema = new mongoose.Schema({
+  token: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  expiresAt: {
+    type: Date,
+    required: true,
+    index: { expires: 0 } // TTL index
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-TokenBlacklistSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+// Create TTL index for automatic expiration cleanup
+tokenBlacklistSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-module.exports = mongoose.model("TokenBlacklist", TokenBlacklistSchema);
+module.exports = mongoose.model("TokenBlacklist", tokenBlacklistSchema);

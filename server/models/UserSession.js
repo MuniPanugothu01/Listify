@@ -1,12 +1,40 @@
-// server/models/UserSession.js
 const mongoose = require("mongoose");
 
-const UserSessionSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  token: String,
+const userSessionSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
+  token: {
+    type: String,
+    required: true
+  },
   device: String,
+  browser: String,
+  platform: String,
   ip: String,
-  createdAt: { type: Date, default: Date.now, expires: "7d" }, // auto expire
+  location: String,
+  userAgent: String,
+  loginTime: {
+    type: Date,
+    default: Date.now
+  },
+  lastActive: {
+    type: Date,
+    default: Date.now
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
+}, {
+  timestamps: true
 });
 
-module.exports = mongoose.model("UserSession", UserSessionSchema);
+// Indexes for better performance
+userSessionSchema.index({ user: 1 });
+userSessionSchema.index({ token: 1 });
+userSessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
+module.exports = mongoose.model("UserSession", userSessionSchema);

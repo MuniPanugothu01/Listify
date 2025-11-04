@@ -232,7 +232,7 @@ const detectDeviceInfo = async (userAgent, ip) => {
   };
 };
 
-// Create logger instance
+// Create logger instance with FIXED metadata handling
 const logger = winston.createLogger({
   level: level(),
   levels,
@@ -244,7 +244,31 @@ const logger = winston.createLogger({
     errors({ stack: true }),
     timestamp(),
     sanitizeFormat(),
-    metadata(),
+    metadata({
+      fillWith: [
+        "userId",
+        "userEmail",
+        "userName",
+        "ip",
+        "userAgent",
+        "action",
+        "status",
+        "activityType",
+        "requestId",
+        "deviceType",
+        "browser",
+        "platform",
+        "location",
+      ],
+    }),
+    // Custom format to merge metadata into the main log object
+    winston.format((info) => {
+      // Merge metadata into the main info object for CloudWatch
+      if (info.metadata && Object.keys(info.metadata).length > 0) {
+        return { ...info, ...info.metadata };
+      }
+      return info;
+    })(),
     json()
   ),
   transports: [
@@ -255,8 +279,8 @@ const logger = winston.createLogger({
   ],
 });
 
-// AWS CloudWatch Setup Function
-const setupCloudWatch = () => {
+// FIXED CloudWatch setup with proper metadata handling
+const setupCloudWatch = async () => {
   if (!CloudWatchTransport) {
     console.log("❌ CloudWatch transport not available");
     return null;
@@ -289,19 +313,9 @@ const setupCloudWatch = () => {
 
   try {
     console.log("🔄 Setting up CloudWatch transport...");
-    console.log("📍 AWS Region:", process.env.AWS_REGION);
-    console.log(
-      "🔑 AWS Access Key ID:",
-      process.env.AWS_ACCESS_KEY_ID
-        ? `${process.env.AWS_ACCESS_KEY_ID.substring(0, 8)}...`
-        : "Not set"
-    );
-    console.log(
-      "📝 Log Group:",
-      process.env.CLOUDWATCH_GROUP || "auth-service-logs"
-    );
 
-    const cloudWatchConfig = {
+    // Create CloudWatch transport with FIXED message formatter
+    const cloudWatchTransport = new CloudWatchTransport({
       logGroupName: process.env.CLOUDWATCH_GROUP || "auth-service-logs",
       logStreamName:
         process.env.CLOUDWATCH_STREAM ||
@@ -309,19 +323,12 @@ const setupCloudWatch = () => {
       awsRegion: process.env.AWS_REGION,
       awsAccessKeyId: process.env.AWS_ACCESS_KEY_ID,
       awsSecretKey: process.env.AWS_SECRET_ACCESS_KEY,
+      retentionInDays: null,
+      // FIXED: Use the entire log object, not just log.meta
       messageFormatter: (log) => {
         try {
-          // Enhanced log format for CloudWatch with all user details
-          const cloudWatchLog = {
-            level: log.level,
-            message: log.message,
-            timestamp: log.timestamp,
-            service: "auth-service",
-            environment: process.env.NODE_ENV || "development",
-            ...log.meta,
-          };
-
-          return JSON.stringify(cloudWatchLog, null, 2);
+          // The log object now contains all metadata merged in by our custom format
+          return JSON.stringify(log, null, 2);
         } catch (error) {
           return JSON.stringify({
             level: "error",
@@ -332,21 +339,15 @@ const setupCloudWatch = () => {
           });
         }
       },
-      retentionInDays: parseInt(process.env.CLOUDWATCH_RETENTION_DAYS) || 30,
-    };
+    });
 
-    const cloudWatchTransport = new CloudWatchTransport(cloudWatchConfig);
-
+    // Enhanced error handling
     cloudWatchTransport.on("error", (error) => {
-      console.error("❌ CloudWatch Transport Error:", error.message);
-      // Remove CloudWatch transport on credential errors to prevent spam
-      if (
-        error.name === "IncompleteSignatureException" ||
-        error.name === "InvalidClientTokenId"
-      ) {
-        console.log("🔴 Removing CloudWatch transport due to credential error");
-        logger.remove(cloudWatchTransport);
+      if (error.name === "OperationAbortedException") {
+        console.log("⚠️ CloudWatch operation in progress (non-critical)");
+        return;
       }
+      console.error("❌ CloudWatch Transport Error:", error.message);
     });
 
     cloudWatchTransport.on("success", () => {
@@ -362,35 +363,40 @@ const setupCloudWatch = () => {
 };
 
 // Initialize CloudWatch
-const initializeCloudWatch = () => {
-  const cloudWatchTransport = setupCloudWatch();
+const initializeCloudWatch = async () => {
+  try {
+    const cloudWatchTransport = await setupCloudWatch();
 
-  if (cloudWatchTransport) {
-    // Add CloudWatch as a transport
-    logger.add(cloudWatchTransport);
+    if (cloudWatchTransport) {
+      // Add CloudWatch as a transport
+      logger.add(cloudWatchTransport);
 
-    // Test CloudWatch connection with a log message
-    logger.info(
-      "🚀 CloudWatch logging initialized successfully - All logs will be sent to AWS",
-      {
+      // Test CloudWatch connection with detailed log message
+      logger.info("🚀 CloudWatch logging initialized successfully", {
         logGroup: process.env.CLOUDWATCH_GROUP || "auth-service-logs",
         region: process.env.AWS_REGION,
         environment: process.env.NODE_ENV || "development",
-        timestamp: new Date().toISOString(),
-      }
-    );
+        initializationTime: new Date().toISOString(),
+        note: "All metadata will be included in CloudWatch logs",
+        testData: {
+          userId: "test-user-123",
+          action: "INITIALIZATION",
+          status: "SUCCESS",
+        },
+      });
 
-    return true;
-  } else {
-    console.log("❌ CloudWatch logging DISABLED");
+      return true;
+    } else {
+      console.log("❌ CloudWatch logging DISABLED");
+      return false;
+    }
+  } catch (error) {
+    console.error("❌ CloudWatch initialization failed:", error.message);
     return false;
   }
 };
 
-// Initialize CloudWatch on startup
-initializeCloudWatch();
-
-// Enhanced helper functions with comprehensive user and device info
+// FIXED helper functions with enhanced metadata handling
 const auditLog = async (
   action,
   req,
@@ -402,6 +408,7 @@ const auditLog = async (
   const ip = req?.ip || req?.connection?.remoteAddress;
   const deviceInfo = await detectDeviceInfo(userAgent, ip);
 
+  // Create log data - this will be merged into the main log object
   const logData = {
     action,
     status,
@@ -414,15 +421,19 @@ const auditLog = async (
     location: deviceInfo.location,
     requestId: req?.requestId,
     timestamp: new Date().toISOString(),
+    logType: "AUDIT",
     ...additionalData,
   };
 
   if (user) {
     logData.userId = user._id?.toString();
-    logData.username = user.name;
-    logData.email = user.email;
+    logData.userName = user.name;
+    logData.userEmail = user.email;
+    logData.userLoginAttempts = user.loginAttempts;
+    logData.userIsLocked = user.isLocked;
   }
 
+  // The metadata will be merged into the main log object by our custom format
   logger.info(`AUDIT: ${action} - ${status}`, logData);
 };
 
@@ -447,16 +458,17 @@ const userInfoLog = async (
     location: deviceInfo.location,
     requestId: req?.requestId,
     timestamp: new Date().toISOString(),
+    logType: "USER_ACTIVITY",
     ...additionalData,
   };
 
   if (user) {
     logData.userId = user._id?.toString();
-    logData.username = user.name;
-    logData.email = user.email;
+    logData.userName = user.name;
+    logData.userEmail = user.email;
   }
 
-  // Use the correct logger method based on level
+  // Use the correct logger method - metadata will be merged automatically
   switch (level) {
     case "warn":
       logger.warn(message, logData);
@@ -482,7 +494,7 @@ const requestLogger = (req, res, next) => {
   req.requestId = requestId;
   res.setHeader("X-Request-Id", requestId);
 
-  // Log incoming request with device info (async without await to not block request)
+  // Log incoming request with device info
   detectDeviceInfo(userAgent, ip)
     .then((deviceInfo) => {
       logger.http("Incoming Request", {
@@ -499,6 +511,7 @@ const requestLogger = (req, res, next) => {
         contentType: req.get("Content-Type"),
         body: sanitizeData(req.body),
         timestamp: new Date().toISOString(),
+        logType: "REQUEST",
       });
     })
     .catch((error) => {
@@ -517,6 +530,7 @@ const requestLogger = (req, res, next) => {
         body: sanitizeData(req.body),
         timestamp: new Date().toISOString(),
         locationError: error.message,
+        logType: "REQUEST",
       });
     });
 
@@ -524,7 +538,7 @@ const requestLogger = (req, res, next) => {
     const duration = Date.now() - start;
     const loglevel = res.statusCode >= 400 ? "warn" : "http";
 
-    // Log request completion with device context (async)
+    // Log request completion with device context
     detectDeviceInfo(userAgent, ip)
       .then((deviceInfo) => {
         logger.log(loglevel, "Request completed", {
@@ -541,6 +555,7 @@ const requestLogger = (req, res, next) => {
           platform: deviceInfo.platform,
           location: deviceInfo.location,
           timestamp: new Date().toISOString(),
+          logType: "REQUEST_COMPLETE",
         });
       })
       .catch((error) => {
@@ -558,6 +573,7 @@ const requestLogger = (req, res, next) => {
           platform: "unknown",
           location: `IP: ${ip}`,
           timestamp: new Date().toISOString(),
+          logType: "REQUEST_COMPLETE",
         });
       });
   });
@@ -578,6 +594,7 @@ const performance = (operation, operationName = "anonymous") => {
           operationName,
           requestId,
           duration: `${duration}ms`,
+          logType: "PERFORMANCE",
         });
       }
 
@@ -590,6 +607,7 @@ const performance = (operation, operationName = "anonymous") => {
         duration: `${duration}ms`,
         error: error.message,
         stack: error.stack,
+        logType: "PERFORMANCE_ERROR",
       });
       throw error;
     }
@@ -598,13 +616,29 @@ const performance = (operation, operationName = "anonymous") => {
 
 const shutdownLogger = () => {
   return new Promise((resolve) => {
-    logger.info("Shutting down logger gracefully...");
+    logger.info("Shutting down logger gracefully...", {
+      logType: "SYSTEM",
+      shutdownTime: new Date().toISOString(),
+    });
     setTimeout(() => {
-      logger.info("Logger shutdown complete");
+      logger.info("Logger shutdown complete", {
+        logType: "SYSTEM",
+      });
       resolve();
     }, 2000);
   });
 };
+
+// Initialize CloudWatch on startup
+setTimeout(() => {
+  initializeCloudWatch().then((success) => {
+    if (success) {
+      console.log(
+        "🎉 CloudWatch logging is now active with full metadata support"
+      );
+    }
+  });
+}, 3000);
 
 module.exports = {
   logger,
@@ -615,4 +649,5 @@ module.exports = {
   shutdownLogger,
   sanitizeData,
   detectDeviceInfo,
+  initializeCloudWatch,
 };

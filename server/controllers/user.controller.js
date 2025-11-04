@@ -1,52 +1,78 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
 const TokenBlacklist = require("../models/TokenBlacklist");
 const UserSession = require("../models/UserSession");
-const { generateTokens } = require("../utils/generateTokens");
+const User = require("../models/User");
 const { logger, auditLog, userInfoLog } = require("../utils/logger");
-const {
-  registerValidation,
-  loginValidation,
-} = require("../validations/user.validation");
-const {
-  incrFailedAttempt,
-  resetFailedAttempts,
-  lockAccountRedis,
-} = require("../middlewares/rateLimiter.middleware");
+
+// Enhanced user details extraction function
+const getUserDetailsForLogging = (user) => {
+  if (!user) return null;
+
+  return {
+    userId: user._id?.toString(),
+    userName: user.name,
+    userEmail: user.email,
+    userLoginAttempts: user.loginAttempts,
+    userIsLocked: user.isLocked,
+    userLastLogin: user.lastLogin,
+    userCreatedAt: user.createdAt,
+    userUpdatedAt: user.updatedAt,
+  };
+};
+
+// Enhanced request details extraction function
+const getRequestDetailsForLogging = (req) => {
+  return {
+    requestId: req.requestId,
+    requestMethod: req.method,
+    requestUrl: req.url,
+    clientIP: req.ip,
+    userAgent: req.headers["user-agent"],
+    clientLocation: req.clientLocation || "unknown",
+    geoLocation: req.geoLocation || {},
+  };
+};
 
 // Register function with enhanced logging
 const registerUser = async (req, res) => {
   try {
-    const { error } = registerValidation.validate(req.body);
-    if (error) {
-      await userInfoLog("warn", "Registration validation failed", req, null, {
-        validationError: error.details[0].message,
-        attemptedEmail: req.body.email,
-        activityType: "REGISTRATION_ATTEMPT",
-        status: "VALIDATION_FAILED",
-      });
-      return res.status(400).json({ message: error.details[0].message });
-    }
-
     const { name, email, password } = req.body;
+
+    // Enhanced logging for registration attempt
+    await userInfoLog("info", "Registration attempt initiated", req, null, {
+      activityType: "REGISTRATION_ATTEMPT",
+      status: "INITIATED",
+      userDetails: {
+        attemptedName: name,
+        attemptedEmail: email,
+      },
+      requestDetails: getRequestDetailsForLogging(req),
+    });
+
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       await userInfoLog(
         "warn",
         "Registration attempt with existing email",
         req,
-        null,
+        existingUser,
         {
-          email,
           activityType: "REGISTRATION_ATTEMPT",
           status: "DUPLICATE_EMAIL",
-          reason: "User already exists in database",
+          userDetails: getUserDetailsForLogging(existingUser),
+          requestDetails: getRequestDetailsForLogging(req),
+          conflictDetails: {
+            existingUserId: existingUser._id?.toString(),
+            existingUserEmail: existingUser.email,
+          },
         }
       );
       return res.status(400).json({ message: "User already exists" });
     }
 
+    // Hash password and create user
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       name,
@@ -54,8 +80,20 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
-    const { accessToken, refreshToken } = generateTokens(user);
+    // Generate tokens
+    const accessToken = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
 
+    const refreshToken = jwt.sign(
+      { id: user._id },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // Set refresh token as cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -63,43 +101,41 @@ const registerUser = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    // Create user session with enhanced device info
-    await UserSession.create({
+    // Create user session
+    const userSession = await UserSession.create({
       user: user._id,
       token: accessToken,
-      device: req.geoLocation.deviceName,
-      browser: req.geoLocation.browser,
-      platform: req.geoLocation.platform,
-      ip: req.geoLocation.ip,
-      location: req.geoLocation.location,
-      userAgent: req.geoLocation.userAgent,
+      device: req.headers["user-agent"] || "unknown",
+      ip: req.ip,
+      location: req.clientLocation || "unknown",
       loginTime: new Date(),
     });
 
-    await auditLog("USER_REGISTRATION", req, user, "SUCCESS", {
+    // Enhanced logging for successful registration
+    await auditLog("USER_REGISTERED", req, user, "SUCCESS", {
       activityType: "REGISTRATION",
-      status: "SUCCESS",
-      sessionCreated: true,
       registrationMethod: "email",
-      securityLevel: "NORMAL",
+      userDetails: getUserDetailsForLogging(user),
+      sessionDetails: {
+        sessionId: userSession._id?.toString(),
+        device: userSession.device,
+        location: userSession.location,
+        loginTime: userSession.loginTime,
+      },
+      tokenDetails: {
+        accessTokenExpires: "15m",
+        refreshTokenExpires: "7d",
+      },
     });
 
     await userInfoLog("info", "User registered successfully", req, user, {
-      activityType: "REGISTRATION",
-      status: "SUCCESS",
-      deviceInfo: {
-        type: req.geoLocation.deviceType,
-        name: req.geoLocation.deviceName,
-        browser: req.geoLocation.browser,
-        platform: req.geoLocation.platform,
+      activityType: "REGISTRATION_SUCCESS",
+      userDetails: getUserDetailsForLogging(user),
+      registrationDetails: {
+        timestamp: new Date().toISOString(),
+        sessionCreated: true,
+        tokensGenerated: true,
       },
-      locationInfo: {
-        location: req.geoLocation.location,
-        country: req.geoLocation.country,
-        city: req.geoLocation.city,
-        isInternal: req.geoLocation.isInternal,
-      },
-      registrationTime: new Date().toISOString(),
     });
 
     return res.status(201).json({
@@ -113,38 +149,43 @@ const registerUser = async (req, res) => {
       },
     });
   } catch (error) {
-    logger.error("Error registering user", {
+    // Enhanced logging for registration error
+    const errorDetails = {
       error: error.message,
       stack: error.stack,
       attemptedEmail: req.body.email,
-      ip: req.ip,
-      location: req.clientLocation,
-      userAgent: req.headers["user-agent"],
-      requestId: req.requestId,
+      attemptedName: req.body.name,
       activityType: "REGISTRATION_ERROR",
-      status: "ERROR",
-    });
+      userDetails: {
+        attemptedEmail: req.body.email,
+        attemptedName: req.body.name,
+      },
+      requestDetails: getRequestDetailsForLogging(req),
+    };
+
+    await userInfoLog("error", "Registration failed", req, null, errorDetails);
+
+    logger.error("Registration error", errorDetails);
+
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// Fixed login function - FIXED BCRYPT COMPARE ISSUE
+// Login function with enhanced logging
 const loginUser = async (req, res) => {
   try {
-    const { error } = loginValidation.validate(req.body);
-    if (error) {
-      await userInfoLog("warn", "Login validation failed", req, null, {
-        validationError: error.details[0].message,
-        attemptedEmail: req.body.email,
-        activityType: "LOGIN_ATTEMPT",
-        status: "VALIDATION_FAILED",
-      });
-      return res.status(400).json({ message: error.details[0].message });
-    }
-
     const { email, password } = req.body;
 
-    // FIX: Select password field explicitly since it's excluded by default
+    // Enhanced logging for login attempt
+    await userInfoLog("info", "Login attempt initiated", req, null, {
+      activityType: "LOGIN_ATTEMPT",
+      status: "INITIATED",
+      userDetails: {
+        attemptedEmail: email,
+      },
+      requestDetails: getRequestDetailsForLogging(req),
+    });
+
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
@@ -154,142 +195,101 @@ const loginUser = async (req, res) => {
         req,
         null,
         {
-          attemptedEmail: email,
           activityType: "LOGIN_ATTEMPT",
           status: "USER_NOT_FOUND",
-          reason: "User not found in database",
+          userDetails: {
+            attemptedEmail: email,
+          },
+          requestDetails: getRequestDetailsForLogging(req),
+          securityDetails: {
+            reason: "User not found in database",
+          },
         }
       );
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
+    // Check if account is locked
     if (user.isLocked) {
       await userInfoLog("warn", "Login attempt to locked account", req, user, {
         activityType: "LOGIN_ATTEMPT",
         status: "ACCOUNT_LOCKED",
-        reason: "Account is temporarily locked",
-        lockStatus: user.isLocked,
-        loginAttempts: user.loginAttempts,
+        userDetails: getUserDetailsForLogging(user),
+        requestDetails: getRequestDetailsForLogging(req),
+        securityDetails: {
+          lockReason: "Too many failed attempts",
+          loginAttempts: user.loginAttempts,
+          lastLoginAttempt: user.lastLoginAttempt,
+        },
       });
-      return res
-        .status(423)
-        .json({ message: "Account locked. Contact support." });
-    }
-
-    // FIX: Check if password exists before comparing
-    if (!user.password) {
-      await userInfoLog(
-        "error",
-        "User password not found in database",
-        req,
-        user,
-        {
-          activityType: "LOGIN_ATTEMPT",
-          status: "PASSWORD_MISSING",
-          reason: "User password field is empty or null",
-        }
-      );
-      return res
-        .status(500)
-        .json({ message: "System error. Please contact support." });
-    }
-
-    // FIX: Proper bcrypt compare with error handling
-    let isMatch;
-    try {
-      isMatch = await bcrypt.compare(password, user.password);
-    } catch (bcryptError) {
-      await userInfoLog("error", "Password comparison error", req, user, {
-        activityType: "LOGIN_ATTEMPT",
-        status: "BCRYPT_ERROR",
-        error: bcryptError.message,
-        reason: "Error during password verification",
+      return res.status(423).json({
+        message: "Account locked. Please try again after 15 minutes.",
       });
-      return res
-        .status(500)
-        .json({ message: "System error. Please try again." });
     }
 
+    // Check password
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      const { count } = await incrFailedAttempt({
-        userId: user._id.toString(),
-        windowSec: 15 * 60,
-      });
-      const FAIL_LIMIT = Number(process.env.FAIL_LIMIT || 5);
-
-      user.loginAttempts = (user.loginAttempts || 0) + 1;
+      // Increment login attempts
+      user.loginAttempts += 1;
       user.lastLoginAttempt = new Date();
+
+      if (user.loginAttempts >= 5) {
+        user.isLocked = true;
+
+        // Enhanced logging for account lock
+        await auditLog("ACCOUNT_LOCKED", req, user, "LOCKED", {
+          activityType: "ACCOUNT_LOCK",
+          userDetails: getUserDetailsForLogging(user),
+          securityDetails: {
+            reason: "Too many failed login attempts",
+            totalFailedAttempts: user.loginAttempts,
+            lockTimestamp: new Date().toISOString(),
+            autoUnlockAfter: "15 minutes",
+          },
+        });
+      }
       await user.save();
 
       await userInfoLog("warn", "Failed login attempt", req, user, {
         activityType: "LOGIN_ATTEMPT",
         status: "FAILED",
-        attemptCount: count,
-        failLimit: FAIL_LIMIT,
-        remainingAttempts: FAIL_LIMIT - count,
-        totalLoginAttempts: user.loginAttempts,
-        securityLevel: "HIGH_RISK",
+        userDetails: getUserDetailsForLogging(user),
+        securityDetails: {
+          currentAttempts: user.loginAttempts,
+          remainingAttempts: Math.max(0, 5 - user.loginAttempts),
+          lastFailedAttempt: user.lastLoginAttempt,
+        },
       });
 
-      if (count >= FAIL_LIMIT) {
-        await lockAccountRedis(user._id.toString(), 15 * 60);
-        user.isLocked = true;
-        await user.save();
-
-        await auditLog("ACCOUNT_LOCKED", req, user, "LOCKED", {
-          reason: "Too many failed attempts",
-          lockDuration: "15 minutes",
-          totalFailedAttempts: user.loginAttempts,
-          securityEvent: "AUTO_LOCK",
-        });
-
-        return res.status(423).json({
-          message: "Account locked due to multiple failed attempts. Try later.",
-        });
-      }
-
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({
+        message: `Invalid credentials. ${Math.max(
+          0,
+          5 - user.loginAttempts
+        )} attempts remaining.`,
+      });
     }
 
-    // Successful login
-    await resetFailedAttempts(user._id.toString());
+    // Reset login attempts on successful login
     user.loginAttempts = 0;
     user.isLocked = false;
     user.lastLogin = new Date();
     await user.save();
 
-    const { accessToken, refreshToken } = generateTokens(user);
+    // Generate tokens
+    const accessToken = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
 
-    const sessions = await UserSession.find({ user: user._id });
-    const MAX_SESSIONS = Number(process.env.MAX_SESSIONS || 3);
+    const refreshToken = jwt.sign(
+      { id: user._id },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: "7d" }
+    );
 
-    if (sessions.length >= MAX_SESSIONS) {
-      await userInfoLog("warn", "Maximum sessions exceeded", req, user, {
-        activityType: "SESSION_LIMIT",
-        status: "LIMIT_EXCEEDED",
-        currentSessions: sessions.length,
-        maxSessions: MAX_SESSIONS,
-        securityLevel: "MEDIUM_RISK",
-      });
-
-      return res.status(403).json({
-        message: `Maximum ${MAX_SESSIONS} devices allowed. Logout from another device.`,
-      });
-    }
-
-    // Create new session with enhanced device info
-    await UserSession.create({
-      user: user._id,
-      token: accessToken,
-      device: req.geoLocation.deviceName,
-      browser: req.geoLocation.browser,
-      platform: req.geoLocation.platform,
-      ip: req.geoLocation.ip,
-      location: req.geoLocation.location,
-      userAgent: req.geoLocation.userAgent,
-      loginTime: new Date(),
-    });
-
+    // Set refresh token as cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -297,31 +297,48 @@ const loginUser = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    await auditLog("USER_LOGIN", req, user, "SUCCESS", {
+    // Create user session
+    const userSession = await UserSession.create({
+      user: user._id,
+      token: accessToken,
+      device: req.headers["user-agent"] || "unknown",
+      ip: req.ip,
+      location: req.clientLocation || "unknown",
+      loginTime: new Date(),
+    });
+
+    // Get active sessions count
+    const activeSessions = await UserSession.countDocuments({
+      user: user._id,
+      isActive: true,
+    });
+
+    // Enhanced logging for successful login
+    await auditLog("USER_LOGGED_IN", req, user, "SUCCESS", {
       activityType: "LOGIN",
-      status: "SUCCESS",
-      sessionCreated: true,
-      deviceCount: sessions.length + 1,
       loginMethod: "email",
-      securityLevel: "NORMAL",
+      userDetails: getUserDetailsForLogging(user),
+      sessionDetails: {
+        sessionId: userSession._id?.toString(),
+        device: userSession.device,
+        location: userSession.location,
+        loginTime: userSession.loginTime,
+        totalActiveSessions: activeSessions,
+      },
+      tokenDetails: {
+        accessTokenExpires: "15m",
+        refreshTokenExpires: "7d",
+      },
     });
 
     await userInfoLog("info", "User logged in successfully", req, user, {
-      activityType: "LOGIN",
-      status: "SUCCESS",
-      sessionCount: sessions.length + 1,
-      loginTime: new Date().toISOString(),
-      deviceInfo: {
-        type: req.geoLocation.deviceType,
-        name: req.geoLocation.deviceName,
-        browser: req.geoLocation.browser,
-        platform: req.geoLocation.platform,
-      },
-      locationInfo: {
-        location: req.geoLocation.location,
-        country: req.geoLocation.country,
-        city: req.geoLocation.city,
-        isInternal: req.geoLocation.isInternal,
+      activityType: "LOGIN_SUCCESS",
+      userDetails: getUserDetailsForLogging(user),
+      loginDetails: {
+        timestamp: new Date().toISOString(),
+        sessionCreated: true,
+        activeSessionsCount: activeSessions,
+        deviceInfo: req.geoLocation || {},
       },
     });
 
@@ -337,120 +354,142 @@ const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-    logger.error("Error logging in user", {
+    // Enhanced logging for login error
+    const errorDetails = {
       error: error.message,
       stack: error.stack,
       attemptedEmail: req.body.email,
-      ip: req.ip,
-      location: req.clientLocation,
-      userAgent: req.headers["user-agent"],
-      requestId: req.requestId,
       activityType: "LOGIN_ERROR",
-      status: "ERROR",
-    });
+      userDetails: {
+        attemptedEmail: req.body.email,
+      },
+      requestDetails: getRequestDetailsForLogging(req),
+    };
+
+    await userInfoLog("error", "Login failed", req, null, errorDetails);
+
+    logger.error("Login error", errorDetails);
+
     res.status(500).json({ message: "Server error" });
   }
 };
 
-// Enhanced logout function
+// Logout function with enhanced logging
 const logoutUser = async (req, res) => {
   try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      await userInfoLog(
-        "warn",
-        "Logout attempt without valid token",
-        req,
-        req.user,
-        {
-          activityType: "LOGOUT_ATTEMPT",
-          status: "INVALID_TOKEN",
-        }
-      );
-      return res.status(401).json({ message: "No token provided" });
-    }
+    const token = req.token;
+    const decoded = req.decodedToken;
 
-    const token = authHeader.split(" ")[1]?.trim();
     if (!token) {
-      await userInfoLog(
-        "warn",
-        "Logout attempt with malformed token",
-        req,
-        req.user,
-        {
-          activityType: "LOGOUT_ATTEMPT",
-          status: "MALFORMED_TOKEN",
-        }
-      );
+      await userInfoLog("warn", "Logout attempt without token", req, null, {
+        activityType: "LOGOUT_ATTEMPT",
+        status: "NO_TOKEN",
+        requestDetails: getRequestDetailsForLogging(req),
+      });
       return res.status(401).json({ message: "No token provided" });
     }
 
-    const decoded = jwt.decode(token);
-    const expiry = decoded
+    // Add token to blacklist with expiry
+    const expiry = decoded?.exp
       ? new Date(decoded.exp * 1000)
       : new Date(Date.now() + 15 * 60 * 1000);
 
-    await TokenBlacklist.create({ token, expiresAt: expiry });
-
-    const session = await UserSession.findOneAndDelete({ token });
-
-    await auditLog("USER_LOGOUT", req, req.user, "SUCCESS", {
-      activityType: "LOGOUT",
-      status: "SUCCESS",
-      tokenBlacklisted: true,
-      sessionRemoved: !!session,
-      logoutTime: new Date().toISOString(),
-      securityLevel: "NORMAL",
+    const blacklistedToken = await TokenBlacklist.create({
+      token,
+      expiresAt: expiry,
     });
 
-    await userInfoLog("info", "User logged out successfully", req, req.user, {
-      activityType: "LOGOUT",
-      status: "SUCCESS",
-      deviceInfo: {
-        type: req.geoLocation.deviceType,
-        name: req.geoLocation.deviceName,
-        browser: req.geoLocation.browser,
-        platform: req.geoLocation.platform,
-      },
-      locationInfo: {
-        location: req.geoLocation.location,
-        country: req.geoLocation.country,
-        city: req.geoLocation.city,
-        isInternal: req.geoLocation.isInternal,
-      },
-      logoutTime: new Date().toISOString(),
-    });
+    // Remove user session
+    const sessionResult = await UserSession.findOneAndDelete({ token });
 
+    // Clear refresh token cookie
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
     });
 
-    return res
-      .status(200)
-      .json({ success: true, message: "User logged out successfully" });
+    // Enhanced logging for successful logout
+    if (req.user) {
+      await auditLog("USER_LOGGED_OUT", req, req.user, "SUCCESS", {
+        activityType: "LOGOUT",
+        userDetails: getUserDetailsForLogging(req.user),
+        logoutDetails: {
+          timestamp: new Date().toISOString(),
+          sessionRemoved: !!sessionResult,
+          tokenBlacklisted: true,
+          tokenExpiry: blacklistedToken.expiresAt,
+          sessionId: sessionResult?._id?.toString(),
+        },
+      });
+
+      await userInfoLog("info", "User logged out successfully", req, req.user, {
+        activityType: "LOGOUT_SUCCESS",
+        userDetails: getUserDetailsForLogging(req.user),
+        logoutDetails: {
+          sessionRemoved: !!sessionResult,
+          tokenInvalidated: true,
+        },
+      });
+    } else {
+      // Log token invalidation for expired tokens
+      await userInfoLog("info", "Token invalidated during logout", req, null, {
+        activityType: "TOKEN_INVALIDATED",
+        tokenDetails: {
+          tokenExpired: !decoded,
+          userIdFromToken: decoded?.id,
+        },
+        logoutDetails: {
+          sessionRemoved: !!sessionResult,
+          tokenBlacklisted: true,
+        },
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
   } catch (error) {
-    logger.error("Error logging out user", {
+    // Enhanced logging for logout error
+    const errorDetails = {
       error: error.message,
       stack: error.stack,
-      userId: req.user?._id?.toString(),
-      username: req.user?.name,
-      email: req.user?.email,
-      ip: req.ip,
-      userAgent: req.headers["user-agent"],
-      requestId: req.requestId,
       activityType: "LOGOUT_ERROR",
-      status: "ERROR",
+      userDetails: req.user ? getUserDetailsForLogging(req.user) : null,
+      requestDetails: getRequestDetailsForLogging(req),
+      tokenDetails: {
+        tokenProvided: !!req.token,
+        userFromToken: req.decodedToken?.id,
+      },
+    };
+
+    await userInfoLog(
+      "error",
+      "Logout failed",
+      req,
+      req.user || null,
+      errorDetails
+    );
+
+    logger.error("Logout error", errorDetails);
+
+    // Clear cookie even on error
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
     });
-    res.status(500).json({ message: "Server error" });
+
+    res.status(500).json({ message: "Logout failed" });
   }
 };
 
-// Enhanced refresh token function
+// Refresh token function with enhanced logging
 const refreshToken = async (req, res) => {
   try {
     const token = req.cookies.refreshToken;
+
     if (!token) {
       await userInfoLog(
         "warn",
@@ -460,6 +499,7 @@ const refreshToken = async (req, res) => {
         {
           activityType: "TOKEN_REFRESH",
           status: "NO_REFRESH_TOKEN",
+          requestDetails: getRequestDetailsForLogging(req),
         }
       );
       return res.status(401).json({ message: "No refresh token" });
@@ -467,6 +507,7 @@ const refreshToken = async (req, res) => {
 
     const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
     const user = await User.findById(decoded.id);
+
     if (!user) {
       await userInfoLog(
         "warn",
@@ -474,101 +515,120 @@ const refreshToken = async (req, res) => {
         req,
         null,
         {
-          userId: decoded.id,
           activityType: "TOKEN_REFRESH",
           status: "USER_NOT_FOUND",
+          tokenDetails: {
+            userIdFromToken: decoded.id,
+          },
+          requestDetails: getRequestDetailsForLogging(req),
         }
       );
       return res.status(404).json({ message: "User not found" });
     }
 
-    const accessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "15m",
+    const accessToken = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    // Enhanced logging for token refresh
+    await auditLog("TOKEN_REFRESHED", req, user, "SUCCESS", {
+      activityType: "TOKEN_REFRESH",
+      userDetails: getUserDetailsForLogging(user),
+      tokenDetails: {
+        refreshTokenUserId: decoded.id,
+        newAccessTokenExpires: "15m",
+      },
     });
 
-    await auditLog("TOKEN_REFRESH", req, user, "SUCCESS", {
-      activityType: "TOKEN_REFRESH",
-      status: "SUCCESS",
-      deviceInfo: {
-        type: req.geoLocation.deviceType,
-        name: req.geoLocation.deviceName,
-        browser: req.geoLocation.browser,
-        platform: req.geoLocation.platform,
-      },
-      locationInfo: {
-        location: req.geoLocation.location,
-        country: req.geoLocation.country,
-        city: req.geoLocation.city,
-        isInternal: req.geoLocation.isInternal,
+    await userInfoLog("info", "Token refreshed successfully", req, user, {
+      activityType: "TOKEN_REFRESH_SUCCESS",
+      userDetails: getUserDetailsForLogging(user),
+      refreshDetails: {
+        timestamp: new Date().toISOString(),
+        newTokenGenerated: true,
       },
     });
 
     return res.status(200).json({ accessToken });
   } catch (error) {
-    logger.error("Refresh token error", {
+    // Enhanced logging for token refresh error
+    const errorDetails = {
       error: error.message,
-      tokenType: "refresh",
-      ip: req.ip,
-      userAgent: req.headers["user-agent"],
-      requestId: req.requestId,
+      stack: error.stack,
       activityType: "TOKEN_REFRESH_ERROR",
-      status: "ERROR",
-    });
+      tokenDetails: {
+        tokenType: "refresh",
+        errorType: error.name,
+      },
+      requestDetails: getRequestDetailsForLogging(req),
+    };
+
+    await userInfoLog("error", "Token refresh failed", req, null, errorDetails);
+
+    logger.error("Refresh token error", errorDetails);
+
     return res
       .status(401)
       .json({ message: "Invalid or expired refresh token" });
   }
 };
 
-// Enhanced profile function
+// Profile function with enhanced logging
 const getProfile = async (req, res) => {
   try {
-    await auditLog("PROFILE_ACCESS", req, req.user, "SUCCESS", {
+    const userData = {
+      id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+      lastLogin: req.user.lastLogin,
+      createdAt: req.user.createdAt,
+    };
+
+    // Enhanced logging for profile access
+    await auditLog("PROFILE_ACCESSED", req, req.user, "SUCCESS", {
       activityType: "PROFILE_ACCESS",
-      status: "SUCCESS",
-      deviceInfo: {
-        type: req.geoLocation.deviceType,
-        name: req.geoLocation.deviceName,
-        browser: req.geoLocation.browser,
-        platform: req.geoLocation.platform,
-      },
-      locationInfo: {
-        location: req.geoLocation.location,
-        country: req.geoLocation.country,
-        city: req.geoLocation.city,
-        isInternal: req.geoLocation.isInternal,
+      userDetails: getUserDetailsForLogging(req.user),
+      accessDetails: {
+        timestamp: new Date().toISOString(),
+        dataAccessed: ["id", "name", "email", "lastLogin", "createdAt"],
       },
     });
 
     await userInfoLog("info", "User profile accessed", req, req.user, {
-      activityType: "PROFILE_ACCESS",
-      status: "SUCCESS",
-      accessTime: new Date().toISOString(),
+      activityType: "PROFILE_ACCESS_SUCCESS",
+      userDetails: getUserDetailsForLogging(req.user),
+      profileDetails: {
+        accessTime: new Date().toISOString(),
+        fieldsReturned: Object.keys(userData),
+      },
     });
 
     return res.status(200).json({
       success: true,
-      user: {
-        id: req.user._id,
-        name: req.user.name,
-        email: req.user.email,
-        lastLogin: req.user.lastLogin,
-        createdAt: req.user.createdAt,
-      },
+      user: userData,
     });
   } catch (error) {
-    logger.error("Error fetching profile", {
+    // Enhanced logging for profile access error
+    const errorDetails = {
       error: error.message,
       stack: error.stack,
-      userId: req.user?._id?.toString(),
-      username: req.user?.name,
-      email: req.user?.email,
-      ip: req.ip,
-      userAgent: req.headers["user-agent"],
-      requestId: req.requestId,
       activityType: "PROFILE_ACCESS_ERROR",
-      status: "ERROR",
-    });
+      userDetails: req.user ? getUserDetailsForLogging(req.user) : null,
+      requestDetails: getRequestDetailsForLogging(req),
+    };
+
+    await userInfoLog(
+      "error",
+      "Profile access failed",
+      req,
+      req.user,
+      errorDetails
+    );
+
+    logger.error("Profile access error", errorDetails);
+
     res.status(500).json({ message: "Server error" });
   }
 };
