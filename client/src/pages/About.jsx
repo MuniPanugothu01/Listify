@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const CountUp = ({ end, suffix, duration = 2500 }) => {
   const [count, setCount] = useState(0);
@@ -440,6 +441,8 @@ function About() {
             className="flex flex-col sm:flex-row gap-6 justify-center items-center"
             variants={itemVariants}
           >
+            
+            
             <motion.button 
               className="px-12 py-4 bg-[#2F3A63] text-white rounded-2xl font-bold text-lg hover:bg-[#465794] transition-all duration-300 shadow-2xl hover:shadow-3xl hover:"
               whileHover={{ scale: 1.05 }}

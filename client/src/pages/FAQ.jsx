@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaTimes, FaChevronDown, FaQuestionCircle, FaRegCommentDots, FaBookOpen, FaMagic } from "react-icons/fa";
+import { Link} from "react-router-dom";
+
 
 const FAQSection = () => {
   const [expandedSections, setExpandedSections] = useState({});
@@ -302,10 +304,14 @@ const FAQSection = () => {
               <p className="text-gray-600 mb-4">
                 Can't find the answer you're looking for? Our support team is here to help.
               </p>
+
+              <Link to="/contactUs">
               <button className="bg-[#2F3A63]  cursor-pointer text-white px-6 py-3 rounded-xl font-semibold hover:bg-[#1e2a4a] transition-colors duration-200 inline-flex items-center gap-2">
                 <FaRegCommentDots className="w-4 h-4 " />
                 Contact Support
               </button>
+              </Link>
+              
             </div>
           </div>
         </div>

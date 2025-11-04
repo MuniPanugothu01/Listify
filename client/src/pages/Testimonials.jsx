@@ -2,6 +2,8 @@
 import { Star, Quote, Award, TrendingUp, Heart, Sparkles } from "lucide-react";
 import React, { useState, useEffect, useRef } from "react";
 import data from "../data/index.js";
+import { Link} from "react-router-dom";
+
 import Lottie from "lottie-react"; // Make sure to install lottie-react
 import reviewAnimation from "../components/lottie/Review.json"; // adjust path if needed
 
@@ -257,9 +259,14 @@ const Testimonials = ({ testimonials = data.testimonials }) => {
               Start buying and selling with confidence today
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+              <Link to="/signin">
               <button className="bg-white text-[#2F3A63] px-8 py-3 cursor-pointer rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 hover: shadow-lg">
                 Get Started Free
               </button>
+              </Link>
+              
+              
               <button className="border-2 border-white cursor-pointer text-white px-8 py-3 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">
                 View All Reviews
               </button>

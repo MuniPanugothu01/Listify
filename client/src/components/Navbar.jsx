@@ -105,12 +105,13 @@ export default function Navbar() {
             {/* Desktop Menu */}
             <div className="hidden md:flex space-x-8 items-center">
               <Link
-                to="/postadd"
+                to="/about"
                 className="text-gray-700 hover:text-[#2F3A63] font-medium transition-all duration-200 px-3 py-2 relative group"
               >
-                Post Ads
+                About
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#2F3A63] transition-all duration-200 group-hover:w-full"></span>
               </Link>
+              
               <Link
                 to="/categories"
                 className="text-gray-700 hover:text-[#2F3A63] font-medium transition-all duration-200 px-3 py-2 relative group"
@@ -118,13 +119,15 @@ export default function Navbar() {
                 Categories
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#2F3A63] transition-all duration-200 group-hover:w-full"></span>
               </Link>
+
               <Link
-                to="/about"
+                to="/postadd"
                 className="text-gray-700 hover:text-[#2F3A63] font-medium transition-all duration-200 px-3 py-2 relative group"
               >
-                About
+                Post
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#2F3A63] transition-all duration-200 group-hover:w-full"></span>
               </Link>
+              
               <Link
                 to="/contactUs"
                 className="text-gray-700 hover:text-[#2F3A63] font-medium transition-all duration-200 px-3 py-2 relative group"
@@ -236,7 +239,7 @@ export default function Navbar() {
                 className="text-gray-700 hover:text-[#2F3A63] font-medium transition-all duration-200 px-3 py-2 relative group block"
                 onClick={() => setIsOpen(false)}
               >
-                Post Ads
+                Post
                 <span className="absolute bottom-2 left-3 w-0 h-0.5 bg-[#2F3A63] transition-all duration-200 group-hover:w-[calc(100%-24px)]"></span>
               </Link>
               <Link

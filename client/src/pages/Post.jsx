@@ -67,7 +67,7 @@ const PostAdd = ({ data, setData }) => {
   const categoryOptions = [
     {
       value: "houses",
-      label: "Real Estate",
+      label: "Houses",
       icon: FaHome,
       desc: "Properties & rentals",
     },
